@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://aion2checklist.github.io/sitemap.xml
