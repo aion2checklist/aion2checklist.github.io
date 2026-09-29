@@ -1,5 +1,5 @@
-import {deepClone,createStateNormalizer,readLocal,writeLocal,hasStoredState} from "./storage.js?v=20260929-3";
-import {createAuthController,discordDisplayName,discordAvatar} from "./auth.js?v=20260929-3";
+import {deepClone,createStateNormalizer,readLocal,writeLocal,hasStoredState} from "./storage.js?v=20260929-4";
+import {createAuthController,discordDisplayName,discordAvatar} from "./auth.js?v=20260929-4";
 
 window.__AION2_SHARED_STATE__ = window.__AION2_SHARED_STATE__ || null;
 
@@ -8,7 +8,6 @@ const CLOUD_READY=!!(CLOUD_CONFIG.supabaseUrl&&CLOUD_CONFIG.supabaseKey&&window.
 const cloudClient=CLOUD_READY?window.supabase.createClient(CLOUD_CONFIG.supabaseUrl,CLOUD_CONFIG.supabaseKey):null;
 const authController=createAuthController(cloudClient);
 let cloudSession=null,cloudSyncTimer=null,cloudBusy=false,cloudDirty=false,cloudLoadedForUser=null,cloudLoadingForUser=null;
-let cloudAccessAllowed=null,cloudAccessControlReady=false;
 
 const DEFAULT = {
  version:2,
@@ -69,13 +68,13 @@ function cloudPayload(){
  return out;
 }
 function scheduleCloudSave(delay=800){
- if(!cloudClient||!cloudSession||readonly||cloudAccessAllowed===false)return;
+ if(!cloudClient||!cloudSession||readonly)return;
  if(cloudBusy){cloudDirty=true;return}
  clearTimeout(cloudSyncTimer);
  cloudSyncTimer=setTimeout(()=>pushCloudState(false),delay);
 }
 async function pushCloudState(showFeedback=true){
- if(!cloudClient||!cloudSession||readonly||cloudAccessAllowed===false)return false;
+ if(!cloudClient||!cloudSession||readonly)return false;
  if(cloudBusy){cloudDirty=true;return false}
  clearTimeout(cloudSyncTimer);
  cloudBusy=true;cloudDirty=false;updateAuthUI("syncing");
@@ -109,28 +108,6 @@ async function pushCloudState(showFeedback=true){
   if(cloudDirty){cloudDirty=false;scheduleCloudSave(120)}
  }
 }
-async function checkCloudAccess(userId){
- try{
-  const {data,error}=await cloudClient.from("authorized_users").select("user_id").eq("user_id",userId).maybeSingle();
-  if(error){
-   // Enquanto a migração ainda não foi executada, não quebra o site existente.
-   if(error.code==="42P01"||/authorized_users/i.test(error.message||"")&&/does not exist|schema cache/i.test(error.message||"")){
-    cloudAccessControlReady=false;
-    cloudAccessAllowed=true;
-    return true;
-   }
-   throw error;
-  }
-  cloudAccessControlReady=true;
-  cloudAccessAllowed=!!data;
-  return cloudAccessAllowed;
- }catch(error){
-  console.error("Access check failed",error);
-  cloudAccessAllowed=false;
-  throw error;
- }
-}
-
 async function loadCloudForSession(session){
  if(!cloudClient||!session||readonly)return;
  const userId=session.user.id;
@@ -138,12 +115,6 @@ async function loadCloudForSession(session){
  cloudLoadingForUser=userId;
  try{
   updateAuthUI("syncing");
-  const allowed=await checkCloudAccess(userId);
-  if(!allowed){
-   cloudLoadedForUser=userId;
-   updateAuthUI("unauthorized");
-   return;
-  }
   const key=userLocalKey(userId);
   let cached=readLocal(key);
 
@@ -219,18 +190,10 @@ function updateAuthUI(mode){
   const name=discordDisplayName(cloudSession.user),avatar=discordAvatar(cloudSession.user);
   btnText.textContent=name;
   wrap.innerHTML='<div class="authProfile">'+(avatar?'<img class="authAvatar" src="'+escapeHtml(avatar)+'" alt="">':'<div class="authAvatarFallback">D</div>')+'<div><b>'+escapeHtml(name)+'</b><div class="mini">Discord conectado</div></div></div>';
-  login.classList.add("hidden");logout.classList.remove("hidden");
-  if(mode==="unauthorized"){
-   sync.classList.add("hidden");
-   status.textContent="Acesso não autorizado";
-   const id=escapeHtml(cloudSession.user.id);
-   msg.innerHTML="<b>Esta conta ainda não está na lista de amigos.</b><br>Envie este código para quem administra o site:<br><code style=\"user-select:all\">"+id+"</code>";
-  }else{
-   sync.classList.remove("hidden");
-   if(mode==="syncing"){dot.classList.add("warn");status.textContent="Sincronizando…";msg.innerHTML="<b>Conta conectada.</b><br>Salvando alterações na nuvem."}
-   else if(mode==="error"){status.textContent="Falha na sincronização";msg.innerHTML="<b>Conta conectada, mas a nuvem falhou.</b><br>Confira a tabela e as políticas do Supabase."}
-   else{dot.classList.add("on");status.textContent=cloudAccessControlReady?"Salvo na nuvem · acesso autorizado":"Salvo na nuvem";msg.innerHTML="<b>Sincronização ativa.</b><br>Este checklist pertence à sua conta do Discord."}
-  }
+  login.classList.add("hidden");sync.classList.remove("hidden");logout.classList.remove("hidden");
+  if(mode==="syncing"){dot.classList.add("warn");status.textContent="Sincronizando…";msg.innerHTML="<b>Conta conectada.</b><br>Salvando alterações na nuvem."}
+  else if(mode==="error"){status.textContent="Falha na sincronização";msg.innerHTML="<b>Conta conectada, mas a nuvem falhou.</b><br>Confira a tabela e as políticas do Supabase."}
+  else{dot.classList.add("on");status.textContent="Salvo na nuvem";msg.innerHTML="<b>Sincronização ativa.</b><br>Este checklist pertence à sua conta do Discord."}
  }else{
   btnText.textContent="Entrar com Discord";wrap.innerHTML="";login.disabled=false;login.classList.remove("hidden");sync.classList.add("hidden");logout.classList.add("hidden");
   msg.innerHTML="<b>Login disponível.</b><br>Entre com Discord para salvar e recuperar seu checklist em qualquer dispositivo.";
@@ -598,10 +561,10 @@ document.getElementById("downloadSnapshotBtn").onclick=async()=>{
    return response.text();
   };
   const [css,storageSource,authSource,appSource]=await Promise.all([
-   assetText("styles.css?v=20260929-3"),
-   assetText("storage.js?v=20260929-3"),
-   assetText("auth.js?v=20260929-3"),
-   assetText("app.js?v=20260929-3")
+   assetText("styles.css?v=20260929-4"),
+   assetText("storage.js?v=20260929-4"),
+   assetText("auth.js?v=20260929-4"),
+   assetText("app.js?v=20260929-4")
   ]);
   const stripModule=source=>source
    .replace(/^import\s+[^;]+;\s*$/gm,"")
@@ -660,7 +623,7 @@ if(cloudClient){
   cloudSession=session;updateAuthUI();
   if(session&&(event==="SIGNED_IN"||event==="INITIAL_SESSION"))setTimeout(()=>loadCloudForSession(session),0);
   if(event==="SIGNED_OUT"){
-   cloudLoadedForUser=null;cloudLoadingForUser=null;cloudSession=null;cloudAccessAllowed=null;cloudAccessControlReady=false;readonly=false;
+   cloudLoadedForUser=null;cloudLoadingForUser=null;cloudSession=null;readonly=false;
    state=loadLocalState(GUEST_LOCAL_KEY);
    renderAll();updateAuthUI();
   }
