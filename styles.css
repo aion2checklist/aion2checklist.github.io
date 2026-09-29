@@ -252,3 +252,7 @@ hr.sep{border:0;border-top:1px solid var(--line);margin:16px 0}
 .dailyProgressFill{background:linear-gradient(90deg,var(--faction),var(--faction2))}
 .weeklyProgressFill{background:linear-gradient(90deg,var(--gold),var(--faction))}
 @media(max-width:520px){.progressGrid{grid-template-columns:1fr;gap:10px}}
+
+/* v1.0 final — timer horário do Shugo Festival */
+.countdownShugo{color:var(--gold)}
+.shugoTimerSection{padding:2px 0}
