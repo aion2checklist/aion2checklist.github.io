@@ -27,7 +27,7 @@
 <meta name="twitter:description" content="Checklist de progressão para AION 2 com diárias, semanais, recursos e personagens.">
 <meta name="twitter:image" content="https://blogfiles.ncsoft.net/news/cb7fbf01-da19-4c7b-a2d5-673a9628b57d.jpg">
 <title>AION 2 — Weekly & Daily Checklist</title>
-<link rel="stylesheet" href="./styles.css?v=20260929-1">
+<link rel="stylesheet" href="./styles.css?v=20260929-2">
 </head>
 <body>
 <div class="shell">
@@ -61,9 +61,19 @@
    <p>Checklist diário e semanal com rastreamento por personagem, energia e progresso da conta. Quando quiser, troque para a visão de estratégia de lançamento sem bagunçar sua rotina normal.</p>
   </div>
   <div class="resetCard">
-    <div class="resetLabel">PRÓXIMO RESET SEMANAL</div>
-    <div class="countdown" id="weeklyCountdown">--:--:--</div>
-    <div class="resetMeta" id="resetMeta">Quarta-feira · horário configurável</div>
+    <div class="resetTimers">
+      <div class="resetSection">
+        <div class="resetLabel">PRÓXIMO RESET DIÁRIO</div>
+        <div class="countdown countdownDaily" id="dailyCountdown">--:--:--</div>
+        <div class="resetMeta" id="dailyResetMeta">Todos os dias · horário configurável</div>
+      </div>
+      <div class="resetDivider"></div>
+      <div class="resetSection">
+        <div class="resetLabel">PRÓXIMO RESET SEMANAL</div>
+        <div class="countdown" id="weeklyCountdown">--:--:--</div>
+        <div class="resetMeta" id="resetMeta">Quarta-feira · horário configurável</div>
+      </div>
+    </div>
     <div class="progressWrap">
       <div class="progressBar"><div class="progressFill" id="globalProgressFill"></div></div>
       <div class="progressText"><span>Semana</span><span id="globalProgressText">0%</span></div>
@@ -258,6 +268,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="./config.js?v=20260929-3"></script>
-<script type="module" src="./app.js?v=20260929-1"></script>
+<script type="module" src="./app.js?v=20260929-2"></script>
 </body>
 </html>
