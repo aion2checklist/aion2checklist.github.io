@@ -107,6 +107,7 @@ h2{font-family:Georgia,"Times New Roman",serif;font-weight:500;font-size:1.35rem
 .badge.green{color:#bdf8df;border-color:rgba(111,227,178,.3)}
 .badge.red{color:#ffd0d8;border-color:rgba(255,110,134,.3)}
 .badge.blue{color:#c8f4ff;border-color:rgba(124,231,255,.3)}
+.badge.violet{color:#ddd1ff;border-color:rgba(146,120,255,.34);background:rgba(146,120,255,.06)}
 .progressWrap{margin-top:10px}
 .progressBar{height:9px;background:#0a0d16;border:1px solid var(--line);border-radius:99px;overflow:hidden}
 .progressFill{height:100%;width:0;background:linear-gradient(90deg,var(--faction),var(--faction2));transition:.3s}
