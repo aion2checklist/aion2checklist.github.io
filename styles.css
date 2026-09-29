@@ -76,8 +76,12 @@ button{cursor:pointer}
 .hero h1 span{color:var(--gold)}
 .hero p{color:var(--muted);max-width:760px;line-height:1.65;margin:0}
 .resetCard{align-self:end;padding:18px;border:1px solid var(--line);border-radius:18px;background:rgba(8,10,18,.38);backdrop-filter:blur(8px)}
+.resetTimers{display:grid;gap:13px}
+.resetSection{min-width:0}
+.resetDivider{height:1px;background:var(--line)}
 .resetLabel{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.14em}
 .countdown{font-size:1.6rem;font-weight:900;margin:.2rem 0 .5rem}
+.countdownDaily{color:var(--faction)}
 .resetMeta{color:var(--muted);font-size:.8rem}
 .nav{
  display:flex;gap:8px;overflow:auto;padding:4px;margin:12px 0 18px;scrollbar-width:none
