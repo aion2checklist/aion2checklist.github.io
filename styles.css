@@ -194,3 +194,14 @@ hr.sep{border:0;border-top:1px solid var(--line);margin:16px 0}
  .hero{padding:22px}.hero h1{font-size:2.45rem}.modalGrid,.fields{grid-template-columns:1fr}
  .task{grid-template-columns:auto minmax(0,1fr)}.task>.pills{grid-column:2;justify-content:flex-start}
 }
+
+/* v1.0 — Dicas gerais e anotações pessoais */
+.tipsGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.tipCard{display:flex;gap:13px;padding:15px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.025)}
+.tipCard h3{margin:0 0 5px;font-size:.98rem}
+.tipCard p{margin:0;color:var(--muted);font-size:.86rem;line-height:1.5}
+.tipIcon{width:34px;height:34px;flex:0 0 34px;display:grid;place-items:center;border-radius:11px;color:var(--faction);background:var(--factionGlow);border:1px solid rgba(255,255,255,.1);font-weight:900}
+.notesArea{width:100%;min-height:390px;resize:vertical;line-height:1.6;padding:16px}
+.notesFooter{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:8px}
+.notesClear{width:100%;margin-top:14px}
+@media(max-width:760px){.tipsGrid{grid-template-columns:1fr}.notesArea{min-height:300px}}
