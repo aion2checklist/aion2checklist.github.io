@@ -154,10 +154,6 @@ h2{font-family:Georgia,"Times New Roman",serif;font-weight:500;font-size:1.35rem
 .dayBlock ul{margin:0;padding-left:18px;color:var(--muted);font-size:.86rem;line-height:1.55}
 .dayBlock li{margin:5px 0}
 .priority{display:inline-flex;width:22px;height:22px;align-items:center;justify-content:center;border-radius:50%;background:var(--factionGlow);color:#fff;font-weight:900;margin-right:7px}
-.reviewList{display:grid;gap:10px}
-.reviewItem{padding:13px;border:1px solid var(--line);border-radius:14px;background:rgba(7,10,18,.3)}
-.reviewItem b{display:block;margin-bottom:4px}
-.reviewItem p{margin:0;color:var(--muted);font-size:.82rem;line-height:1.5}
 .modalBack{
  position:fixed;inset:0;background:rgba(0,0,0,.65);display:none;align-items:center;justify-content:center;padding:18px;z-index:80;backdrop-filter:blur(8px)
 }
@@ -238,3 +234,12 @@ hr.sep{border:0;border-top:1px solid var(--line);margin:16px 0}
 .callout.red{border-color:rgba(255,110,134,.32);background:rgba(255,110,134,.07)}
 @media(max-width:900px){.bibleIndexGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.bibleGrid2,.statPills{grid-template-columns:1fr}}
 @media(max-width:560px){.bibleIndexGrid{grid-template-columns:1fr}.bibleSearchWrap{align-items:stretch;flex-direction:column}.bibleChapter summary{align-items:flex-start}}
+
+/* v1.0 final — alinhamento e simetria */
+.grid{align-items:stretch}
+.grid>.card{min-width:0;height:100%}
+.titleRow>div:first-child{min-width:0}
+@media(min-width:1100px){
+ .nav{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));overflow:visible}
+ .nav button{width:100%;min-width:0;padding-left:8px;padding-right:8px;text-align:center}
+}
