@@ -205,3 +205,36 @@ hr.sep{border:0;border-top:1px solid var(--line);margin:16px 0}
 .notesFooter{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:8px}
 .notesClear{width:100%;margin-top:14px}
 @media(max-width:760px){.tipsGrid{grid-template-columns:1fr}.notesArea{min-height:300px}}
+
+/* v1.0 definitiva — Bíblia do Aion 2 */
+.bibleHero{overflow:hidden}
+.bibleSourceRow{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:14px}
+.bibleLegend{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.bibleSearchWrap{display:flex;align-items:center;gap:12px;margin-top:16px}
+.bibleSearchWrap .input{flex:1}
+.bibleIndexGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:12px}
+.bibleIndexGrid a{display:block;text-decoration:none;color:var(--muted);border:1px solid var(--line);background:rgba(255,255,255,.025);border-radius:12px;padding:10px 12px;font-size:.84rem}
+.bibleIndexGrid a:hover{color:var(--text);border-color:rgba(180,200,255,.38)}
+.bibleChapters{display:grid;gap:12px}
+.bibleChapter{overflow:hidden;scroll-margin-top:92px}
+.bibleChapter summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:17px 19px}
+.bibleChapter summary::-webkit-details-marker{display:none}
+.bibleChapter summary span:first-child{display:grid;gap:4px}
+.bibleChapter summary small{color:var(--muted);font-weight:500}
+.bibleChapter[open] summary{border-bottom:1px solid var(--line);background:rgba(255,255,255,.018)}
+.bibleBody{padding:18px 19px;color:var(--muted);line-height:1.6}
+.bibleBody h3{color:var(--text);margin:18px 0 8px}
+.bibleBody p{margin:9px 0}
+.bibleBody li{margin:5px 0}
+.bibleGrid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.statPills{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.statPills span{padding:10px 12px;border:1px solid var(--line);border-radius:11px;background:rgba(255,255,255,.022);font-size:.83rem}
+.statTableWrap{overflow:auto;border:1px solid var(--line);border-radius:14px;margin:12px 0}
+.bibleTable{width:100%;border-collapse:collapse;min-width:680px;font-size:.84rem}
+.bibleTable th,.bibleTable td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+.bibleTable th{color:var(--text);background:rgba(255,255,255,.035)}
+.bibleTable tr:last-child td{border-bottom:0}
+.bibleHidden{display:none!important}
+.callout.red{border-color:rgba(255,110,134,.32);background:rgba(255,110,134,.07)}
+@media(max-width:900px){.bibleIndexGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.bibleGrid2,.statPills{grid-template-columns:1fr}}
+@media(max-width:560px){.bibleIndexGrid{grid-template-columns:1fr}.bibleSearchWrap{align-items:stretch;flex-direction:column}.bibleChapter summary{align-items:flex-start}}
