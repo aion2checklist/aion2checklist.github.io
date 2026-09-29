@@ -1,7 +1,7 @@
 {
   "name": "AION 2 Checklist v1.0",
   "short_name": "AION 2 Checklist",
-  "description": "Checklist de AION 2 com diárias, semanais, resets, personagens, dicas e anotações pessoais.",
+  "description": "Checklist de AION 2 com diárias, semanais, resets, personagens, Bíblia em português, dicas e anotações pessoais.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
