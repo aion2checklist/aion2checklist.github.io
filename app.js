@@ -1,5 +1,5 @@
-import {deepClone,createStateNormalizer,readLocal,writeLocal,hasStoredState} from "./storage.js?v=1.0.0-final4";
-import {createAuthController,discordDisplayName,discordAvatar} from "./auth.js?v=1.0.0-final4";
+import {deepClone,createStateNormalizer,readLocal,writeLocal,hasStoredState} from "./storage.js?v=1.0.0-final5";
+import {createAuthController,discordDisplayName,discordAvatar} from "./auth.js?v=1.0.0-final5";
 
 window.__AION2_SHARED_STATE__ = window.__AION2_SHARED_STATE__ || null;
 
@@ -222,6 +222,12 @@ function nextDailyReset(now=new Date()){
  const next=new Date(now);
  next.setHours(h,m,0,0);
  if(next<=now)next.setDate(next.getDate()+1);
+ return next;
+}
+function nextShugoFestival(now=new Date()){
+ const next=new Date(now);
+ next.setMinutes(0,0,0);
+ next.setHours(next.getHours()+1);
  return next;
 }
 function weekStart(now=new Date()){
@@ -633,10 +639,10 @@ document.getElementById("downloadSnapshotBtn").onclick=async()=>{
    return response.text();
   };
   const [css,storageSource,authSource,appSource]=await Promise.all([
-   assetText("styles.css?v=1.0.0-final4"),
-   assetText("storage.js?v=1.0.0-final4"),
-   assetText("auth.js?v=1.0.0-final4"),
-   assetText("app.js?v=1.0.0-final4")
+   assetText("styles.css?v=1.0.0-final5"),
+   assetText("storage.js?v=1.0.0-final5"),
+   assetText("auth.js?v=1.0.0-final5"),
+   assetText("app.js?v=1.0.0-final5")
   ]);
   const stripModule=source=>source
    .replace(/^import\s+[^;]+;\s*$/gm,"")
@@ -687,7 +693,10 @@ function formatCountdown(ms,{showDays=false}={}){
 }
 function updateCountdown(){
  const now=new Date();
+ const nextShugo=nextShugoFestival(now);
  document.getElementById("dailyCountdown").textContent=formatCountdown(nextDailyReset(now)-now);
+ document.getElementById("shugoCountdown").textContent=formatCountdown(nextShugo-now);
+ document.getElementById("shugoResetMeta").textContent=`A cada hora · próxima janela ${pad(nextShugo.getHours())}:00`;
  document.getElementById("weeklyCountdown").textContent=formatCountdown(nextWeeklyReset(now)-now,{showDays:true});
 
  // Detecta a virada do ciclo mesmo com a página aberta.
