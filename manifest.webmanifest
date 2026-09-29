@@ -1,0 +1,19 @@
+{
+  "name": "AION 2 — Weekly & Daily Checklist",
+  "short_name": "AION 2 Checklist",
+  "description": "Checklist diário e semanal para progressão em AION 2.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#080a12",
+  "theme_color": "#080a12",
+  "lang": "pt-BR",
+  "icons": [
+    {
+      "src": "./favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
