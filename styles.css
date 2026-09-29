@@ -244,3 +244,11 @@ hr.sep{border:0;border-top:1px solid var(--line);margin:16px 0}
  .nav{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));overflow:visible}
  .nav button{width:100%;min-width:0;padding-left:8px;padding-right:8px;text-align:center}
 }
+
+/* v1.0 final — progresso diário e semanal separados */
+.progressGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
+.progressGrid .progressWrap{margin-top:0;min-width:0}
+.progressGrid .progressText{margin:0 0 7px}
+.dailyProgressFill{background:linear-gradient(90deg,var(--faction),var(--faction2))}
+.weeklyProgressFill{background:linear-gradient(90deg,var(--gold),var(--faction))}
+@media(max-width:520px){.progressGrid{grid-template-columns:1fr;gap:10px}}
