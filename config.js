@@ -3,5 +3,5 @@
 // Nunca coloque a service_role key aqui.
 window.AION2_CLOUD = {
   supabaseUrl: "",
-  supabaseKey: ""
+  supabaseKey: "sb_publishable_SvVf8DSJ835GTqouKqKcWw_MMVhoEi2"
 };
