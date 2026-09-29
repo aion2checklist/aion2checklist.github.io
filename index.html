@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#080a12">
+<meta name="description" content="Checklist diário e semanal para AION 2: progressão, personagens, Odyle, Nightmare, Ascension, Battleground e planejamento antes do reset.">
+<meta name="robots" content="index,follow">
+<meta name="color-scheme" content="dark">
+<link rel="canonical" href="https://aion2checklist.github.io/">
+<link rel="icon" href="./favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="./manifest.webmanifest">
+
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:site_name" content="AION 2 Checklist">
+<meta property="og:title" content="AION 2 — Weekly & Daily Checklist">
+<meta property="og:description" content="Acompanhe diárias, semanais, personagens, recursos e resets de AION 2 em um único checklist.">
+<meta property="og:url" content="https://aion2checklist.github.io/">
+<meta property="og:image" content="https://blogfiles.ncsoft.net/news/cb7fbf01-da19-4c7b-a2d5-673a9628b57d.jpg">
+<meta property="og:image:width" content="1920">
+<meta property="og:image:height" content="1080">
+<meta property="og:image:alt" content="AION 2 — Elyos e Asmodian">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="AION 2 — Weekly & Daily Checklist">
+<meta name="twitter:description" content="Checklist de progressão para AION 2 com diárias, semanais, recursos e personagens.">
+<meta name="twitter:image" content="https://blogfiles.ncsoft.net/news/cb7fbf01-da19-4c7b-a2d5-673a9628b57d.jpg">
+<title>AION 2 — Weekly & Daily Checklist</title>
+<style>
+:root{
+  --bg:#080a12; --bg2:#0c1020; --panel:rgba(17,21,35,.78); --panel2:rgba(23,28,46,.82);
+  --text:#f7f4ef; --muted:#a7aec3; --line:rgba(180,195,230,.16);
+  --cyan:#7ce7ff; --blue:#6ba7ff; --violet:#9278ff; --gold:#e7c985; --red:#ff6e86; --green:#6fe3b2;
+  --shadow:0 24px 70px rgba(0,0,0,.46); --radius:20px;
+}
+html[data-faction="asmodian"]{--faction:#a979ff;--faction2:#ff6689;--factionGlow:rgba(157,104,255,.24)}
+html[data-faction="elyos"]{--faction:#77dcff;--faction2:#f0d28b;--factionGlow:rgba(119,220,255,.22)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; min-height:100vh; color:var(--text);
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:
+    radial-gradient(900px 520px at 50% -140px,var(--factionGlow),transparent 65%),
+    radial-gradient(700px 500px at 100% 10%,rgba(55,98,173,.14),transparent 65%),
+    linear-gradient(180deg,#070910 0%,#0a0d17 46%,#080a12 100%);
+  overflow-x:hidden;
+}
+body:after{
+  content:"";position:fixed;inset:0;z-index:-3;pointer-events:none;opacity:.30;
+  background-image:linear-gradient(180deg,rgba(6,8,14,.22),rgba(6,8,14,.72)),url(https://blogfiles.ncsoft.net/news/cb7fbf01-da19-4c7b-a2d5-673a9628b57d.jpg);
+  background-size:cover;background-position:center center;background-repeat:no-repeat;
+  filter:saturate(1.05) contrast(1.02);
+}
+body:before{
+  content:"";position:fixed;inset:0;pointer-events:none;opacity:.28;z-index:-1;
+  background-image:
+   linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),
+   linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);
+  background-size:44px 44px;
+  mask-image:linear-gradient(to bottom,black,transparent 80%);
+}
+a{color:inherit}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+.shell{max-width:1240px;margin:auto;padding:18px 18px 64px}
+.top{
+  position:sticky;top:10px;z-index:30;display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding:10px 12px;margin-bottom:18px;border:1px solid var(--line);border-radius:18px;
+  background:rgba(8,10,18,.78);backdrop-filter:blur(20px);box-shadow:0 12px 35px rgba(0,0,0,.25)
+}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.emblem{
+  width:42px;height:42px;display:grid;place-items:center;border-radius:50%;position:relative;
+  border:1px solid rgba(255,255,255,.19);background:radial-gradient(circle,var(--factionGlow),rgba(255,255,255,.02) 65%);
+  box-shadow:0 0 25px var(--factionGlow)
+}
+.emblem svg{width:28px;height:28px}
+.brandText b{font-family:Georgia,"Times New Roman",serif;font-size:1.12rem;letter-spacing:.13em}
+.brandText small{display:block;color:var(--muted);font-size:.72rem;letter-spacing:.08em}
+.topActions{display:flex;gap:8px;align-items:center}
+.iconBtn,.btn,.select,.input{
+  border:1px solid var(--line);color:var(--text);background:rgba(17,22,36,.86);
+  border-radius:12px;padding:10px 12px;outline:none;transition:.18s
+}
+.iconBtn:hover,.btn:hover,.select:hover{border-color:rgba(180,200,255,.38);transform:translateY(-1px)}
+.btn.primary{background:linear-gradient(135deg,var(--faction),var(--faction2));color:#090b12;border-color:transparent;font-weight:900}
+.btn.ghost{background:rgba(255,255,255,.035)}
+.btn.danger{border-color:rgba(255,110,134,.35);color:#ffd4dc}
+.hero{
+  position:relative;overflow:hidden;border:1px solid var(--line);border-radius:28px;padding:30px;
+  background:
+   radial-gradient(540px 280px at 78% 18%,var(--factionGlow),transparent 70%),
+   linear-gradient(135deg,rgba(17,21,36,.92),rgba(12,15,27,.82));
+  box-shadow:var(--shadow);margin-bottom:16px
+}
+.hero:after{
+  content:"";position:absolute;width:390px;height:390px;right:-90px;top:-110px;border-radius:50%;
+  border:1px solid rgba(255,255,255,.08);box-shadow:inset 0 0 80px var(--factionGlow),0 0 90px var(--factionGlow);
+  opacity:.55
+}
+.heroGrid{display:grid;grid-template-columns:1.5fr .7fr;gap:22px;position:relative;z-index:2}
+.kicker{color:var(--faction);text-transform:uppercase;letter-spacing:.22em;font-size:.72rem;font-weight:900}
+.hero h1{font-family:Georgia,"Times New Roman",serif;font-weight:500;font-size:clamp(2.25rem,5vw,4.1rem);line-height:.96;margin:.5rem 0 .7rem;letter-spacing:.02em}
+.hero h1 span{color:var(--gold)}
+.hero p{color:var(--muted);max-width:760px;line-height:1.65;margin:0}
+.resetCard{align-self:end;padding:18px;border:1px solid var(--line);border-radius:18px;background:rgba(8,10,18,.38);backdrop-filter:blur(8px)}
+.resetLabel{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.14em}
+.countdown{font-size:1.6rem;font-weight:900;margin:.2rem 0 .5rem}
+.resetMeta{color:var(--muted);font-size:.8rem}
+.nav{
+ display:flex;gap:8px;overflow:auto;padding:4px;margin:12px 0 18px;scrollbar-width:none
+}
+.nav::-webkit-scrollbar{display:none}
+.nav button{white-space:nowrap;border:1px solid var(--line);background:rgba(255,255,255,.025);color:var(--muted);padding:10px 14px;border-radius:999px;font-weight:850}
+.nav button.active{color:#fff;border-color:rgba(255,255,255,.22);background:linear-gradient(135deg,var(--factionGlow),rgba(255,255,255,.04));box-shadow:0 0 24px var(--factionGlow)}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px}
+.c12{grid-column:span 12}.c8{grid-column:span 8}.c7{grid-column:span 7}.c6{grid-column:span 6}.c5{grid-column:span 5}.c4{grid-column:span 4}
+.card{
+ border:1px solid var(--line);border-radius:var(--radius);background:linear-gradient(180deg,var(--panel2),var(--panel));
+ box-shadow:0 16px 50px rgba(0,0,0,.2);backdrop-filter:blur(12px)
+}
+.pad{padding:19px}
+.titleRow{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-bottom:12px}
+h2{font-family:Georgia,"Times New Roman",serif;font-weight:500;font-size:1.35rem;margin:0}
+.sub{color:var(--muted);font-size:.86rem;line-height:1.45}
+.badge{
+ display:inline-flex;align-items:center;gap:5px;font-size:.67rem;line-height:1;font-weight:900;letter-spacing:.06em;text-transform:uppercase;
+ padding:5px 8px;border-radius:999px;border:1px solid var(--line);color:#d8deef;background:rgba(255,255,255,.025)
+}
+.badge.gold{color:#ffe8ab;border-color:rgba(231,201,133,.3)}
+.badge.green{color:#bdf8df;border-color:rgba(111,227,178,.3)}
+.badge.red{color:#ffd0d8;border-color:rgba(255,110,134,.3)}
+.badge.blue{color:#c8f4ff;border-color:rgba(124,231,255,.3)}
+.progressWrap{margin-top:10px}
+.progressBar{height:9px;background:#0a0d16;border:1px solid var(--line);border-radius:99px;overflow:hidden}
+.progressFill{height:100%;width:0;background:linear-gradient(90deg,var(--faction),var(--faction2));transition:.3s}
+.progressText{display:flex;justify-content:space-between;color:var(--muted);font-size:.75rem;margin-top:6px}
+.task{
+ display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:11px;align-items:start;padding:13px 0;border-bottom:1px solid var(--line)
+}
+.task:last-child{border-bottom:0}
+.chk{
+ appearance:none;width:21px;height:21px;border-radius:6px;border:1px solid rgba(200,210,240,.3);background:#0b0e17;margin:1px 0 0;display:grid;place-content:center
+}
+.chk:checked{background:linear-gradient(135deg,var(--faction),var(--faction2));border-color:transparent}
+.chk:checked:after{content:"✓";font-size:.85rem;font-weight:1000;color:#090b12}
+.task.done .taskName{text-decoration:line-through;color:#8991a6}
+.taskName{font-weight:820}
+.taskNote{font-size:.82rem;color:var(--muted);line-height:1.45;margin-top:4px}
+.pills{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}
+.counter{display:inline-flex;align-items:center;gap:6px}
+.counter button{
+ width:30px;height:30px;padding:0;border-radius:9px;border:1px solid var(--line);background:#101523;color:#fff;font-weight:900
+}
+.counter b{min-width:46px;text-align:center;font-size:.9rem}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
+.stat{padding:12px;border-radius:14px;border:1px solid var(--line);background:rgba(7,10,18,.38)}
+.stat span{display:block;color:var(--muted);font-size:.7rem;text-transform:uppercase;letter-spacing:.08em}
+.stat b{display:block;font-size:1.2rem;margin-top:3px}
+.callout{padding:13px 14px;border-radius:14px;border:1px solid rgba(231,201,133,.23);background:rgba(231,201,133,.055);color:#f4e9ca;font-size:.86rem;line-height:1.55}
+.callout.info{border-color:rgba(124,231,255,.22);background:rgba(124,231,255,.045);color:#d8f8ff}
+.callout.warn{border-color:rgba(255,110,134,.22);background:rgba(255,110,134,.045);color:#ffdbe2}
+.charGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.charCard{border:1px solid var(--line);border-radius:16px;padding:15px;background:rgba(7,10,18,.32)}
+.charHead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
+.charName{font-weight:900;font-size:1.03rem}
+.charRole{font-size:.7rem;color:var(--faction);text-transform:uppercase;letter-spacing:.1em}
+.fields{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.field label{display:block;color:var(--muted);font-size:.7rem;margin-bottom:5px}
+.input,.select{width:100%}
+.input[type=number]{padding-right:6px}
+.meterLine{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:10px 0}
+.meterLine span{font-size:.81rem;color:#dfe4f2}
+.meterLine .counter{margin-left:auto}
+.dayBlock{padding:14px 0;border-bottom:1px solid var(--line)}
+.dayBlock:last-child{border-bottom:0}
+.dayBlock h3{font-size:.95rem;margin:0 0 8px;color:#fff}
+.dayBlock ul{margin:0;padding-left:18px;color:var(--muted);font-size:.86rem;line-height:1.55}
+.dayBlock li{margin:5px 0}
+.priority{display:inline-flex;width:22px;height:22px;align-items:center;justify-content:center;border-radius:50%;background:var(--factionGlow);color:#fff;font-weight:900;margin-right:7px}
+.reviewList{display:grid;gap:10px}
+.reviewItem{padding:13px;border:1px solid var(--line);border-radius:14px;background:rgba(7,10,18,.3)}
+.reviewItem b{display:block;margin-bottom:4px}
+.reviewItem p{margin:0;color:var(--muted);font-size:.82rem;line-height:1.5}
+.modalBack{
+ position:fixed;inset:0;background:rgba(0,0,0,.65);display:none;align-items:center;justify-content:center;padding:18px;z-index:80;backdrop-filter:blur(8px)
+}
+.modalBack.show{display:flex}
+.modal{width:min(720px,100%);max-height:90vh;overflow:auto;border:1px solid var(--line);border-radius:22px;background:#0e1320;box-shadow:var(--shadow)}
+.modalHead{display:flex;justify-content:space-between;align-items:center;padding:18px;border-bottom:1px solid var(--line)}
+.modalBody{padding:18px}
+.modalGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.close{border:0;background:none;color:var(--muted);font-size:1.4rem}
+textarea.input{min-height:110px;resize:vertical}
+.shareBanner{
+ display:none;margin-bottom:14px;padding:12px 14px;border-radius:14px;border:1px solid rgba(124,231,255,.28);
+ background:rgba(124,231,255,.055);color:#ddf9ff;align-items:center;justify-content:space-between;gap:12px
+}
+.shareBanner.show{display:flex}
+.hidden{display:none!important}
+.mini{font-size:.75rem;color:var(--muted)}
+hr.sep{border:0;border-top:1px solid var(--line);margin:16px 0}
+.footer{margin-top:24px;color:#737c93;font-size:.74rem;text-align:center}
+@media(max-width:900px){
+ .heroGrid{grid-template-columns:1fr}.hero:after{opacity:.28}
+ .c8,.c7,.c6,.c5,.c4{grid-column:span 12}.charGrid{grid-template-columns:1fr}
+}
+@media(max-width:620px){
+ .shell{padding:10px 10px 48px}.top{top:5px}.brandText small{display:none}.topActions .textHide{display:none}
+ .hero{padding:22px}.hero h1{font-size:2.45rem}.modalGrid,.fields{grid-template-columns:1fr}
+ .task{grid-template-columns:auto minmax(0,1fr)}.task>.pills{grid-column:2;justify-content:flex-start}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+<header class="top">
+  <div class="brand">
+    <div class="emblem" aria-hidden="true">
+      <svg viewBox="0 0 64 64" fill="none">
+        <path d="M32 7c4 9 9 15 18 20-9-1-15 3-18 10-3-7-9-11-18-10 9-5 14-11 18-20Z" stroke="currentColor" stroke-width="2.4"/>
+        <path d="M20 39c5 0 9 2 12 7 3-5 7-7 12-7-5 5-8 10-12 18-4-8-7-13-12-18Z" stroke="currentColor" stroke-width="2.4"/>
+      </svg>
+    </div>
+    <div class="brandText"><b>AION 2</b><small>WEEKLY & DAILY CHECKLIST // GLOBAL</small></div>
+  </div>
+  <div class="topActions">
+    <button class="btn ghost" id="shareBtn">↗ <span class="textHide">Compartilhar</span></button>
+    <button class="btn ghost" id="settingsBtn">⚙ <span class="textHide">Configurar</span></button>
+  </div>
+</header>
+
+<div class="shareBanner" id="shareBanner">
+  <div><b>Modo compartilhado</b><div class="mini" id="shareOwner">Você está vendo um snapshot de outro jogador.</div></div>
+  <button class="btn primary" id="adoptShare">Usar como meu checklist</button>
+</div>
+
+<section class="hero">
+ <div class="heroGrid">
+  <div>
+   <div class="kicker" id="profileLine">Perfil de Daeva</div>
+   <h1>Seu checklist em <span>Atreia</span>, sempre em dia.</h1>
+   <p>Checklist diário e semanal com rastreamento por personagem, energia e progresso da conta. Quando quiser, troque para a visão de estratégia de lançamento sem bagunçar sua rotina normal.</p>
+  </div>
+  <div class="resetCard">
+    <div class="resetLabel">PRÓXIMO RESET SEMANAL</div>
+    <div class="countdown" id="weeklyCountdown">--:--:--</div>
+    <div class="resetMeta" id="resetMeta">Quarta-feira · horário configurável</div>
+    <div class="progressWrap">
+      <div class="progressBar"><div class="progressFill" id="globalProgressFill"></div></div>
+      <div class="progressText"><span>Semana</span><span id="globalProgressText">0%</span></div>
+    </div>
+  </div>
+ </div>
+</section>
+
+<nav class="nav" id="nav">
+ <button class="active" data-view="today">Hoje</button>
+ <button data-view="weekly">Semana</button>
+ <button data-view="characters">Personagens</button>
+ <button data-view="week1">Guia da conta</button>
+ <button data-view="resources">Recursos</button>
+ <button data-view="review">Revisão 2026</button>
+</nav>
+
+<main>
+<section class="view" id="today">
+ <div class="grid">
+  <div class="card pad c8">
+   <div class="titleRow">
+    <div><h2>Ritual diário</h2><div class="sub">Sua rotina curta e objetiva de todo dia.</div></div>
+    <span class="badge blue" id="dailyKeyBadge">reset diário</span>
+   </div>
+   <div id="dailyTasks"></div>
+  </div>
+  <div class="card pad c4">
+   <div class="titleRow"><div><h2>Pulso da conta</h2><div class="sub">Resumo rápido do que exige atenção nesta semana.</div></div></div>
+   <div class="stats" id="pulseStats"></div>
+   <hr class="sep">
+   <div class="callout info"><b>Nova lógica:</b> conteúdo que acumula não vira “obrigação diária”. O site separa <b>reset diário</b> de <b>recursos acumuláveis</b> para você não gastar tentativa cedo só por ansiedade.</div>
+  </div>
+ </div>
+</section>
+
+<section class="view hidden" id="weekly">
+ <div class="grid">
+  <div class="card pad c8">
+   <div class="titleRow">
+    <div><h2>Fechar antes do reset</h2><div class="sub">Server-wide e por personagem, sem misturar os dois.</div></div>
+    <button class="btn ghost" id="resetWeeklyBtn">Reset manual</button>
+   </div>
+   <div id="weeklyTasks"></div>
+  </div>
+  <div class="card pad c4">
+   <h2>Ordem sugerida</h2>
+   <div class="dayBlock"><h3><span class="priority">1</span>Expira / server-wide</h3><div class="sub">Duties, Command Missions, Daily Dungeon e compras semanais.</div></div>
+   <div class="dayBlock"><h3><span class="priority">2</span>Acumula até o cap</h3><div class="sub">Nightmare e outras cargas. Gaste quando estiver mais forte, mas antes de estourar o limite.</div></div>
+   <div class="dayBlock"><h3><span class="priority">3</span>Escala com poder</h3><div class="sub">Ascension e conteúdo pontuado: faça tarde o suficiente para melhorar recompensa, cedo o suficiente para não esquecer.</div></div>
+  </div>
+ </div>
+</section>
+
+<section class="view hidden" id="characters">
+ <div class="grid">
+  <div class="card pad c12">
+   <div class="titleRow">
+    <div><h2>Roster</h2><div class="sub">Odyle e Nightmare são onde alts começam a fazer diferença.</div></div>
+    <button class="btn primary" id="addCharBtn">+ Personagem</button>
+   </div>
+   <div class="charGrid" id="characterGrid"></div>
+  </div>
+ </div>
+</section>
+
+<section class="view hidden" id="week1">
+ <div class="grid">
+  <div class="card pad c8">
+   <div class="titleRow">
+    <div><h2>Guia da conta</h2><div class="sub" id="strategyLabel"></div></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end">
+      <select class="select" id="planModeSelect" style="max-width:170px">
+        <option value="routine">Rotina semanal</option>
+        <option value="launch">Estratégia de lançamento</option>
+      </select>
+      <select class="select" id="strategySelect" style="max-width:230px">
+        <option value="balanced">Equilibrado</option>
+        <option value="hardcore">Hardcore (rota do vídeo)</option>
+        <option value="casual">Casual / 1 personagem</option>
+      </select>
+    </div>
+   </div>
+   <div id="week1Plan"></div>
+  </div>
+  <div class="card pad c4">
+    <h2>Como usar este guia</h2>
+    <div class="callout"><b>Modo Rotina semanal</b><br>Use como referência fixa do dia a dia: ordem de login, quando gastar recursos acumuláveis e o que fechar antes do reset.</div>
+    <hr class="sep">
+    <div class="callout info"><b>Modo Estratégia de lançamento</b><br>Troque quando quiser para ver a rota inicial da conta. Você escolhe entre uma versão equilibrada, a rota hardcore do vídeo ou uma opção casual com foco em 1 personagem.</div>
+    <hr class="sep">
+    <div class="sub">Sempre priorize o gate real mostrado dentro do cliente do jogo. Se o Global pedir outro CP/IL para o próximo conteúdo, siga o jogo — não o número fixo do guia.</div>
+  </div>
+ </div>
+</section>
+
+<section class="view hidden" id="resources">
+ <div class="grid">
+  <div class="card pad c7">
+    <div class="titleRow"><div><h2>Energia & entradas</h2><div class="sub">Números adaptados pelas configurações da conta.</div></div></div>
+    <div id="resourceSummary"></div>
+  </div>
+  <div class="card pad c5">
+   <h2>Membership</h2>
+   <div class="callout info" id="membershipInfo"></div>
+   <hr class="sep">
+   <div class="sub">A V2 não assume que todo jogador tem assinatura. Odyle e Shugo mudam conforme o perfil selecionado.</div>
+  </div>
+ </div>
+</section>
+
+<section class="view hidden" id="review">
+ <div class="grid">
+  <div class="card pad c7">
+   <div class="titleRow"><div><h2>O que eu revisei antes de mudar</h2><div class="sub">Quando as fontes do Global ainda divergem, o site não finge certeza.</div></div></div>
+   <div class="reviewList">
+    <div class="reviewItem"><b>Shugo Festival foi atualizado</b><p>A transcrição usa um modelo antigo de 2 chaves/dia e cap 14. Atualizações de 2026 mudaram o sistema coreano para <b>7 chaves por servidor/semana</b>, ou <b>14 com membership</b>, compartilhadas no servidor. A V2 usa esse modelo como padrão revisado.</p></div>
+    <div class="reviewItem"><b>Daily Dungeon ficou configurável</b><p>Fontes atuais do Global divergem entre <b>7 e 14</b> entradas semanais. A transcrição e alguns guias mostram 14; outros guias pré-lançamento mostram 7. Por isso a V2 permite escolher o cap em Configurações, em vez de gravar um número como verdade absoluta.</p></div>
+    <div class="reviewItem"><b>Reset semanal: quarta-feira</b><p>Guias atuais e notas da versão coreana apontam reset na quarta. O horário exato varia por serviço/região; por isso dia e hora são configuráveis e usados no countdown.</p></div>
+    <div class="reviewItem"><b>Battleground: 3 vitórias semanais</b><p>Esse ponto da transcrição continua consistente com o guia oficial coreano atualizado: até 3 recompensas de vitória por semana.</p></div>
+    <div class="reviewItem"><b>Semana 1 não força alts antes do main</b><p>A rota do vídeo continua disponível em “Hardcore”. O padrão “Equilibrado” leva o main ao desbloqueio importante primeiro e encaixa alts depois, reduzindo o risco de perder conteúdo diário por gastar horas multiplicando personagens cedo demais.</p></div>
+   </div>
+  </div>
+  <div class="card pad c5">
+   <h2>Legenda de confiança</h2>
+   <div class="dayBlock"><span class="badge green">confirmado/consistente</span><div class="sub" style="margin-top:6px">Múltiplas fontes atuais ou guia oficial.</div></div>
+   <div class="dayBlock"><span class="badge gold">ajustável</span><div class="sub" style="margin-top:6px">Global pré-lançamento ainda diverge; use o cliente como desempate.</div></div>
+   <div class="dayBlock"><span class="badge red">base do vídeo</span><div class="sub" style="margin-top:6px">Mantido como referência histórica/estratégica, não como regra imutável.</div></div>
+  </div>
+ </div>
+</section>
+</main>
+
+<div class="footer">AION 2 Checklist V2 · checklist diário e semanal · sem backend · progresso salvo neste navegador · snapshot compartilhável incluído</div>
+</div>
+
+<div class="modalBack" id="settingsModal">
+ <div class="modal">
+  <div class="modalHead"><div><b>Configurações</b><div class="mini">Ajuste ao seu servidor e à sua conta.</div></div><button class="close" data-close="settingsModal">×</button></div>
+  <div class="modalBody">
+   <div class="modalGrid">
+    <div class="field"><label>Seu nome / nick</label><input class="input" id="profileNameInput" maxlength="32"></div>
+    <div class="field"><label>Facção</label><select class="select" id="factionSelect"><option value="asmodian">Asmodian</option><option value="elyos">Elyos</option></select></div>
+    <div class="field"><label>Membership</label><select class="select" id="membershipSelect"><option value="yes">Ativa</option><option value="no">Sem membership</option></select></div>
+    <div class="field"><label>Daily Dungeon / semana</label><select class="select" id="dailyDungeonCapSelect"><option value="7">7 (guias Global pré-launch)</option><option value="14">14 (transcrição/testes)</option></select></div>
+    <div class="field"><label>Reset diário (hora local configurada)</label><input class="input" type="time" id="dailyResetInput"></div>
+    <div class="field"><label>Reset semanal</label><select class="select" id="weeklyDaySelect"><option value="0">Domingo</option><option value="1">Segunda</option><option value="2">Terça</option><option value="3">Quarta</option><option value="4">Quinta</option><option value="5">Sexta</option><option value="6">Sábado</option></select></div>
+    <div class="field"><label>Hora do reset semanal</label><input class="input" type="time" id="weeklyResetInput"></div>
+    <div class="field"><label>Região / servidor (rótulo)</label><input class="input" id="serverLabelInput" placeholder="Ex.: South America"></div>
+   </div>
+   <div class="callout warn" style="margin-top:14px"><b>Daily Dungeon:</b> esse é o número que eu deixei deliberadamente configurável. Assim que você confirmar o contador no cliente Global, escolhe 7 ou 14 e acabou a dúvida.</div>
+   <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:16px"><button class="btn ghost" data-close="settingsModal">Cancelar</button><button class="btn primary" id="saveSettingsBtn">Salvar</button></div>
+  </div>
+ </div>
+</div>
+
+<div class="modalBack" id="shareModal">
+ <div class="modal">
+  <div class="modalHead"><div><b>Compartilhar com amigos</b><div class="mini">Sem conta, sem servidor e sem expor seu localStorage.</div></div><button class="close" data-close="shareModal">×</button></div>
+  <div class="modalBody">
+   <div class="callout info"><b>Melhor opção para você agora:</b> “Baixar snapshot .html”. Ele gera uma cópia deste site com seu progresso embutido em <b>modo leitura</b>. Você manda o arquivo no Discord e seu amigo abre no navegador.</div>
+   <div style="display:flex;gap:8px;flex-wrap:wrap;margin:14px 0">
+    <button class="btn primary" id="downloadSnapshotBtn">Baixar snapshot .html</button>
+    <button class="btn ghost" id="copyShareCodeBtn">Copiar código</button>
+    <button class="btn ghost" id="copyShareLinkBtn">Copiar link</button>
+   </div>
+   <div class="field"><label>Código de compartilhamento</label><textarea class="input" id="shareCodeArea" readonly></textarea></div>
+   <hr class="sep">
+   <div class="field"><label>Importar código de um amigo</label><textarea class="input" id="importCodeArea" placeholder="Cole aqui o código que seu amigo enviou..."></textarea></div>
+   <div style="display:flex;justify-content:flex-end;margin-top:10px"><button class="btn ghost" id="importCodeBtn">Abrir em modo compartilhado</button></div>
+   <div class="mini" style="margin-top:12px">Link compartilhável funciona automaticamente quando este HTML estiver hospedado em um site (GitHub Pages, Netlify, Cloudflare Pages etc.). Em arquivo local, prefira o snapshot .html.</div>
+  </div>
+ </div>
+</div>
+
+<script>
+window.__AION2_SHARED_STATE__ = window.__AION2_SHARED_STATE__ || null;
+
+const DEFAULT = {
+ version:2,
+ profileName:"Daeva",
+ faction:"asmodian",
+ membership:true,
+ dailyDungeonCap:14,
+ dailyReset:"05:00",
+ weeklyDay:3,
+ weeklyReset:"05:00",
+ serverLabel:"Global",
+ strategy:"balanced",
+ planView:"routine",
+ sharedView:false,
+ characters:[
+  {id:"main",name:"Main",role:"main",level:1,power:0,odyle:0,nightmare:0,ascension:0,battleground:0}
+ ],
+ daily:{},
+ weekly:{},
+ weeklyCounts:{dailyDungeon:0,pveCommands:0,pvpCommands:0,shugo:0},
+ meta:{dailyKey:null,weeklyKey:null}
+};
+
+function deepClone(o){return JSON.parse(JSON.stringify(o))}
+function mergeState(base, incoming){
+ const out=deepClone(base);
+ for(const k of Object.keys(incoming||{})){
+   if(k==="characters" && Array.isArray(incoming[k])) out[k]=incoming[k];
+   else if(typeof incoming[k]==="object" && incoming[k] && !Array.isArray(incoming[k])) out[k]={...(out[k]||{}),...incoming[k]};
+   else out[k]=incoming[k];
+ }
+ return out;
+}
+const LOCAL_KEY="aion2-progression-v2";
+function loadLocalState(){
+ try{return JSON.parse(localStorage.getItem(LOCAL_KEY)||"{}")}
+ catch(e){return {}}
+}
+let state = window.__AION2_SHARED_STATE__ ? mergeState(DEFAULT,window.__AION2_SHARED_STATE__) : mergeState(DEFAULT,loadLocalState());
+let readonly = !!window.__AION2_SHARED_STATE__ || !!state.sharedView;
+if(!state.characters?.length) state.characters=deepClone(DEFAULT.characters);
+
+function save(){
+ if(readonly) return;
+ state.sharedView=false;
+ localStorage.setItem(LOCAL_KEY,JSON.stringify(state));
+}
+function pad(n){return String(n).padStart(2,"0")}
+function parseTime(v){const [h,m]=(v||"05:00").split(":").map(Number);return {h:h||0,m:m||0}}
+
+function dailyKey(now=new Date()){
+ const {h,m}=parseTime(state.dailyReset);
+ const d=new Date(now);
+ const resetToday=new Date(d); resetToday.setHours(h,m,0,0);
+ if(d<resetToday)d.setDate(d.getDate()-1);
+ return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+}
+function weekStart(now=new Date()){
+ const {h,m}=parseTime(state.weeklyReset);
+ const d=new Date(now);
+ const diff=(d.getDay()-Number(state.weeklyDay)+7)%7;
+ d.setDate(d.getDate()-diff); d.setHours(h,m,0,0);
+ if(d>now)d.setDate(d.getDate()-7);
+ return d;
+}
+function weeklyKey(now=new Date()){const d=weekStart(now);return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`}
+function nextWeeklyReset(now=new Date()){const d=weekStart(now);d.setDate(d.getDate()+7);return d}
+function maybeAutoReset(){
+ if(readonly)return;
+ const dk=dailyKey(), wk=weeklyKey();
+ if(state.meta.dailyKey && state.meta.dailyKey!==dk){state.daily={}}
+ if(state.meta.weeklyKey && state.meta.weeklyKey!==wk){
+   state.weekly={};state.weeklyCounts={dailyDungeon:0,pveCommands:0,pvpCommands:0,shugo:0};
+   state.characters.forEach(c=>{c.ascension=0;c.battleground=0});
+ }
+ state.meta.dailyKey=dk;state.meta.weeklyKey=wk;save()
+}
+maybeAutoReset();
+
+const dailyDefs=[
+ {id:"duties",name:"Duty Missions — 5",note:"Server-wide. Faça no personagem que você quer usar como referência de progressão.",tags:[["DIÁRIO","blue"],["SERVER","gold"]]},
+ {id:"supply",name:"Checar Supply Request",note:"Só entregue se o custo fizer sentido. Se o material disparou no mercado, vender pode valer mais que entregar.",tags:[["ECONOMIA","gold"]]},
+ {id:"field",name:"Olhar Field Boss / evento próximo",note:"Oportunista: faça se coincidir com sua sessão. Não precisa transformar isso em alarme obrigatório.",tags:[["OPCIONAL","green"]]},
+ {id:"capcheck",name:"Checar recursos perto do cap",note:"Nightmare e Odyle podem acumular. A prioridade é evitar cap, não gastar tudo imediatamente.",tags:[["GESTÃO","blue"]]}
+];
+
+function shugoMax(){return state.membership?14:7}
+function odyleInfo(){return state.membership?{regen:15,day:120,cap:840}:{regen:10,day:80,cap:560}}
+
+const weeklyDefs=()=>[
+ {id:"shops",name:"Compras / craft semanais",note:"Odyle, tickets e itens de progressão que façam sentido para sua conta.",tags:[["SEMANA","gold"]]},
+ {id:"abyss",name:"Abyss Corridors / eventos de facção",note:"Faça os corredores disponíveis antes do próximo ciclo/reset relevante.",tags:[["ABYSS","red"]]},
+ {id:"review",name:"Revisar caps antes do reset",note:"Daily Dungeon, Commands, Ascension, Battleground e Shugo.",tags:[["FECHAMENTO","blue"]]}
+];
+
+function tagHtml(tags){return `<div class="pills">${tags.map(t=>`<span class="badge ${t[1]}">${t[0]}</span>`).join("")}</div>`}
+function taskHtml(def,scope){
+ const checked=!!state[scope][def.id];
+ return `<label class="task ${checked?"done":""}">
+  <input class="chk" type="checkbox" data-scope="${scope}" data-id="${def.id}" ${checked?"checked":""} ${readonly?"disabled":""}>
+  <div><div class="taskName">${def.name}</div><div class="taskNote">${def.note}</div></div>${tagHtml(def.tags)}
+ </label>`
+}
+function countControl(key,value,max,label){
+ return `<div class="task">
+  <div></div><div><div class="taskName">${label}</div><div class="taskNote">${value} de ${max}</div></div>
+  <div class="counter"><button data-count="${key}" data-dir="-1" ${readonly?"disabled":""}>−</button><b>${value}/${max}</b><button data-count="${key}" data-dir="1" ${readonly?"disabled":""}>+</button></div>
+ </div>`
+}
+
+function renderDaily(){
+ document.getElementById("dailyTasks").innerHTML=dailyDefs.map(d=>taskHtml(d,"daily")).join("");
+ const oi=odyleInfo();
+ const main=state.characters[0]||DEFAULT.characters[0];
+ document.getElementById("pulseStats").innerHTML=`
+   <div class="stat"><span>Odyle / main</span><b>${main.odyle}/${oi.cap}</b></div>
+   <div class="stat"><span>Nightmare / main</span><b>${main.nightmare}/14</b></div>
+   <div class="stat"><span>Shugo / servidor</span><b>${state.weeklyCounts.shugo}/${shugoMax()}</b></div>
+   <div class="stat"><span>Daily Dungeon</span><b>${state.weeklyCounts.dailyDungeon}/${state.dailyDungeonCap}</b></div>`;
+ document.getElementById("dailyKeyBadge").textContent=`reset ${state.dailyReset}`;
+}
+function renderWeekly(){
+ let html=weeklyDefs().map(d=>taskHtml(d,"weekly")).join("");
+ html+=countControl("dailyDungeon",state.weeklyCounts.dailyDungeon,state.dailyDungeonCap,"Daily Dungeon — entradas semanais (server-wide)");
+ html+=countControl("pveCommands",state.weeklyCounts.pveCommands,12,"Command Missions PvE — 12");
+ html+=countControl("pvpCommands",state.weeklyCounts.pvpCommands,20,"Commands PvP — meta da transcrição (ajuste se o Global mostrar diferente)");
+ html+=countControl("shugo",state.weeklyCounts.shugo,shugoMax(),`Shugo Reward Keys — ${shugoMax()} por servidor`);
+ document.getElementById("weeklyTasks").innerHTML=html;
+}
+
+function charCard(c,idx){
+ const oi=odyleInfo();
+ return `<div class="charCard">
+  <div class="charHead"><div><div class="charName">${escapeHtml(c.name)}</div><div class="charRole">${c.role==="main"?"MAIN":"ALT "+idx}</div></div>
+    ${c.role!=="main"&&!readonly?`<button class="btn ghost" data-remove-char="${c.id}">Remover</button>`:""}
+  </div>
+  <div class="fields">
+   <div class="field"><label>Nível</label><input class="input charInput" type="number" min="1" max="99" data-char="${c.id}" data-field="level" value="${c.level}" ${readonly?"disabled":""}></div>
+   <div class="field"><label>CP / Item Level</label><input class="input charInput" type="number" min="0" data-char="${c.id}" data-field="power" value="${c.power}" ${readonly?"disabled":""}></div>
+   <div class="field"><label>Odyle</label><input class="input charInput" type="number" min="0" max="${oi.cap}" data-char="${c.id}" data-field="odyle" value="${c.odyle}" ${readonly?"disabled":""}></div>
+   <div class="field"><label>Nightmare tickets</label><input class="input charInput" type="number" min="0" max="14" data-char="${c.id}" data-field="nightmare" value="${c.nightmare}" ${readonly?"disabled":""}></div>
+  </div>
+  <div class="meterLine"><span>Ascension Trial</span>${smallCounter(c.id,"ascension",c.ascension,3)}</div>
+  <div class="meterLine"><span>Battleground wins</span>${smallCounter(c.id,"battleground",c.battleground,3)}</div>
+  <div class="mini">Odyle estimado: +${oi.regen}/3h · ${oi.day}/dia · cap ${oi.cap}${state.membership?" com membership":""}</div>
+ </div>`;
+}
+function smallCounter(id,field,value,max){
+ return `<div class="counter"><button data-char-count="${id}" data-field="${field}" data-dir="-1" ${readonly?"disabled":""}>−</button><b>${value}/${max}</b><button data-char-count="${id}" data-field="${field}" data-dir="1" ${readonly?"disabled":""}>+</button></div>`
+}
+function renderCharacters(){
+ document.getElementById("characterGrid").innerHTML=state.characters.map(charCard).join("");
+ document.getElementById("addCharBtn").disabled=readonly;
+}
+
+const launchPlans={
+ balanced:{
+  label:"Lançamento · padrão recomendado: protege desbloqueios do main e encaixa alts sem transformar o Dia 1 em trabalho.",
+  blocks:[
+   ["Dia 1 — main primeiro",["Leve o main ao nível 22 para iniciar Odyle.","Continue o main até o nível 45 para abrir os sistemas importantes.","Faça as 5 Duty Missions do dia.","Se ainda tiver tempo/energia, leve seus alts ao 22; não atrase o main só para multiplicar personagens."]],
+   ["Dias 2–3 — destravar a conta",["Alts ao nível 22 e depois 45 conforme seu tempo.","Side quests, Sealed Dungeons e Strongholds/Garrisons que dão poder permanente.","Colecionáveis/Monolith que realmente aumentam progressão."]],
+   ["Dias 4–6 — atender gates",["Priorize o gate real mostrado pelo cliente para seu próximo Expedition/Conquest.","O vídeo cita ~1400 para Bacchron Sky Island; trate isso como referência, não dogma.","Use Odyle onde o loot já é relevante para o endgame, em vez de abrir todo cubo de leveling."]],
+   ["Antes do reset",["Feche Daily Dungeon, Commands, Ascension e Battleground.","Gaste Nightmare antes de 14/14, preferencialmente quando estiver mais forte.","Feche compras/craft semanais e Shugo Reward Keys."]]
+  ]
+ },
+ hardcore:{
+  label:"Lançamento · rota do vídeo: maximiza recargas cedo e assume que você vai jogar bastante.",
+  blocks:[
+   ["Dia 1 — multiplicar geração",["Levar main + todos os alts ao nível 22.","Depois levar o main ao 45.","Fazer as 5 Duties no main."]],
+   ["Dias 2–6 — roster",["5 Duties primeiro.","Levar alts ao máximo.","Limpar side content, Sealed Dungeons, Strongholds/Garrisons e Monolith.","Mirar o gate de equipamento do primeiro farm relevante; o vídeo usa ~1400 como referência."]],
+   ["Último bloco antes do reset",["Consumir energia/tickets acumulados.","Ascension Trial e conteúdo pontuado quando estiver mais forte.","Daily Dungeons, craft e lojas.","Nightmare antes de capar."]]
+  ]
+ },
+ casual:{
+  label:"Lançamento · para quem quer progredir bem sem administrar uma fábrica de alts.",
+  blocks:[
+   ["Dia 1",["Main ao 22 e depois 45.","5 Duties.","Desbloqueios essenciais no caminho."]],
+   ["Resto da semana",["Um único personagem bem feito > vários alts pela metade.","Side content que dá poder permanente.","Daily Dungeon, Ascension, Battleground e Commands antes do reset."]],
+   ["Energia",["Não abra cubo de leveling por hábito.","Guarde Odyle para conteúdo cujo loot você realmente quer.","Evite Nightmare em dificuldade baixa se ainda há espaço no cap para ficar mais forte."]]
+  ]
+ }
+};
+
+const routinePlan={
+ label:"Rotina normal · foque em constância semanal, não em pressa de lançamento.",
+ blocks:[
+  ["Quando logar",["Comece pelo que realmente reseta no dia: Duty Missions e checagem rápida das tarefas do dia.","Veja se algum recurso acumulável está perto do cap antes de decidir onde gastar tempo.","Se houver Field Boss, evento ou janela boa de jogo em grupo, encaixe de forma oportunista."]],
+  ["Durante a semana",["Feche primeiro o que é server-wide ou tem limite fixo claro: compras/crafts, Daily Dungeon, Command Missions e Shugo.","Use Odyle e Nightmare de forma inteligente: evitar cap é mais importante que gastar cedo.","Ascension e conteúdo pontuado costumam render melhor quando você já ganhou mais poder na semana."]],
+  ["Antes do reset",["Passe pela aba Semana e zere tudo que ainda estiver aberto.","Cheque cada personagem: Ascension, Battleground e recursos acumulados.","Faça uma revisão rápida de mercado/supply request para não deixar valor na mesa."]],
+  ["Regra de ouro",["Rotina boa é repetível. Se uma estratégia te faz gastar mais tempo organizando do que jogando, simplifique.","Main consistente + poucos alts bem cuidados costuma render melhor do que um roster enorme largado pela metade."]]
+ ]
+};
+
+function renderWeek1(){
+ const planView=state.planView||"routine";
+ const isLaunch=planView==="launch";
+ document.getElementById("planModeSelect").value=planView;
+ document.getElementById("strategySelect").style.display=isLaunch?"":"none";
+ if(isLaunch){
+  const p=launchPlans[state.strategy]||launchPlans.balanced;
+  document.getElementById("strategySelect").value=state.strategy;
+  document.getElementById("strategyLabel").textContent=p.label;
+  document.getElementById("week1Plan").innerHTML=p.blocks.map(([t,items])=>`<div class="dayBlock"><h3>${t}</h3><ul>${items.map(i=>`<li>${i}</li>`).join("")}</ul></div>`).join("");
+ }else{
+  document.getElementById("strategyLabel").textContent=routinePlan.label;
+  document.getElementById("week1Plan").innerHTML=routinePlan.blocks.map(([t,items])=>`<div class="dayBlock"><h3>${t}</h3><ul>${items.map(i=>`<li>${i}</li>`).join("")}</ul></div>`).join("");
+ }
+}
+function renderResources(){
+ const oi=odyleInfo();
+ document.getElementById("resourceSummary").innerHTML=`
+  <div class="dayBlock"><h3>Odyle Energy</h3><div class="sub">Estimativa do perfil atual: <b>${oi.regen} a cada 3h</b> · <b>${oi.day}/dia</b> · cap base <b>${oi.cap}</b>. Custo típico do cubo: 40.</div></div>
+  <div class="dayBlock"><h3>Nightmare</h3><div class="sub">+2 cargas/dia por personagem · cap 14. Não precisa gastar diariamente; precisa evitar cap.</div></div>
+  <div class="dayBlock"><h3>Shugo Festival</h3><div class="sub"><b>${shugoMax()} Reward Keys/semana por servidor</b> no perfil atual (${state.membership?"membership ativa":"sem membership"}). Modelo revisado 2026.</div></div>
+  <div class="dayBlock"><h3>Ascension Trial</h3><div class="sub">3 tentativas por semana por personagem.</div></div>
+  <div class="dayBlock"><h3>Battleground</h3><div class="sub">Até 3 recompensas de vitória por semana por personagem.</div></div>
+  <div class="dayBlock"><h3>Daily Dungeon</h3><div class="sub">Seu site está configurado para <b>${state.dailyDungeonCap}/semana</b> server-wide. Ajuste em Configurações quando confirmar o contador no Global.</div></div>`;
+ document.getElementById("membershipInfo").innerHTML=state.membership
+  ? `<b>Membership ativa.</b><br>O site usa Odyle +15/3h (120/dia), cap base 840 e Shugo 14 chaves/semana.`
+  : `<b>Sem membership.</b><br>O site usa Odyle +10/3h (80/dia), cap base 560 e Shugo 7 chaves/semana.`;
+}
+function renderHeader(){
+ document.documentElement.dataset.faction=state.faction;
+ document.getElementById("profileLine").textContent=`${state.profileName} · ${state.faction==="asmodian"?"Asmodian":"Elyos"} · ${state.serverLabel||"Global"}`;
+ const days=["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
+ document.getElementById("resetMeta").textContent=`${days[state.weeklyDay]} · ${state.weeklyReset} · ${state.serverLabel||"servidor"}`;
+ if(readonly){
+  document.getElementById("shareBanner").classList.add("show");
+  document.getElementById("shareOwner").textContent=`Snapshot de ${state.profileName}. Alterações estão bloqueadas.`;
+ }else document.getElementById("shareBanner").classList.remove("show");
+}
+function getProgress(){
+ const checks=[...Object.values(state.weekly),...Object.values(state.daily)];
+ const done=checks.filter(Boolean).length;
+ const total=weeklyDefs().length+dailyDefs.length;
+ const countParts=[
+  state.weeklyCounts.dailyDungeon/Math.max(1,state.dailyDungeonCap),
+  state.weeklyCounts.pveCommands/12,
+  state.weeklyCounts.pvpCommands/20,
+  state.weeklyCounts.shugo/Math.max(1,shugoMax()),
+  ...state.characters.map(c=>c.ascension/3),
+  ...state.characters.map(c=>c.battleground/3)
+ ];
+ const base=total?done/total:0;
+ const countAvg=countParts.length?countParts.reduce((a,b)=>a+Math.min(1,b),0)/countParts.length:0;
+ return Math.round((base*.45+countAvg*.55)*100);
+}
+function renderProgress(){
+ const p=getProgress();
+ document.getElementById("globalProgressFill").style.width=p+"%";
+ document.getElementById("globalProgressText").textContent=p+"%";
+}
+function renderAll(){renderHeader();renderDaily();renderWeekly();renderCharacters();renderWeek1();renderResources();renderProgress();bindDynamic();}
+
+function bindDynamic(){
+ document.querySelectorAll(".chk").forEach(el=>el.onchange=e=>{
+  if(readonly)return;state[e.target.dataset.scope][e.target.dataset.id]=e.target.checked;save();renderAll();
+ });
+ document.querySelectorAll("[data-count]").forEach(btn=>btn.onclick=()=>{
+  if(readonly)return;const k=btn.dataset.count,max=k==="dailyDungeon"?state.dailyDungeonCap:k==="pveCommands"?12:k==="pvpCommands"?20:shugoMax();
+  state.weeklyCounts[k]=Math.max(0,Math.min(max,(state.weeklyCounts[k]||0)+Number(btn.dataset.dir)));save();renderAll();
+ });
+ document.querySelectorAll(".charInput").forEach(inp=>inp.onchange=()=>{
+  if(readonly)return;const c=state.characters.find(c=>c.id===inp.dataset.char);if(!c)return;
+  let value=Number(inp.value);if(!Number.isFinite(value))value=0;
+  const min=inp.min!==""?Number(inp.min):0,max=inp.max!==""?Number(inp.max):Infinity;
+  c[inp.dataset.field]=Math.max(min,Math.min(max,value));save();renderAll();
+ });
+ document.querySelectorAll("[data-char-count]").forEach(btn=>btn.onclick=()=>{
+  if(readonly)return;const c=state.characters.find(c=>c.id===btn.dataset.charCount);if(!c)return;
+  const max=3;c[btn.dataset.field]=Math.max(0,Math.min(max,(c[btn.dataset.field]||0)+Number(btn.dataset.dir)));save();renderAll();
+ });
+ document.querySelectorAll("[data-remove-char]").forEach(btn=>btn.onclick=()=>{
+  if(readonly)return;state.characters=state.characters.filter(c=>c.id!==btn.dataset.removeChar);save();renderAll();
+ });
+}
+
+document.getElementById("nav").addEventListener("click",e=>{
+ const b=e.target.closest("button[data-view]");if(!b)return;
+ document.querySelectorAll(".nav button").forEach(x=>x.classList.remove("active"));b.classList.add("active");
+ document.querySelectorAll(".view").forEach(x=>x.classList.add("hidden"));document.getElementById(b.dataset.view).classList.remove("hidden");
+});
+document.getElementById("planModeSelect").onchange=e=>{if(readonly)return;state.planView=e.target.value;save();renderWeek1()};
+document.getElementById("strategySelect").onchange=e=>{if(readonly)return;state.strategy=e.target.value;save();renderWeek1()};
+document.getElementById("addCharBtn").onclick=()=>{
+ if(readonly)return;
+ const name=prompt("Nome do personagem:");if(!name)return;
+ state.characters.push({id:"c"+Date.now(),name:name.trim().slice(0,28)||"Alt",role:"alt",level:1,power:0,odyle:0,nightmare:0,ascension:0,battleground:0});save();renderAll();
+};
+document.getElementById("resetWeeklyBtn").onclick=()=>{
+ if(readonly)return;if(!confirm("Limpar progresso semanal?"))return;
+ state.weekly={};state.weeklyCounts={dailyDungeon:0,pveCommands:0,pvpCommands:0,shugo:0};state.characters.forEach(c=>{c.ascension=0;c.battleground=0});state.meta.weeklyKey=weeklyKey();save();renderAll();
+};
+
+function openModal(id){document.getElementById(id).classList.add("show")}
+function closeModal(id){document.getElementById(id).classList.remove("show")}
+document.querySelectorAll("[data-close]").forEach(b=>b.onclick=()=>closeModal(b.dataset.close));
+document.getElementById("settingsBtn").onclick=()=>{
+ if(readonly)return alert("Este snapshot está em modo leitura. Clique em “Usar como meu checklist” primeiro.");
+ document.getElementById("profileNameInput").value=state.profileName;
+ document.getElementById("factionSelect").value=state.faction;
+ document.getElementById("membershipSelect").value=state.membership?"yes":"no";
+ document.getElementById("dailyDungeonCapSelect").value=String(state.dailyDungeonCap);
+ document.getElementById("dailyResetInput").value=state.dailyReset;
+ document.getElementById("weeklyDaySelect").value=String(state.weeklyDay);
+ document.getElementById("weeklyResetInput").value=state.weeklyReset;
+ document.getElementById("serverLabelInput").value=state.serverLabel;
+ openModal("settingsModal");
+};
+document.getElementById("saveSettingsBtn").onclick=()=>{
+ state.profileName=document.getElementById("profileNameInput").value.trim()||"Daeva";
+ state.faction=document.getElementById("factionSelect").value;
+ state.membership=document.getElementById("membershipSelect").value==="yes";
+ state.dailyDungeonCap=Number(document.getElementById("dailyDungeonCapSelect").value);
+ state.dailyReset=document.getElementById("dailyResetInput").value||"05:00";
+ state.weeklyDay=Number(document.getElementById("weeklyDaySelect").value);
+ state.weeklyReset=document.getElementById("weeklyResetInput").value||"05:00";
+ state.serverLabel=document.getElementById("serverLabelInput").value.trim()||"Global";
+ state.meta.dailyKey=dailyKey();state.meta.weeklyKey=weeklyKey();save();closeModal("settingsModal");renderAll();
+};
+
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+function encodeShare(obj){
+ const txt=JSON.stringify({...obj,sharedView:true});
+ const bytes=new TextEncoder().encode(txt);let bin="";bytes.forEach(b=>bin+=String.fromCharCode(b));
+ return btoa(bin);
+}
+function decodeShare(code){
+ const bin=atob(code.trim());const bytes=Uint8Array.from(bin,c=>c.charCodeAt(0));return JSON.parse(new TextDecoder().decode(bytes));
+}
+function shareCode(){return encodeShare(state)}
+async function copyText(text){
+ try{
+  if(navigator.clipboard?.writeText){await navigator.clipboard.writeText(text);return true}
+ }catch(e){}
+ const ta=document.createElement("textarea");ta.value=text;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.focus();ta.select();
+ let ok=false;try{ok=document.execCommand("copy")}catch(e){}ta.remove();return ok;
+}
+document.getElementById("shareBtn").onclick=()=>{
+ document.getElementById("shareCodeArea").value=shareCode();openModal("shareModal");
+};
+document.getElementById("copyShareCodeBtn").onclick=async()=>{
+ const code=shareCode();document.getElementById("shareCodeArea").value=code;
+ alert(await copyText(code)?"Código copiado.":"Não foi possível copiar automaticamente. Selecione o código e copie manualmente.");
+};
+document.getElementById("copyShareLinkBtn").onclick=async()=>{
+ const code=shareCode();
+ if(location.protocol==="file:"){alert("Como você abriu o site como arquivo local, esse link apontaria para o seu PC. Use “Baixar snapshot .html” ou o código.");return}
+ const u=new URL(location.href);u.hash="share="+code;
+ alert(await copyText(u.toString())?"Link copiado.":"Não foi possível copiar automaticamente.");
+};
+document.getElementById("importCodeBtn").onclick=()=>{
+ try{
+  state=mergeState(DEFAULT,decodeShare(document.getElementById("importCodeArea").value));readonly=true;state.sharedView=true;closeModal("shareModal");renderAll();
+ }catch(e){alert("Código inválido.");}
+};
+document.getElementById("adoptShare").onclick=()=>{
+ readonly=false;state.sharedView=false;localStorage.setItem(LOCAL_KEY,JSON.stringify(state));
+ if(location.hash.startsWith("#share="))history.replaceState(null,"",location.pathname+location.search);
+ renderAll();alert("Snapshot copiado para o seu checklist.");
+};
+
+document.getElementById("downloadSnapshotBtn").onclick=()=>{
+ const embedded={...state,sharedView:true};
+ let source=document.documentElement.outerHTML;
+ const marker='window.__AION2_SHARED_STATE__ = window.__AION2_SHARED_STATE__ || null;';
+ const replacement='window.__AION2_SHARED_STATE__ = '+JSON.stringify(embedded).replace(/</g,"\\u003c")+';';
+ source='<!DOCTYPE html>\n'+source.replace(marker,replacement);
+ const blob=new Blob([source],{type:"text/html;charset=utf-8"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);
+ const safe=(state.profileName||"Daeva").replace(/[^a-z0-9_-]+/gi,"_");a.download=`AION2_${safe}_Checklist.html`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+};
+
+function applyHashShare(){
+ const h=location.hash||"";if(!h.startsWith("#share="))return;
+ try{state=mergeState(DEFAULT,decodeShare(h.slice(7)));readonly=true;state.sharedView=true}catch(e){}
+}
+applyHashShare();
+
+function updateCountdown(){
+ const ms=nextWeeklyReset()-new Date();const t=Math.max(0,Math.floor(ms/1000));
+ const d=Math.floor(t/86400),h=Math.floor((t%86400)/3600),m=Math.floor((t%3600)/60),s=t%60;
+ document.getElementById("weeklyCountdown").textContent=`${d}d ${pad(h)}:${pad(m)}:${pad(s)}`;
+}
+setInterval(updateCountdown,1000);updateCountdown();renderAll();
+</script>
+</body>
+</html>
