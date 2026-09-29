@@ -491,12 +491,29 @@ function mergeState(base, incoming){
  }
  return out;
 }
-const LOCAL_KEY="aion2-progression-v2";
-function loadLocalState(){
- try{return JSON.parse(localStorage.getItem(LOCAL_KEY)||"{}")}
+const LEGACY_LOCAL_KEY="aion2-progression-v2";
+const GUEST_LOCAL_KEY="aion2-progression-v2:guest";
+const USER_LOCAL_PREFIX="aion2-progression-v2:user:";
+
+function readLocal(key){
+ try{return JSON.parse(localStorage.getItem(key)||"{}")}
  catch(e){return {}}
 }
-let state = window.__AION2_SHARED_STATE__ ? mergeState(DEFAULT,window.__AION2_SHARED_STATE__) : mergeState(DEFAULT,loadLocalState());
+function hasStoredState(obj){return !!(obj&&typeof obj==="object"&&Object.keys(obj).length)}
+function userLocalKey(userId){return USER_LOCAL_PREFIX+userId}
+function activeLocalKey(){return cloudSession?.user?.id?userLocalKey(cloudSession.user.id):GUEST_LOCAL_KEY}
+function loadLocalState(key=activeLocalKey()){return readLocal(key)}
+
+// One-time safe migration from the old shared cache.
+// If it already belongs to a cloud user, do not expose it as guest data.
+if(!localStorage.getItem(GUEST_LOCAL_KEY)){
+ const legacy=readLocal(LEGACY_LOCAL_KEY);
+ if(hasStoredState(legacy)&&!legacy?.meta?.cloudUserId){
+  localStorage.setItem(GUEST_LOCAL_KEY,JSON.stringify(legacy));
+ }
+}
+
+let state = window.__AION2_SHARED_STATE__ ? mergeState(DEFAULT,window.__AION2_SHARED_STATE__) : mergeState(DEFAULT,loadLocalState(GUEST_LOCAL_KEY));
 let readonly = !!window.__AION2_SHARED_STATE__ || !!state.sharedView;
 if(!state.characters?.length) state.characters=deepClone(DEFAULT.characters);
 
@@ -505,7 +522,7 @@ function persistLocal(touch=true){
  state.sharedView=false;
  state.meta=state.meta||{};
  if(touch)state.meta.localUpdatedAt=new Date().toISOString();
- localStorage.setItem(LOCAL_KEY,JSON.stringify(state));
+ localStorage.setItem(activeLocalKey(),JSON.stringify(state));
 }
 function save(){
  persistLocal(true);
@@ -550,18 +567,41 @@ async function loadCloudForSession(session){
  if(cloudLoadedForUser===session.user.id)return;
  try{
   updateAuthUI("syncing");
+
+  // Switch to this Discord user's private browser cache before any cloud operation.
+  const key=userLocalKey(session.user.id);
+  let cached=readLocal(key);
+
+  // Migrate the old shared cache only when it explicitly belongs to this same user.
+  if(!hasStoredState(cached)){
+   const legacy=readLocal(LEGACY_LOCAL_KEY);
+   if(legacy?.meta?.cloudUserId===session.user.id){
+    cached=legacy;
+    localStorage.setItem(key,JSON.stringify(cached));
+   }
+  }
+
+  if(hasStoredState(cached)){
+   state=mergeState(DEFAULT,cached);
+  }else{
+   state=deepClone(DEFAULT);
+  }
+  state.sharedView=false;
+  state.meta=state.meta||{};
+  state.meta.cloudUserId=session.user.id;
+  readonly=false;
+  persistLocal(false);
+  renderAll();
+
   const {data,error}=await cloudClient.from("checklist_states").select("state,updated_at").eq("user_id",session.user.id).maybeSingle();
   if(error)throw error;
+
   if(!data){
-   state.meta=state.meta||{};
-   state.meta.cloudUserId=session.user.id;
-   persistLocal(false);
    await pushCloudState(false);
   }else{
-   const sameUser=state.meta?.cloudUserId===session.user.id;
    const localTime=Date.parse(state.meta?.localUpdatedAt||0)||0;
    const cloudTime=Date.parse(data.updated_at||0)||0;
-   if(sameUser&&localTime>cloudTime+1500){
+   if(localTime>cloudTime+1500){
     await pushCloudState(false);
    }else{
     state=mergeState(DEFAULT,data.state||{});
@@ -574,6 +614,7 @@ async function loadCloudForSession(session){
     renderAll();
    }
   }
+
   cloudLoadedForUser=session.user.id;
   updateAuthUI("online");
  }catch(e){
@@ -882,8 +923,15 @@ document.getElementById("discordLoginBtn").onclick=signInDiscord;
 document.getElementById("cloudSyncBtn").onclick=()=>pushCloudState(true);
 document.getElementById("discordLogoutBtn").onclick=async()=>{
  if(!cloudClient)return;
+ clearTimeout(cloudSyncTimer);
+ if(cloudSession&&!readonly)persistLocal(false);
  await cloudClient.auth.signOut();
- cloudSession=null;cloudLoadedForUser=null;updateAuthUI();
+ cloudSession=null;cloudLoadedForUser=null;
+ readonly=false;
+ state=mergeState(DEFAULT,loadLocalState(GUEST_LOCAL_KEY));
+ if(!state.characters?.length)state.characters=deepClone(DEFAULT.characters);
+ renderAll();
+ updateAuthUI();
 };
 document.getElementById("settingsBtn").onclick=()=>{
  if(readonly)return alert("Este snapshot está em modo leitura. Clique em “Usar como meu checklist” primeiro.");
@@ -975,7 +1023,12 @@ if(cloudClient){
  cloudClient.auth.onAuthStateChange((event,session)=>{
   cloudSession=session;updateAuthUI();
   if(session&&(event==="SIGNED_IN"||event==="INITIAL_SESSION"))setTimeout(()=>loadCloudForSession(session),0);
-  if(event==="SIGNED_OUT"){cloudLoadedForUser=null;updateAuthUI()}
+  if(event==="SIGNED_OUT"){
+   cloudLoadedForUser=null;cloudSession=null;readonly=false;
+   state=mergeState(DEFAULT,loadLocalState(GUEST_LOCAL_KEY));
+   if(!state.characters?.length)state.characters=deepClone(DEFAULT.characters);
+   renderAll();updateAuthUI();
+  }
  });
  cloudClient.auth.getSession().then(({data})=>{
   cloudSession=data.session||null;updateAuthUI();
