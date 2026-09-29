@@ -1,5 +1,5 @@
-import {deepClone,createStateNormalizer,readLocal,writeLocal,hasStoredState} from "./storage.js?v=1.0.0";
-import {createAuthController,discordDisplayName,discordAvatar} from "./auth.js?v=1.0.0";
+import {deepClone,createStateNormalizer,readLocal,writeLocal,hasStoredState} from "./storage.js?v=1.0.0-final";
+import {createAuthController,discordDisplayName,discordAvatar} from "./auth.js?v=1.0.0-final";
 
 window.__AION2_SHARED_STATE__ = window.__AION2_SHARED_STATE__ || null;
 
@@ -443,6 +443,20 @@ function renderProgress(){
 function renderAll(){renderHeader();renderDaily();renderWeekly();renderCharacters();renderWeek1();renderResources();renderNotes();renderProgress();bindDynamic();}
 
 function bindDynamic(){
+ const bibleSearch=document.getElementById("bibleSearch");
+ if(bibleSearch){
+  bibleSearch.oninput=e=>{
+   const q=e.target.value.trim().toLocaleLowerCase("pt-BR");
+   let visible=0;
+   document.querySelectorAll(".bibleChapter").forEach(ch=>{
+    const match=!q||ch.textContent.toLocaleLowerCase("pt-BR").includes(q);
+    ch.classList.toggle("bibleHidden",!match);
+    if(match)visible++;
+   });
+   const status=document.getElementById("bibleSearchStatus");
+   if(status)status.textContent=q?`${visible} capítulo${visible===1?"":"s"} encontrado${visible===1?"":"s"}`:"12 capítulos";
+  };
+ }
  const notes=document.getElementById("personalNotes");
  if(notes){
   notes.oninput=e=>{
@@ -608,10 +622,10 @@ document.getElementById("downloadSnapshotBtn").onclick=async()=>{
    return response.text();
   };
   const [css,storageSource,authSource,appSource]=await Promise.all([
-   assetText("styles.css?v=1.0.0"),
-   assetText("storage.js?v=1.0.0"),
-   assetText("auth.js?v=1.0.0"),
-   assetText("app.js?v=1.0.0")
+   assetText("styles.css?v=1.0.0-final"),
+   assetText("storage.js?v=1.0.0-final"),
+   assetText("auth.js?v=1.0.0-final"),
+   assetText("app.js?v=1.0.0-final")
   ]);
   const stripModule=source=>source
    .replace(/^import\s+[^;]+;\s*$/gm,"")
