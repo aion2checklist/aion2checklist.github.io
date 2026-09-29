@@ -203,6 +203,14 @@ textarea.input{min-height:110px;resize:vertical}
 .mini{font-size:.75rem;color:var(--muted)}
 hr.sep{border:0;border-top:1px solid var(--line);margin:16px 0}
 .footer{margin-top:24px;color:#737c93;font-size:.74rem;text-align:center}
+.authProfile{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--line);border-radius:16px;background:rgba(7,10,18,.35);margin-bottom:12px}
+.authAvatar{width:48px;height:48px;border-radius:50%;object-fit:cover;border:1px solid rgba(255,255,255,.18);background:#151a28}
+.authAvatarFallback{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,var(--faction),var(--faction2));color:#090b12;font-weight:1000}
+.authActions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.cloudStatus{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:.8rem;margin-top:8px}
+.cloudDot{width:8px;height:8px;border-radius:50%;background:#737c93;box-shadow:0 0 12px currentColor}
+.cloudDot.on{background:var(--green)}
+.cloudDot.warn{background:var(--gold)}
 @media(max-width:900px){
  .heroGrid{grid-template-columns:1fr}.hero:after{opacity:.28}
  .c8,.c7,.c6,.c5,.c4{grid-column:span 12}.charGrid{grid-template-columns:1fr}
@@ -227,6 +235,7 @@ hr.sep{border:0;border-top:1px solid var(--line);margin:16px 0}
     <div class="brandText"><b>AION 2</b><small>WEEKLY & DAILY CHECKLIST // GLOBAL</small></div>
   </div>
   <div class="topActions">
+    <button class="btn ghost" id="authBtn">☁ <span class="textHide" id="authBtnText">Entrar com Discord</span></button>
     <button class="btn ghost" id="shareBtn">↗ <span class="textHide">Compartilhar</span></button>
     <button class="btn ghost" id="settingsBtn">⚙ <span class="textHide">Configurar</span></button>
   </div>
@@ -423,8 +432,32 @@ hr.sep{border:0;border-top:1px solid var(--line);margin:16px 0}
  </div>
 </div>
 
+<div class="modalBack" id="authModal">
+ <div class="modal">
+  <div class="modalHead"><div><h2>Conta & nuvem</h2><div class="sub">Entre com Discord para sincronizar seu checklist entre dispositivos.</div></div><button class="close" data-close="authModal">×</button></div>
+  <div class="modalBody">
+   <div id="authProfileWrap"></div>
+   <div class="callout info" id="authMessage">A nuvem ainda não foi configurada.</div>
+   <div class="cloudStatus"><span class="cloudDot" id="cloudDot"></span><span id="cloudStatusText">Somente neste navegador</span></div>
+   <div class="authActions">
+    <button class="btn primary" id="discordLoginBtn">Entrar com Discord</button>
+    <button class="btn ghost hidden" id="cloudSyncBtn">Sincronizar agora</button>
+    <button class="btn danger hidden" id="discordLogoutBtn">Sair</button>
+   </div>
+   <div class="mini" style="margin-top:12px">Cada login possui um armazenamento separado. Seus amigos entram com o Discord deles e veem apenas o próprio checklist.</div>
+  </div>
+ </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./config.js"></script>
 <script>
 window.__AION2_SHARED_STATE__ = window.__AION2_SHARED_STATE__ || null;
+
+const CLOUD_CONFIG=window.AION2_CLOUD||{};
+const CLOUD_READY=!!(CLOUD_CONFIG.supabaseUrl&&CLOUD_CONFIG.supabaseKey&&window.supabase?.createClient);
+const cloudClient=CLOUD_READY?window.supabase.createClient(CLOUD_CONFIG.supabaseUrl,CLOUD_CONFIG.supabaseKey):null;
+let cloudSession=null,cloudSyncTimer=null,cloudBusy=false,cloudLoadedForUser=null;
 
 const DEFAULT = {
  version:2,
@@ -445,7 +478,7 @@ const DEFAULT = {
  daily:{},
  weekly:{},
  weeklyCounts:{dailyDungeon:0,pveCommands:0,pvpCommands:0,shugo:0},
- meta:{dailyKey:null,weeklyKey:null}
+ meta:{dailyKey:null,weeklyKey:null,localUpdatedAt:null,cloudUserId:null,lastCloudSync:null}
 };
 
 function deepClone(o){return JSON.parse(JSON.stringify(o))}
@@ -467,10 +500,132 @@ let state = window.__AION2_SHARED_STATE__ ? mergeState(DEFAULT,window.__AION2_SH
 let readonly = !!window.__AION2_SHARED_STATE__ || !!state.sharedView;
 if(!state.characters?.length) state.characters=deepClone(DEFAULT.characters);
 
-function save(){
- if(readonly) return;
+function persistLocal(touch=true){
+ if(readonly)return;
  state.sharedView=false;
+ state.meta=state.meta||{};
+ if(touch)state.meta.localUpdatedAt=new Date().toISOString();
  localStorage.setItem(LOCAL_KEY,JSON.stringify(state));
+}
+function save(){
+ persistLocal(true);
+ scheduleCloudSave();
+}
+function cloudPayload(){
+ const out=deepClone(state);
+ out.sharedView=false;
+ return out;
+}
+function scheduleCloudSave(){
+ if(!cloudClient||!cloudSession||readonly||cloudBusy)return;
+ clearTimeout(cloudSyncTimer);
+ cloudSyncTimer=setTimeout(()=>pushCloudState(false),800);
+}
+async function pushCloudState(showFeedback=true){
+ if(!cloudClient||!cloudSession||readonly)return false;
+ clearTimeout(cloudSyncTimer);
+ cloudBusy=true;updateAuthUI("syncing");
+ try{
+  const now=new Date().toISOString();
+  state.meta=state.meta||{};
+  state.meta.cloudUserId=cloudSession.user.id;
+  state.meta.lastCloudSync=now;
+  persistLocal(false);
+  const {error}=await cloudClient.from("checklist_states").upsert({
+   user_id:cloudSession.user.id,state:cloudPayload(),updated_at:now
+  },{onConflict:"user_id"});
+  if(error)throw error;
+  updateAuthUI("online");
+  if(showFeedback)alert("Checklist sincronizado com a nuvem.");
+  return true;
+ }catch(e){
+  console.error("Cloud sync failed",e);
+  updateAuthUI("error");
+  if(showFeedback)alert("Não foi possível sincronizar. Confira a configuração do Supabase.");
+  return false;
+ }finally{cloudBusy=false}
+}
+async function loadCloudForSession(session){
+ if(!cloudClient||!session||readonly)return;
+ if(cloudLoadedForUser===session.user.id)return;
+ try{
+  updateAuthUI("syncing");
+  const {data,error}=await cloudClient.from("checklist_states").select("state,updated_at").eq("user_id",session.user.id).maybeSingle();
+  if(error)throw error;
+  if(!data){
+   state.meta=state.meta||{};
+   state.meta.cloudUserId=session.user.id;
+   persistLocal(false);
+   await pushCloudState(false);
+  }else{
+   const sameUser=state.meta?.cloudUserId===session.user.id;
+   const localTime=Date.parse(state.meta?.localUpdatedAt||0)||0;
+   const cloudTime=Date.parse(data.updated_at||0)||0;
+   if(sameUser&&localTime>cloudTime+1500){
+    await pushCloudState(false);
+   }else{
+    state=mergeState(DEFAULT,data.state||{});
+    state.sharedView=false;
+    state.meta=state.meta||{};
+    state.meta.cloudUserId=session.user.id;
+    state.meta.lastCloudSync=data.updated_at||new Date().toISOString();
+    readonly=false;
+    persistLocal(false);
+    renderAll();
+   }
+  }
+  cloudLoadedForUser=session.user.id;
+  updateAuthUI("online");
+ }catch(e){
+  console.error("Cloud load failed",e);
+  updateAuthUI("error");
+ }
+}
+function discordDisplayName(user){
+ const m=user?.user_metadata||{};
+ return m.full_name||m.name||m.user_name||m.preferred_username||m.email||"Daeva";
+}
+function discordAvatar(user){
+ const m=user?.user_metadata||{};
+ return m.avatar_url||m.picture||"";
+}
+function updateAuthUI(mode){
+ const btnText=document.getElementById("authBtnText");
+ const msg=document.getElementById("authMessage");
+ const dot=document.getElementById("cloudDot");
+ const status=document.getElementById("cloudStatusText");
+ const login=document.getElementById("discordLoginBtn");
+ const sync=document.getElementById("cloudSyncBtn");
+ const logout=document.getElementById("discordLogoutBtn");
+ const wrap=document.getElementById("authProfileWrap");
+ if(!btnText||!msg)return;
+ dot.className="cloudDot";
+ if(!CLOUD_READY){
+  btnText.textContent="Entrar com Discord";
+  msg.innerHTML="<b>Nuvem aguardando configuração.</b><br>O site já está preparado; falta conectar o projeto Supabase.";
+  status.textContent="Somente neste navegador";
+  login.disabled=true;sync.classList.add("hidden");logout.classList.add("hidden");wrap.innerHTML="";
+  return;
+ }
+ if(cloudSession){
+  const name=discordDisplayName(cloudSession.user),avatar=discordAvatar(cloudSession.user);
+  btnText.textContent=name;
+  wrap.innerHTML='<div class="authProfile">'+(avatar?'<img class="authAvatar" src="'+escapeHtml(avatar)+'" alt="">':'<div class="authAvatarFallback">D</div>')+'<div><b>'+escapeHtml(name)+'</b><div class="mini">Discord conectado</div></div></div>';
+  login.classList.add("hidden");sync.classList.remove("hidden");logout.classList.remove("hidden");
+  if(mode==="syncing"){dot.classList.add("warn");status.textContent="Sincronizando…";msg.innerHTML="<b>Conta conectada.</b><br>Salvando alterações na nuvem."}
+  else if(mode==="error"){status.textContent="Falha na sincronização";msg.innerHTML="<b>Conta conectada, mas a nuvem falhou.</b><br>Confira a tabela e as políticas do Supabase."}
+  else{dot.classList.add("on");status.textContent="Salvo na nuvem";msg.innerHTML="<b>Sincronização ativa.</b><br>Este checklist pertence à sua conta do Discord."}
+ }else{
+  btnText.textContent="Entrar com Discord";wrap.innerHTML="";login.disabled=false;login.classList.remove("hidden");sync.classList.add("hidden");logout.classList.add("hidden");
+  msg.innerHTML="<b>Login disponível.</b><br>Entre com Discord para salvar e recuperar seu checklist em qualquer dispositivo.";
+  status.textContent="Somente neste navegador";
+ }
+}
+async function signInDiscord(){
+ if(!cloudClient)return;
+ const redirectTo=location.origin+location.pathname;
+ const {error}=await cloudClient.auth.signInWithOAuth({provider:"discord",options:{redirectTo}});
+ if(error)alert("Não foi possível abrir o login do Discord.");
 }
 function pad(n){return String(n).padStart(2,"0")}
 function parseTime(v){const [h,m]=(v||"05:00").split(":").map(Number);return {h:h||0,m:m||0}}
@@ -500,7 +655,7 @@ function maybeAutoReset(){
    state.weekly={};state.weeklyCounts={dailyDungeon:0,pveCommands:0,pvpCommands:0,shugo:0};
    state.characters.forEach(c=>{c.ascension=0;c.battleground=0});
  }
- state.meta.dailyKey=dk;state.meta.weeklyKey=wk;save()
+ state.meta.dailyKey=dk;state.meta.weeklyKey=wk;persistLocal(false)
 }
 maybeAutoReset();
 
@@ -722,6 +877,14 @@ document.getElementById("resetWeeklyBtn").onclick=()=>{
 function openModal(id){document.getElementById(id).classList.add("show")}
 function closeModal(id){document.getElementById(id).classList.remove("show")}
 document.querySelectorAll("[data-close]").forEach(b=>b.onclick=()=>closeModal(b.dataset.close));
+document.getElementById("authBtn").onclick=()=>{updateAuthUI();openModal("authModal")};
+document.getElementById("discordLoginBtn").onclick=signInDiscord;
+document.getElementById("cloudSyncBtn").onclick=()=>pushCloudState(true);
+document.getElementById("discordLogoutBtn").onclick=async()=>{
+ if(!cloudClient)return;
+ await cloudClient.auth.signOut();
+ cloudSession=null;cloudLoadedForUser=null;updateAuthUI();
+};
 document.getElementById("settingsBtn").onclick=()=>{
  if(readonly)return alert("Este snapshot está em modo leitura. Clique em “Usar como meu checklist” primeiro.");
  document.getElementById("profileNameInput").value=state.profileName;
@@ -808,6 +971,17 @@ function updateCountdown(){
  const d=Math.floor(t/86400),h=Math.floor((t%86400)/3600),m=Math.floor((t%3600)/60),s=t%60;
  document.getElementById("weeklyCountdown").textContent=`${d}d ${pad(h)}:${pad(m)}:${pad(s)}`;
 }
+if(cloudClient){
+ cloudClient.auth.onAuthStateChange((event,session)=>{
+  cloudSession=session;updateAuthUI();
+  if(session&&(event==="SIGNED_IN"||event==="INITIAL_SESSION"))setTimeout(()=>loadCloudForSession(session),0);
+  if(event==="SIGNED_OUT"){cloudLoadedForUser=null;updateAuthUI()}
+ });
+ cloudClient.auth.getSession().then(({data})=>{
+  cloudSession=data.session||null;updateAuthUI();
+  if(cloudSession)setTimeout(()=>loadCloudForSession(cloudSession),0);
+ });
+}else updateAuthUI();
 setInterval(updateCountdown,1000);updateCountdown();renderAll();
 </script>
 </body>
