@@ -1,5 +1,5 @@
-import {deepClone,createStateNormalizer,readLocal,writeLocal,hasStoredState} from "./storage.js?v=1.0.0-final";
-import {createAuthController,discordDisplayName,discordAvatar} from "./auth.js?v=1.0.0-final";
+import {deepClone,createStateNormalizer,readLocal,writeLocal,hasStoredState} from "./storage.js?v=1.0.0-final4";
+import {createAuthController,discordDisplayName,discordAvatar} from "./auth.js?v=1.0.0-final4";
 
 window.__AION2_SHARED_STATE__ = window.__AION2_SHARED_STATE__ || null;
 
@@ -420,10 +420,15 @@ function renderHeader(){
   document.getElementById("shareOwner").textContent=`Snapshot de ${state.profileName}. Alterações estão bloqueadas.`;
  }else document.getElementById("shareBanner").classList.remove("show");
 }
-function getProgress(){
- const checks=[...Object.values(state.weekly),...Object.values(state.daily)];
- const done=checks.filter(Boolean).length;
- const total=weeklyDefs().length+dailyDefs.length;
+function getDailyProgress(){
+ const total=dailyDefs.length;
+ if(!total)return 0;
+ const done=dailyDefs.filter(def=>!!state.daily[def.id]).length;
+ return Math.round((done/total)*100);
+}
+function getWeeklyProgress(){
+ const defs=weeklyDefs();
+ const checkProgress=defs.length?defs.filter(def=>!!state.weekly[def.id]).length/defs.length:0;
  const countParts=[
   state.weeklyCounts.dailyDungeon/Math.max(1,state.dailyDungeonCap),
   state.weeklyCounts.pveCommands/12,
@@ -432,14 +437,19 @@ function getProgress(){
   ...state.characters.map(c=>c.ascension/3),
   ...state.characters.map(c=>c.battleground/3)
  ];
- const base=total?done/total:0;
- const countAvg=countParts.length?countParts.reduce((a,b)=>a+Math.min(1,b),0)/countParts.length:0;
- return Math.round((base*.45+countAvg*.55)*100);
+ const countProgress=countParts.length?countParts.reduce((sum,value)=>sum+Math.min(1,Math.max(0,value)),0)/countParts.length:0;
+ if(!defs.length&&!countParts.length)return 0;
+ if(!defs.length)return Math.round(countProgress*100);
+ if(!countParts.length)return Math.round(checkProgress*100);
+ return Math.round((checkProgress*.45+countProgress*.55)*100);
 }
 function renderProgress(){
- const p=getProgress();
- document.getElementById("globalProgressFill").style.width=p+"%";
- document.getElementById("globalProgressText").textContent=p+"%";
+ const daily=getDailyProgress();
+ const weekly=getWeeklyProgress();
+ document.getElementById("dailyProgressFill").style.width=daily+"%";
+ document.getElementById("dailyProgressText").textContent=daily+"%";
+ document.getElementById("weeklyProgressFill").style.width=weekly+"%";
+ document.getElementById("weeklyProgressText").textContent=weekly+"%";
 }
 function renderAll(){renderHeader();renderDaily();renderWeekly();renderCharacters();renderWeek1();renderResources();renderNotes();renderProgress();bindDynamic();}
 
@@ -623,10 +633,10 @@ document.getElementById("downloadSnapshotBtn").onclick=async()=>{
    return response.text();
   };
   const [css,storageSource,authSource,appSource]=await Promise.all([
-   assetText("styles.css?v=1.0.0-final"),
-   assetText("storage.js?v=1.0.0-final"),
-   assetText("auth.js?v=1.0.0-final"),
-   assetText("app.js?v=1.0.0-final")
+   assetText("styles.css?v=1.0.0-final4"),
+   assetText("storage.js?v=1.0.0-final4"),
+   assetText("auth.js?v=1.0.0-final4"),
+   assetText("app.js?v=1.0.0-final4")
   ]);
   const stripModule=source=>source
    .replace(/^import\s+[^;]+;\s*$/gm,"")
