@@ -27,7 +27,7 @@
 <meta name="twitter:description" content="Checklist de progressão para AION 2 com diárias, semanais, recursos e personagens.">
 <meta name="twitter:image" content="https://blogfiles.ncsoft.net/news/cb7fbf01-da19-4c7b-a2d5-673a9628b57d.jpg">
 <title>AION 2 — Weekly & Daily Checklist</title>
-<link rel="stylesheet" href="./styles.css?v=20260929-2">
+<link rel="stylesheet" href="./styles.css?v=1.0.0">
 </head>
 <body>
 <div class="shell">
@@ -39,7 +39,7 @@
         <path d="M20 39c5 0 9 2 12 7 3-5 7-7 12-7-5 5-8 10-12 18-4-8-7-13-12-18Z" stroke="currentColor" stroke-width="2.4"/>
       </svg>
     </div>
-    <div class="brandText"><b>AION 2</b><small>WEEKLY & DAILY CHECKLIST // GLOBAL</small></div>
+    <div class="brandText"><b>AION 2</b><small>WEEKLY & DAILY CHECKLIST // GLOBAL // v1.0</small></div>
   </div>
   <div class="topActions">
     <button class="btn ghost" id="authBtn">☁ <span class="textHide" id="authBtnText">Entrar com Discord</span></button>
@@ -88,6 +88,8 @@
  <button data-view="characters">Personagens</button>
  <button data-view="week1">Guia da conta</button>
  <button data-view="resources">Recursos</button>
+ <button data-view="tips">Dicas gerais</button>
+ <button data-view="notes">Anotações</button>
  <button data-view="review">Revisão 2026</button>
 </nav>
 
@@ -185,12 +187,55 @@
  </div>
 </section>
 
+<section class="view hidden" id="tips">
+ <div class="grid">
+  <div class="card pad c12">
+   <div class="titleRow">
+    <div><h2>Dicas gerais</h2><div class="sub">Atalhos de progressão para manter a conta organizada sem transformar o jogo em uma planilha.</div></div>
+    <span class="badge green">GUIA RÁPIDO</span>
+   </div>
+   <div class="tipsGrid">
+    <article class="tipCard"><span class="tipIcon">⏳</span><div><h3>Priorize o que expira</h3><p>Quando o tempo estiver curto, faça primeiro conteúdo diário ou semanal que desaparece no reset. O que acumula pode esperar enquanto ainda estiver longe do cap.</p></div></article>
+    <article class="tipCard"><span class="tipIcon">◆</span><div><h3>Main primeiro</h3><p>Concentre os upgrades mais importantes no personagem principal até ele abrir e sustentar o conteúdo relevante. Depois use os alts com um objetivo claro.</p></div></article>
+    <article class="tipCard"><span class="tipIcon">⚡</span><div><h3>Não bata no cap</h3><p>Recursos acumuláveis valem mais quando você evita desperdício. Confira Odyle, Nightmare e outras cargas antes de sessões longas ou antes do reset.</p></div></article>
+    <article class="tipCard"><span class="tipIcon">⚔</span><div><h3>Conteúdo que escala com poder</h3><p>Se uma recompensa melhora com seu poder, vale deixar para mais tarde no ciclo quando isso fizer sentido — sem empurrar tanto a ponto de correr risco de perder a tentativa.</p></div></article>
+    <article class="tipCard"><span class="tipIcon">✦</span><div><h3>Alts com função</h3><p>Não crie rotina extra só porque o alt existe. Use personagens alternativos para objetivos concretos: recursos por personagem, testes de classe ou progressão planejada.</p></div></article>
+    <article class="tipCard"><span class="tipIcon">◈</span><div><h3>Mercado antes de gastar</h3><p>Antes de craftar, entregar materiais ou consumir itens valiosos, confira se vender naquele momento não traz mais valor para sua progressão.</p></div></article>
+    <article class="tipCard"><span class="tipIcon">☑</span><div><h3>Feche a semana com folga</h3><p>Evite deixar tudo para os minutos finais. Use o timer semanal para revisar contadores, personagens e conteúdo pendente com antecedência.</p></div></article>
+    <article class="tipCard"><span class="tipIcon">⚙</span><div><h3>Confie no seu cliente</h3><p>Horários, caps e regras podem variar por região ou atualização. Se o jogo mostrar algo diferente, ajuste o checklist em Configurações e use o cliente como referência final.</p></div></article>
+   </div>
+  </div>
+ </div>
+</section>
+
+<section class="view hidden" id="notes">
+ <div class="grid">
+  <div class="card pad c8">
+   <div class="titleRow">
+    <div><h2>Anotações pessoais</h2><div class="sub">Builds, nomes de itens, metas, preços, rotas ou qualquer lembrete seu.</div></div>
+    <span class="badge violet">PRIVADO</span>
+   </div>
+   <textarea class="input notesArea" id="personalNotes" maxlength="12000" placeholder="Ex.: testar build de cura, conferir preço daquele material, lembrar do boss às 22h..."></textarea>
+   <div class="notesFooter">
+    <span class="mini" id="notesStatus">Salvamento automático ativo.</span>
+    <span class="mini"><span id="notesCount">0</span>/12000</span>
+   </div>
+  </div>
+  <div class="card pad c4">
+   <h2>Sobre suas notas</h2>
+   <div class="callout info"><b>Privadas por padrão.</b><br>As notas ficam no seu próprio progresso local e, quando você está logado, acompanham sua conta na nuvem.</div>
+   <div class="callout" style="margin-top:12px"><b>Compartilhamento seguro.</b><br>Códigos, links e snapshots não incluem suas anotações pessoais.</div>
+   <button class="btn danger notesClear" id="clearNotesBtn">Limpar anotações</button>
+  </div>
+ </div>
+</section>
+
 <section class="view hidden" id="review">
  <div class="grid">
   <div class="card pad c7">
    <div class="titleRow"><div><h2>O que eu revisei antes de mudar</h2><div class="sub">Quando as fontes do Global ainda divergem, o site não finge certeza.</div></div></div>
    <div class="reviewList">
-    <div class="reviewItem"><b>Shugo Festival foi atualizado</b><p>A transcrição usa um modelo antigo de 2 chaves/dia e cap 14. Atualizações de 2026 mudaram o sistema coreano para <b>7 chaves por servidor/semana</b>, ou <b>14 com membership</b>, compartilhadas no servidor. A V2 usa esse modelo como padrão revisado.</p></div>
+    <div class="reviewItem"><b>Shugo Festival foi atualizado</b><p>A transcrição usa um modelo antigo de 2 chaves/dia e cap 14. Atualizações de 2026 mudaram o sistema coreano para <b>7 chaves por servidor/semana</b>, ou <b>14 com membership</b>, compartilhadas no servidor. A v1.0 usa esse modelo como padrão revisado.</p></div>
     <div class="reviewItem"><b>Daily Dungeon ficou configurável</b><p>Fontes atuais do Global divergem entre <b>7 e 14</b> entradas semanais. A transcrição e alguns guias mostram 14; outros guias pré-lançamento mostram 7. Por isso a V2 permite escolher o cap em Configurações, em vez de gravar um número como verdade absoluta.</p></div>
     <div class="reviewItem"><b>Reset semanal: quarta-feira</b><p>Guias atuais e notas da versão coreana apontam reset na quarta. O horário exato varia por serviço/região; por isso dia e hora são configuráveis e usados no countdown.</p></div>
     <div class="reviewItem"><b>Battleground: 3 vitórias semanais</b><p>Esse ponto da transcrição continua consistente com o guia oficial coreano atualizado: até 3 recompensas de vitória por semana.</p></div>
@@ -207,7 +252,7 @@
 </section>
 </main>
 
-<div class="footer">AION 2 Checklist V2 · checklist diário e semanal · sem backend · progresso salvo neste navegador · snapshot compartilhável incluído</div>
+<div class="footer">AION 2 Checklist v1.0 · Discord + nuvem · dados separados por usuário · snapshots sem anotações pessoais</div>
 </div>
 
 <div class="modalBack" id="settingsModal">
@@ -232,9 +277,9 @@
 
 <div class="modalBack" id="shareModal">
  <div class="modal">
-  <div class="modalHead"><div><b>Compartilhar com amigos</b><div class="mini">Sem conta, sem servidor e sem expor seu localStorage.</div></div><button class="close" data-close="shareModal">×</button></div>
+  <div class="modalHead"><div><b>Compartilhar com amigos</b><div class="mini">Gere uma cópia de leitura sem expor suas anotações pessoais.</div></div><button class="close" data-close="shareModal">×</button></div>
   <div class="modalBody">
-   <div class="callout info"><b>Melhor opção para você agora:</b> “Baixar snapshot .html”. Ele gera uma cópia deste site com seu progresso embutido em <b>modo leitura</b>. Você manda o arquivo no Discord e seu amigo abre no navegador.</div>
+   <div class="callout info"><b>Snapshot seguro:</b> “Baixar snapshot .html” gera uma cópia do checklist em <b>modo leitura</b>. Suas anotações pessoais são removidas automaticamente antes de compartilhar.</div>
    <div style="display:flex;gap:8px;flex-wrap:wrap;margin:14px 0">
     <button class="btn primary" id="downloadSnapshotBtn">Baixar snapshot .html</button>
     <button class="btn ghost" id="copyShareCodeBtn">Copiar código</button>
@@ -268,6 +313,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="./config.js?v=20260929-3"></script>
-<script type="module" src="./app.js?v=20260929-4"></script>
+<script type="module" src="./app.js?v=1.0.0"></script>
 </body>
 </html>
