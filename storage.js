@@ -43,6 +43,7 @@ export function createStateNormalizer(defaultState){
     x.weeklyCounts.pvpCommands=clampNum(x.weeklyCounts.pvpCommands,0,20,0);
     x.weeklyCounts.shugo=clampNum(x.weeklyCounts.shugo,0,x.membership?14:7,0);
     x.meta=isPlainObject(x.meta)?x.meta:{};
+    x.notes=String(x.notes||"").slice(0,12000);
 
     const seen=new Set();
     const characters=Array.isArray(x.characters)?x.characters:[];
