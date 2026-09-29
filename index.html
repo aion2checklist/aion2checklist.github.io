@@ -450,14 +450,14 @@ hr.sep{border:0;border-top:1px solid var(--line);margin:16px 0}
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="./config.js?v=20260929-2"></script>
+<script src="./config.js?v=20260929-3"></script>
 <script>
 window.__AION2_SHARED_STATE__ = window.__AION2_SHARED_STATE__ || null;
 
 const CLOUD_CONFIG=window.AION2_CLOUD||{};
 const CLOUD_READY=!!(CLOUD_CONFIG.supabaseUrl&&CLOUD_CONFIG.supabaseKey&&window.supabase?.createClient);
 const cloudClient=CLOUD_READY?window.supabase.createClient(CLOUD_CONFIG.supabaseUrl,CLOUD_CONFIG.supabaseKey):null;
-let cloudSession=null,cloudSyncTimer=null,cloudBusy=false,cloudLoadedForUser=null;
+let cloudSession=null,cloudSyncTimer=null,cloudBusy=false,cloudDirty=false,cloudLoadedForUser=null,cloudLoadingForUser=null;
 
 const DEFAULT = {
  version:2,
@@ -482,14 +482,59 @@ const DEFAULT = {
 };
 
 function deepClone(o){return JSON.parse(JSON.stringify(o))}
-function mergeState(base, incoming){
+function isPlainObject(v){return !!v&&typeof v==="object"&&!Array.isArray(v)}
+function mergeState(base,incoming){
+ if(!isPlainObject(incoming))return deepClone(base);
  const out=deepClone(base);
- for(const k of Object.keys(incoming||{})){
-   if(k==="characters" && Array.isArray(incoming[k])) out[k]=incoming[k];
-   else if(typeof incoming[k]==="object" && incoming[k] && !Array.isArray(incoming[k])) out[k]={...(out[k]||{}),...incoming[k]};
-   else out[k]=incoming[k];
+ for(const [k,v] of Object.entries(incoming)){
+  if(Array.isArray(v))out[k]=deepClone(v);
+  else if(isPlainObject(v))out[k]=mergeState(isPlainObject(out[k])?out[k]:{},v);
+  else out[k]=v;
  }
  return out;
+}
+function clampNum(v,min,max,fallback=min){
+ const n=Number(v);if(!Number.isFinite(n))return fallback;
+ return Math.max(min,Math.min(max,n));
+}
+function normalizeState(incoming){
+ const x=mergeState(DEFAULT,isPlainObject(incoming)?incoming:{});
+ x.version=Number.isFinite(Number(x.version))?Number(x.version):DEFAULT.version;
+ x.profileName=String(x.profileName||DEFAULT.profileName).slice(0,60);
+ x.faction=x.faction==="elyos"?"elyos":"asmodian";
+ x.membership=!!x.membership;
+ x.dailyDungeonCap=[7,14].includes(Number(x.dailyDungeonCap))?Number(x.dailyDungeonCap):DEFAULT.dailyDungeonCap;
+ x.weeklyDay=clampNum(x.weeklyDay,0,6,DEFAULT.weeklyDay);
+ x.dailyReset=/^([01]\d|2[0-3]):[0-5]\d$/.test(String(x.dailyReset))?String(x.dailyReset):DEFAULT.dailyReset;
+ x.weeklyReset=/^([01]\d|2[0-3]):[0-5]\d$/.test(String(x.weeklyReset))?String(x.weeklyReset):DEFAULT.weeklyReset;
+ x.daily=isPlainObject(x.daily)?x.daily:{};
+ x.weekly=isPlainObject(x.weekly)?x.weekly:{};
+ x.weeklyCounts=isPlainObject(x.weeklyCounts)?x.weeklyCounts:{};
+ x.weeklyCounts.dailyDungeon=clampNum(x.weeklyCounts.dailyDungeon,0,x.dailyDungeonCap,0);
+ x.weeklyCounts.pveCommands=clampNum(x.weeklyCounts.pveCommands,0,12,0);
+ x.weeklyCounts.pvpCommands=clampNum(x.weeklyCounts.pvpCommands,0,20,0);
+ x.weeklyCounts.shugo=clampNum(x.weeklyCounts.shugo,0,x.membership?14:7,0);
+ x.meta=isPlainObject(x.meta)?x.meta:{};
+ const seen=new Set();
+ const chars=Array.isArray(x.characters)?x.characters:[];
+ x.characters=chars.filter(isPlainObject).map((c,i)=>{
+  let id=String(c.id||("c"+i)).replace(/[^a-zA-Z0-9_-]/g,"").slice(0,48)||("c"+i);
+  while(seen.has(id))id=id+"_"+i;seen.add(id);
+  return {
+   id,
+   name:String(c.name||"Personagem").slice(0,28),
+   role:c.role==="main"?"main":"alt",
+   level:clampNum(c.level,1,99,1),
+   power:clampNum(c.power,0,99999999,0),
+   odyle:clampNum(c.odyle,0,x.membership?840:560,0),
+   nightmare:clampNum(c.nightmare,0,14,0),
+   ascension:clampNum(c.ascension,0,3,0),
+   battleground:clampNum(c.battleground,0,3,0)
+  };
+ });
+ if(!x.characters.length)x.characters=deepClone(DEFAULT.characters);
+ if(!x.characters.some(c=>c.role==="main"))x.characters[0].role="main";
+ return x;
 }
 const LEGACY_LOCAL_KEY="aion2-progression-v2";
 const GUEST_LOCAL_KEY="aion2-progression-v2:guest";
@@ -497,32 +542,33 @@ const USER_LOCAL_PREFIX="aion2-progression-v2:user:";
 
 function readLocal(key){
  try{return JSON.parse(localStorage.getItem(key)||"{}")}
- catch(e){return {}}
+ catch(e){console.warn("Falha ao ler cache local",e);return {}}
 }
-function hasStoredState(obj){return !!(obj&&typeof obj==="object"&&Object.keys(obj).length)}
+function writeLocal(key,value){
+ try{localStorage.setItem(key,JSON.stringify(value));return true}
+ catch(e){console.warn("Falha ao salvar cache local",e);return false}
+}
+function hasStoredState(obj){return isPlainObject(obj)&&Object.keys(obj).length>0}
 function userLocalKey(userId){return USER_LOCAL_PREFIX+userId}
 function activeLocalKey(){return cloudSession?.user?.id?userLocalKey(cloudSession.user.id):GUEST_LOCAL_KEY}
-function loadLocalState(key=activeLocalKey()){return readLocal(key)}
+function loadLocalState(key=activeLocalKey()){return normalizeState(readLocal(key))}
 
 // One-time safe migration from the old shared cache.
-// If it already belongs to a cloud user, do not expose it as guest data.
 if(!localStorage.getItem(GUEST_LOCAL_KEY)){
  const legacy=readLocal(LEGACY_LOCAL_KEY);
- if(hasStoredState(legacy)&&!legacy?.meta?.cloudUserId){
-  localStorage.setItem(GUEST_LOCAL_KEY,JSON.stringify(legacy));
- }
+ if(hasStoredState(legacy)&&!legacy?.meta?.cloudUserId)writeLocal(GUEST_LOCAL_KEY,normalizeState(legacy));
 }
 
-let state = window.__AION2_SHARED_STATE__ ? mergeState(DEFAULT,window.__AION2_SHARED_STATE__) : mergeState(DEFAULT,loadLocalState(GUEST_LOCAL_KEY));
+let state = window.__AION2_SHARED_STATE__ ? normalizeState(window.__AION2_SHARED_STATE__) : loadLocalState(GUEST_LOCAL_KEY);
 let readonly = !!window.__AION2_SHARED_STATE__ || !!state.sharedView;
-if(!state.characters?.length) state.characters=deepClone(DEFAULT.characters);
 
 function persistLocal(touch=true){
- if(readonly)return;
+ if(readonly)return false;
+ state=normalizeState(state);
  state.sharedView=false;
  state.meta=state.meta||{};
  if(touch)state.meta.localUpdatedAt=new Date().toISOString();
- localStorage.setItem(activeLocalKey(),JSON.stringify(state));
+ return writeLocal(activeLocalKey(),state);
 }
 function save(){
  persistLocal(true);
@@ -533,93 +579,105 @@ function cloudPayload(){
  out.sharedView=false;
  return out;
 }
-function scheduleCloudSave(){
- if(!cloudClient||!cloudSession||readonly||cloudBusy)return;
+function scheduleCloudSave(delay=800){
+ if(!cloudClient||!cloudSession||readonly)return;
+ if(cloudBusy){cloudDirty=true;return}
  clearTimeout(cloudSyncTimer);
- cloudSyncTimer=setTimeout(()=>pushCloudState(false),800);
+ cloudSyncTimer=setTimeout(()=>pushCloudState(false),delay);
 }
 async function pushCloudState(showFeedback=true){
  if(!cloudClient||!cloudSession||readonly)return false;
+ if(cloudBusy){cloudDirty=true;return false}
  clearTimeout(cloudSyncTimer);
- cloudBusy=true;updateAuthUI("syncing");
+ cloudBusy=true;cloudDirty=false;updateAuthUI("syncing");
+ const userId=cloudSession.user.id;
  try{
-  const now=new Date().toISOString();
   state.meta=state.meta||{};
-  state.meta.cloudUserId=cloudSession.user.id;
-  state.meta.lastCloudSync=now;
+  state.meta.cloudUserId=userId;
   persistLocal(false);
+  const snapshot=cloudPayload();
+  const now=new Date().toISOString();
   const {error}=await cloudClient.from("checklist_states").upsert({
-   user_id:cloudSession.user.id,state:cloudPayload(),updated_at:now
+   user_id:userId,state:snapshot,updated_at:now
   },{onConflict:"user_id"});
   if(error)throw error;
-  updateAuthUI("online");
+  if(cloudSession?.user?.id===userId){
+   state.meta=state.meta||{};
+   state.meta.cloudUserId=userId;
+   state.meta.lastCloudSync=now;
+   persistLocal(false);
+   updateAuthUI("online");
+  }
   if(showFeedback)alert("Checklist sincronizado com a nuvem.");
   return true;
  }catch(e){
   console.error("Cloud sync failed",e);
   updateAuthUI("error");
-  if(showFeedback)alert("Não foi possível sincronizar. Confira a configuração do Supabase.");
+  if(showFeedback)alert("Não foi possível sincronizar. Suas alterações continuam salvas neste navegador.");
   return false;
- }finally{cloudBusy=false}
+ }finally{
+  cloudBusy=false;
+  if(cloudDirty){cloudDirty=false;scheduleCloudSave(120)}
+ }
 }
 async function loadCloudForSession(session){
  if(!cloudClient||!session||readonly)return;
- if(cloudLoadedForUser===session.user.id)return;
+ const userId=session.user.id;
+ if(cloudLoadedForUser===userId||cloudLoadingForUser===userId)return;
+ cloudLoadingForUser=userId;
  try{
   updateAuthUI("syncing");
-
-  // Switch to this Discord user's private browser cache before any cloud operation.
-  const key=userLocalKey(session.user.id);
+  const key=userLocalKey(userId);
   let cached=readLocal(key);
 
-  // Migrate the old shared cache only when it explicitly belongs to this same user.
   if(!hasStoredState(cached)){
    const legacy=readLocal(LEGACY_LOCAL_KEY);
-   if(legacy?.meta?.cloudUserId===session.user.id){
+   if(legacy?.meta?.cloudUserId===userId){
     cached=legacy;
-    localStorage.setItem(key,JSON.stringify(cached));
+    writeLocal(key,normalizeState(cached));
    }
   }
 
-  if(hasStoredState(cached)){
-   state=mergeState(DEFAULT,cached);
+  const localState=hasStoredState(cached)?normalizeState(cached):normalizeState(DEFAULT);
+  localState.meta=localState.meta||{};
+  localState.meta.cloudUserId=userId;
+
+  const {data,error}=await cloudClient.from("checklist_states").select("state,updated_at").eq("user_id",userId).maybeSingle();
+  if(error)throw error;
+  if(cloudSession?.user?.id!==userId)return;
+
+  let shouldPush=false;
+  if(!data){
+   state=localState;
+   shouldPush=true;
   }else{
-   state=deepClone(DEFAULT);
+   const cloudState=normalizeState(data.state||{});
+   const localTime=Date.parse(localState.meta?.localUpdatedAt||0)||0;
+   const cloudTime=Date.parse(data.updated_at||0)||0;
+   if(localTime>cloudTime+1500){
+    state=localState;
+    shouldPush=true;
+   }else{
+    state=cloudState;
+    state.meta=state.meta||{};
+    state.meta.cloudUserId=userId;
+    state.meta.lastCloudSync=data.updated_at||null;
+   }
   }
-  state.sharedView=false;
-  state.meta=state.meta||{};
-  state.meta.cloudUserId=session.user.id;
+
   readonly=false;
+  const resetChanged=maybeAutoReset(false);
   persistLocal(false);
   renderAll();
 
-  const {data,error}=await cloudClient.from("checklist_states").select("state,updated_at").eq("user_id",session.user.id).maybeSingle();
-  if(error)throw error;
-
-  if(!data){
-   await pushCloudState(false);
-  }else{
-   const localTime=Date.parse(state.meta?.localUpdatedAt||0)||0;
-   const cloudTime=Date.parse(data.updated_at||0)||0;
-   if(localTime>cloudTime+1500){
-    await pushCloudState(false);
-   }else{
-    state=mergeState(DEFAULT,data.state||{});
-    state.sharedView=false;
-    state.meta=state.meta||{};
-    state.meta.cloudUserId=session.user.id;
-    state.meta.lastCloudSync=data.updated_at||new Date().toISOString();
-    readonly=false;
-    persistLocal(false);
-    renderAll();
-   }
-  }
-
-  cloudLoadedForUser=session.user.id;
+  cloudLoadedForUser=userId;
+  if(shouldPush||resetChanged)await pushCloudState(false);
   updateAuthUI("online");
  }catch(e){
   console.error("Cloud load failed",e);
   updateAuthUI("error");
+ }finally{
+  if(cloudLoadingForUser===userId)cloudLoadingForUser=null;
  }
 }
 function discordDisplayName(user){
@@ -688,17 +746,26 @@ function weekStart(now=new Date()){
 }
 function weeklyKey(now=new Date()){const d=weekStart(now);return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`}
 function nextWeeklyReset(now=new Date()){const d=weekStart(now);d.setDate(d.getDate()+7);return d}
-function maybeAutoReset(){
- if(readonly)return;
- const dk=dailyKey(), wk=weeklyKey();
- if(state.meta.dailyKey && state.meta.dailyKey!==dk){state.daily={}}
- if(state.meta.weeklyKey && state.meta.weeklyKey!==wk){
-   state.weekly={};state.weeklyCounts={dailyDungeon:0,pveCommands:0,pvpCommands:0,shugo:0};
-   state.characters.forEach(c=>{c.ascension=0;c.battleground=0});
+function maybeAutoReset(syncCloud=true){
+ if(readonly)return false;
+ state.meta=state.meta||{};
+ const dk=dailyKey(),wk=weeklyKey();
+ let changed=false;
+ if(state.meta.dailyKey&&state.meta.dailyKey!==dk){state.daily={};changed=true}
+ if(state.meta.weeklyKey&&state.meta.weeklyKey!==wk){
+  state.weekly={};state.weeklyCounts={dailyDungeon:0,pveCommands:0,pvpCommands:0,shugo:0};
+  state.characters.forEach(c=>{c.ascension=0;c.battleground=0});
+  changed=true;
  }
- state.meta.dailyKey=dk;state.meta.weeklyKey=wk;persistLocal(false)
+ if(state.meta.dailyKey!==dk||state.meta.weeklyKey!==wk)changed=true;
+ state.meta.dailyKey=dk;state.meta.weeklyKey=wk;
+ if(changed){
+  persistLocal(false);
+  if(syncCloud)scheduleCloudSave(120);
+ }
+ return changed;
 }
-maybeAutoReset();
+maybeAutoReset(false);
 
 const dailyDefs=[
  {id:"duties",name:"Duty Missions — 5",note:"Server-wide. Faça no personagem que você quer usar como referência de progressão.",tags:[["DIÁRIO","blue"],["SERVER","gold"]]},
@@ -925,13 +992,8 @@ document.getElementById("discordLogoutBtn").onclick=async()=>{
  if(!cloudClient)return;
  clearTimeout(cloudSyncTimer);
  if(cloudSession&&!readonly)persistLocal(false);
- await cloudClient.auth.signOut();
- cloudSession=null;cloudLoadedForUser=null;
- readonly=false;
- state=mergeState(DEFAULT,loadLocalState(GUEST_LOCAL_KEY));
- if(!state.characters?.length)state.characters=deepClone(DEFAULT.characters);
- renderAll();
- updateAuthUI();
+ const {error}=await cloudClient.auth.signOut();
+ if(error)alert("Não foi possível sair da conta. Tente novamente.");
 };
 document.getElementById("settingsBtn").onclick=()=>{
  if(readonly)return alert("Este snapshot está em modo leitura. Clique em “Usar como meu checklist” primeiro.");
@@ -989,11 +1051,11 @@ document.getElementById("copyShareLinkBtn").onclick=async()=>{
 };
 document.getElementById("importCodeBtn").onclick=()=>{
  try{
-  state=mergeState(DEFAULT,decodeShare(document.getElementById("importCodeArea").value));readonly=true;state.sharedView=true;closeModal("shareModal");renderAll();
+  state=normalizeState(decodeShare(document.getElementById("importCodeArea").value));readonly=true;state.sharedView=true;closeModal("shareModal");renderAll();
  }catch(e){alert("Código inválido.");}
 };
 document.getElementById("adoptShare").onclick=()=>{
- readonly=false;state.sharedView=false;localStorage.setItem(LOCAL_KEY,JSON.stringify(state));
+ readonly=false;state=normalizeState(state);state.sharedView=false;save();
  if(location.hash.startsWith("#share="))history.replaceState(null,"",location.pathname+location.search);
  renderAll();alert("Snapshot copiado para o seu checklist.");
 };
@@ -1010,7 +1072,7 @@ document.getElementById("downloadSnapshotBtn").onclick=()=>{
 
 function applyHashShare(){
  const h=location.hash||"";if(!h.startsWith("#share="))return;
- try{state=mergeState(DEFAULT,decodeShare(h.slice(7)));readonly=true;state.sharedView=true}catch(e){}
+ try{state=normalizeState(decodeShare(h.slice(7)));readonly=true;state.sharedView=true}catch(e){}
 }
 applyHashShare();
 
@@ -1025,8 +1087,7 @@ if(cloudClient){
   if(session&&(event==="SIGNED_IN"||event==="INITIAL_SESSION"))setTimeout(()=>loadCloudForSession(session),0);
   if(event==="SIGNED_OUT"){
    cloudLoadedForUser=null;cloudSession=null;readonly=false;
-   state=mergeState(DEFAULT,loadLocalState(GUEST_LOCAL_KEY));
-   if(!state.characters?.length)state.characters=deepClone(DEFAULT.characters);
+   state=loadLocalState(GUEST_LOCAL_KEY);
    renderAll();updateAuthUI();
   }
  });
