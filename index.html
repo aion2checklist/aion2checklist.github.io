@@ -27,7 +27,7 @@
 <meta name="twitter:description" content="Checklist de progressão para AION 2 com diárias, semanais, recursos e personagens.">
 <meta name="twitter:image" content="https://blogfiles.ncsoft.net/news/cb7fbf01-da19-4c7b-a2d5-673a9628b57d.jpg">
 <title>AION 2 — Weekly & Daily Checklist</title>
-<link rel="stylesheet" href="./styles.css?v=1.0.0">
+<link rel="stylesheet" href="./styles.css?v=1.0.0-final">
 </head>
 <body>
 <div class="shell">
@@ -39,7 +39,7 @@
         <path d="M20 39c5 0 9 2 12 7 3-5 7-7 12-7-5 5-8 10-12 18-4-8-7-13-12-18Z" stroke="currentColor" stroke-width="2.4"/>
       </svg>
     </div>
-    <div class="brandText"><b>AION 2</b><small>WEEKLY & DAILY CHECKLIST // GLOBAL // v1.0</small></div>
+    <div class="brandText"><b>AION 2</b><small>WEEKLY & DAILY CHECKLIST // GLOBAL // v1.0 DEFINITIVA</small></div>
   </div>
   <div class="topActions">
     <button class="btn ghost" id="authBtn">☁ <span class="textHide" id="authBtnText">Entrar com Discord</span></button>
@@ -87,6 +87,7 @@
  <button data-view="weekly">Semana</button>
  <button data-view="characters">Personagens</button>
  <button data-view="week1">Guia da conta</button>
+ <button data-view="bible">Bíblia do Aion 2</button>
  <button data-view="resources">Recursos</button>
  <button data-view="tips">Dicas gerais</button>
  <button data-view="notes">Anotações</button>
@@ -187,6 +188,288 @@
  </div>
 </section>
 
+
+<section class="view hidden" id="bible">
+ <div class="grid">
+  <div class="card pad c12 bibleHero">
+   <div class="titleRow">
+    <div>
+      <div class="kicker">GUIA AVANÇADO · PT-BR</div>
+      <h2>Bíblia do Aion 2</h2>
+      <div class="sub">Adaptação brasileira revisada do <b>Kanon's Aion 2 Bible</b>, reorganizada para consulta rápida.</div>
+    </div>
+    <span class="badge gold">FONTE 20/09/2026</span>
+   </div>
+   <div class="callout warn">
+    <b>Importante:</b> a própria fonte avisa que o Global possui mudanças grandes e que nem tudo pode ser confirmado antes do lançamento. Aqui usamos três rótulos: <b>Global</b>, <b>KR/Asia</b> e <b>não confirmado</b>. Quando houver conflito, o cliente Global é a referência final.
+   </div>
+   <div class="bibleSourceRow">
+    <a class="btn ghost" href="https://docs.google.com/document/d/11u4wLCG1WfL-xSka2Aze0rI9vYRa7mq3N3Gp1bt0AWY/mobilebasic" target="_blank" rel="noopener noreferrer">Abrir fonte original ↗</a>
+    <span class="mini">Versão condensada e reescrita em português; não é uma reprodução literal do documento.</span>
+   </div>
+   <div class="bibleLegend">
+    <span class="badge green">GLOBAL / CONSISTENTE</span>
+    <span class="badge gold">KR / ASIA</span>
+    <span class="badge red">NÃO CONFIRMADO</span>
+   </div>
+   <div class="bibleSearchWrap">
+    <input class="input" id="bibleSearch" type="search" placeholder="Buscar na Bíblia: Arcana, Double Chance, Manastone, Wings...">
+    <span class="mini" id="bibleSearchStatus">12 capítulos</span>
+   </div>
+  </div>
+
+  <div class="card pad c12 bibleIndex">
+    <h2>Índice rápido</h2>
+    <div class="bibleIndexGrid">
+      <a href="#bible-ch1">1 · Gear & fundamentos</a>
+      <a href="#bible-ch2">2 · Tipos de equipamento</a>
+      <a href="#bible-ch3">3 · Stat Lines ideais</a>
+      <a href="#bible-ch4">4 · Skills</a>
+      <a href="#bible-ch5">5 · Enhancement</a>
+      <a href="#bible-ch6">6 · Arcana</a>
+      <a href="#bible-ch7">7 · Daevanion Boards</a>
+      <a href="#bible-ch8">8 · Pet Genus</a>
+      <a href="#bible-ch9">9 · Wings</a>
+      <a href="#bible-ch10">10 · Closet / Transmog</a>
+      <a href="#bible-ch11">11 · Stats & dano</a>
+      <a href="#bible-ch12">12 · Passivas de classe</a>
+    </div>
+  </div>
+
+  <div class="c12 bibleChapters">
+   <details class="card bibleChapter" id="bible-ch1" open>
+    <summary><span><b>Cap. 1 — Gear & fundamentos</b><small>Enhancement, Amp, Soul Binding, Manastones e Pantheon</small></span><span class="badge green">BASE</span></summary>
+    <div class="bibleBody">
+      <p><b>Dica de iniciante:</b> ao selecionar um item no jogo, use <b>Source</b> para ver onde ele é obtido.</p>
+      <div class="bibleGrid2">
+       <div class="dayBlock"><h3>Enhancement e Amp</h3><ul>
+        <li><b>Unique (amarelo):</b> até +15, depois 5 níveis de Amp.</li>
+        <li><b>Heroic (laranja):</b> até +20, depois 5 níveis de Amp.</li>
+        <li>Amp libera atributos extras do equipamento.</li>
+        <li>Segundo a fonte, Unique +15/Amp 5 transferido para Heroic vira +20/Amp 0.</li>
+       </ul></div>
+       <div class="dayBlock"><h3>O que se perde na transferência</h3><ul>
+        <li>Linha extra do <b>Philosopher's Stone</b>.</li>
+        <li>Linhas de <b>Manastone/Soulstone</b>.</li>
+        <li><b>Theostone</b>.</li>
+        <li>Linha de <b>Potential</b>.</li>
+       </ul></div>
+      </div>
+      <p><b>Soul Binding:</b> Stat Lines vêm de pools por slot; <b>Sync</b> rerrola uma linha, <b>Reset</b> embaralha todas e <b>Bind</b> aumenta a eficiência das linhas. Ao chegar a 100% de Soul Binding, Philosopher's Stones podem liberar uma linha extra — que não transfere.</p>
+      <p><b>Manastones</b> são para arma/armadura; <b>Soulstones</b> para acessórios. Grades maiores aumentam a chance de atributos melhores. Evite investir pesado em gear que será trocado logo.</p>
+      <p><b>Theostones:</b> efeitos de proc na arma. Na experiência do autor, representam uma parcela muito pequena do DPS PvE.</p>
+      <div class="callout warn"><b>Potential:</b> a relação entre gear craftado e gear de dungeon é diferente entre Asia e Global. Os valores superiores do craft asiático não devem ser tratados como confirmados no Global.</div>
+      <h3>Pantheon — tradução dos grupos de atributos</h3>
+      <div class="statPills">
+       <span>Destruction / Zikel — Attack Increase + Perfect Resist</span>
+       <span>Death / Triniel — Critical Hit + Regeneration Penetration</span>
+       <span>Wisdom / Lumiel — menor MP + Double Chance</span>
+       <span>Destiny / Marchutan — MP + Endurance Chance</span>
+       <span>Space / Israphel — Move Speed + Block</span>
+       <span>Justice / Nezekan — Defense + Perfect Chance</span>
+       <span>Freedom / Vaizel — Accuracy + Evasion</span>
+       <span>Illusion / Kaisinel — Cooldown + Endurance Penetration</span>
+       <span>Life / Yustiel — HP + Regeneration Chance</span>
+       <span>Time / Siel — Combat Speed + Double Chance Resist</span>
+      </div>
+    </div>
+   </details>
+
+   <details class="card bibleChapter" id="bible-ch2">
+    <summary><span><b>Cap. 2 — Tipos de equipamento</b><small>O papel de cada slot na progressão</small></span><span class="badge green">BASE</span></summary>
+    <div class="bibleBody">
+      <div class="bibleGrid2">
+       <div class="dayBlock"><h3>Weapon & Guard</h3><p>Maior foco ofensivo. Podem trazer linhas de <b>Active Skills</b>. Amp máximo da fonte: Attack + Attack Increase.</p></div>
+       <div class="dayBlock"><h3>Armor</h3><p>Helmet, Shoulder, Chest, Pants, Gloves, Cloak e Boots. Foco defensivo, mas também traz Attack e linhas de <b>Passive Skills</b>.</p></div>
+       <div class="dayBlock"><h3>Accessories</h3><p>Necklace/Earring puxam passivas; <b>Rings</b> podem trazer Active Skills; Bracelet fornece Pantheon Stats; Brooch concentra stats básicos.</p></div>
+       <div class="dayBlock"><h3>Belt & Amulet</h3><p>Na referência KR, vêm da linha principal por volta do nível 45 e usam materiais próprios de upgrade. Belt puxa defesa; Amulet, ataque.</p></div>
+       <div class="dayBlock"><h3>Runes</h3><p>Sistema de fusão com risco de destruir a runa em falha. É o slot de gear destacado pelo autor como destrutível ao falhar.</p></div>
+       <div class="dayBlock"><h3>Pendant</h3><p>Associado à expansão de nível 50/Chapter 1 na referência KR. Trate disponibilidade e custos como conteúdo posterior ao lançamento Global.</p></div>
+      </div>
+    </div>
+   </details>
+
+   <details class="card bibleChapter" id="bible-ch3">
+    <summary><span><b>Cap. 3 — Stat Lines ideais</b><small>Prioridade de raridade/roll para o Global</small></span><span class="badge green">GLOBAL</span></summary>
+    <div class="bibleBody">
+      <div class="callout info"><b>Como ler:</b> a ordem abaixo segue principalmente a dificuldade/raridade de obter a linha, não necessariamente o ganho bruto de dano. Uma classe específica pode trocar prioridades.</div>
+      <div class="statTableWrap"><table class="bibleTable">
+       <thead><tr><th>Slot</th><th>Linhas procuradas</th></tr></thead>
+       <tbody>
+        <tr><td>Weapon / Guard</td><td>Damage Boost → Combat Speed → Weapon Damage Boost → Might → Multi-hit → Precision → Attack</td></tr>
+        <tr><td>Helmet</td><td>Double Chance → Attack Increase → Attack → Passivas</td></tr>
+        <tr><td>Cloak</td><td>Double Chance → Attack Increase → Perfect Chance → Attack → Passivas</td></tr>
+        <tr><td>Shoulder</td><td>Double Chance → Critical Damage Boost → Attack → Passivas</td></tr>
+        <tr><td>Chest</td><td>Perfect Chance → Damage Boost → Attack → Passivas</td></tr>
+        <tr><td>Pants</td><td>Attack Increase → Perfect Chance → Damage Tolerance → Attack → Passivas</td></tr>
+        <tr><td>Gloves</td><td>Perfect Chance → Combat Speed → Attack → Passivas</td></tr>
+        <tr><td>Shoes</td><td>Perfect Chance → Movement Speed → Attack → Passivas</td></tr>
+        <tr><td>Necklace</td><td>Combat Speed → Might → Attack → Passivas → Accuracy se necessário</td></tr>
+        <tr><td>Earring</td><td>Move Speed → Might → Precision → Attack → Passivas → Accuracy se necessário</td></tr>
+        <tr><td>Rings</td><td>Might → Precision → Attack → Active Skills</td></tr>
+        <tr><td>Bracelet</td><td>Illusion / Wisdom / Destruction / Time / Justice / Space, dependendo da classe</td></tr>
+        <tr><td>Brooch</td><td>Might → Precision → Accuracy → Constitution → Critical ou Block</td></tr>
+       </tbody>
+      </table></div>
+      <div class="callout red"><b>Accuracy/Crit de raids:</b> os números de Ludra, Corroded e Muspel apresentados na fonte são explicitamente marcados como <b>não confirmados para Global</b>. Por isso não viraram “cap obrigatório” aqui.</div>
+    </div>
+   </details>
+
+   <details class="card bibleChapter" id="bible-ch4">
+    <summary><span><b>Cap. 4 — Skills</b><small>Active, Passive e Stigma</small></span><span class="badge green">PRIORIDADE</span></summary>
+    <div class="bibleBody">
+      <div class="dayBlock"><h3>Active Skills</h3><ul>
+       <li>Wisdom Stones levam a skill base até nível 10; gear, Daevanion e Arcana elevam além disso.</li>
+       <li>Marcos de Specialty: <b>8</b>, <b>12</b>, <b>16</b> e <b>20</b>; no 20 abre o terceiro slot de Specialty.</li>
+       <li>O autor recomenda identificar cedo as skills que “ligam” a build e focar <b>duas principais</b> primeiro.</li>
+       <li>Rings e Arcana são fontes especialmente importantes para níveis de Active Skill.</li>
+      </ul></div>
+      <div class="dayBlock"><h3>Passive Skills</h3><p>Depois de estabilizar as principais Active Skills, passe para as passivas-chave da classe. No endgame KR, algumas são levadas muito além de 20.</p></div>
+      <div class="dayBlock"><h3>Stigma</h3><p>Skills especiais com perks próprios. A fonte descreve progressão até 20 e, após conteúdo posterior, até 25 com Superior Stigma Shards. Disponibilidade e limite no Global podem ser menores no lançamento.</p></div>
+      <div class="callout warn"><b>Consequência prática para nosso guia:</b> não espalhe recursos em muitas skills cedo. Defina as duas Active Skills mais importantes da sua build e trate nível 20 como um grande objetivo de progressão.</div>
+    </div>
+   </details>
+
+   <details class="card bibleChapter" id="bible-ch5">
+    <summary><span><b>Cap. 5 — Enhancement</b><small>Growth, Potential, stones, Soul Binding e Transfer</small></span><span class="badge green">ECONOMIA</span></summary>
+    <div class="bibleBody">
+      <div class="bibleGrid2">
+       <div class="dayBlock"><h3>Growth</h3><p>Enhance Stones levam o equipamento aos níveis normais; Amplify Stones entram na fase Amp. O custo e a raridade crescem bastante no Heroic.</p></div>
+       <div class="dayBlock"><h3>Potential</h3><p>Gear excedente pode virar Potential Stones, usados para elevar uma linha dedicada de dano/tolerância PvE. Diferenças de craft entre Asia e Global seguem parcialmente incertas.</p></div>
+      </div>
+      <h3>Manastone / Soulstone — prioridade ofensiva da fonte</h3>
+      <p><b>Front/Back Damage Boost</b> → <b>Weapon Damage Boost ≈ Critical Damage Boost</b> → <b>Damage Boost</b> → <b>Attack</b>.</p>
+      <p>Não desperdice pedras superiores em equipamento provisório: essas linhas <b>não transferem</b>.</p>
+      <div class="dayBlock"><h3>Soul Binding</h3><p>Bind melhora as linhas; Sync rerrola individualmente; Reset troca todas. A linha extra criada por Philosopher's Stone é descartada ao transferir o item.</p></div>
+      <div class="callout warn"><b>Transfer Stones Heroic:</b> a fonte insiste em economizar fragments/stones Heroic no começo, pois ficam caros e escassos no gear posterior. Pense antes de transferir para o primeiro conjunto laranja.</div>
+    </div>
+   </details>
+
+   <details class="card bibleChapter" id="bible-ch6">
+    <summary><span><b>Cap. 6 — Arcana</b><small>Cards, Skill Levels e Set Effects</small></span><span class="badge gold">GLOBAL PODE TER MENOS</span></summary>
+    <div class="bibleBody">
+      <p>Arcana funciona como um conjunto paralelo de “equipamentos em forma de carta”: fornece Pantheon Stats, atributos e níveis de skills. A referência KR possui mais cartas/sets do que o lançamento Global deve oferecer.</p>
+      <div class="statTableWrap"><table class="bibleTable">
+       <thead><tr><th>Carta</th><th>Foco</th></tr></thead>
+       <tbody>
+        <tr><td>Chalice / Scale</td><td>Pantheon + pool amplo de Skills/Passives</td></tr>
+        <tr><td>Parchment / Compass</td><td>Pantheon + metades diferentes das Active Skills</td></tr>
+        <tr><td>Bell / Mirror</td><td>Pantheon + metades diferentes das Passive Skills</td></tr>
+        <tr><td>Key / Dice</td><td>Atributos ofensivos</td></tr>
+        <tr><td>Hourglass / Lantern</td><td>Atributos defensivos</td></tr>
+       </tbody>
+      </table></div>
+      <ul>
+       <li>Arcana pode chegar ao <b>nível 5</b>; níveis adicionam progresso a linhas da carta.</li>
+       <li>Alimentar uma carta antiga numa nova recupera parte da experiência, não 100%.</li>
+       <li>Craft de Arcana permite escolher linhas e é apontado como investimento de alto valor.</li>
+       <li>Priorize cartas capazes de levar suas Active Skills essenciais aos marcos 12/16/20.</li>
+      </ul>
+    </div>
+   </details>
+
+   <details class="card bibleChapter" id="bible-ch7">
+    <summary><span><b>Cap. 7 — Daevanion Boards</b><small>Boards compartilhados e progressão horizontal</small></span><span class="badge green">PVE</span></summary>
+    <div class="bibleBody">
+      <p>São 8 boards. Os quatro principais — Nezekan, Zikel, Vaizel e Triniel — compartilham a mesma quantidade de pontos e trazem stats/níveis de skill.</p>
+      <ul>
+       <li>Primeiro: pegue <b>Active Skills importantes</b> para alcançar 12, 16 e principalmente 20.</li>
+       <li>Depois: procure os tiles laranja realmente úteis para a build.</li>
+       <li>O respec é descrito como barato, então não trate cada ponto como decisão irreversível.</li>
+      </ul>
+      <div class="bibleGrid2">
+       <div class="dayBlock"><h3>Ariel</h3><p>Board PvE; tiles laranja com PvE Damage Boost/Tolerance.</p></div>
+       <div class="dayBlock"><h3>Azphel</h3><p>Board PvP; não é prioridade para PvE.</p></div>
+       <div class="dayBlock"><h3>Marchutan</h3><p>Stats gerais/mid-game; Weapon Damage Boost/Tolerance.</p></div>
+       <div class="dayBlock"><h3>Yustiel</h3><p>Stats gerais/endgame; Attack/Defense Increase.</p></div>
+      </div>
+      <div class="callout info">Para PvE, a fonte considera algumas resistências/tolerâncias específicas contra efeitos que bosses não utilizam como baixo valor. Não escolha tile apenas pela cor: leia o efeito.</div>
+    </div>
+   </details>
+
+   <details class="card bibleChapter" id="bible-ch8">
+    <summary><span><b>Cap. 8 — Pet Genus</b><small>Cogni, Fera, Natura, Varian e Special</small></span><span class="badge gold">KR/ASIA REFERÊNCIA</span></summary>
+    <div class="bibleBody">
+      <p>Cada um dos 5 boards possui 9 linhas. Aumentar <b>Insight/Genus Level</b> libera slots e melhora a possibilidade de grades maiores.</p>
+      <ol>
+       <li>Suba o board para <b>nível 10</b> sem travar linhas, salvo se o Global tornar isso impraticável ou você acertar uma linha excepcional.</li>
+       <li>No nível 10, rerrole sem locks até buscar primeiro a linha 4 de alto valor.</li>
+       <li>Só então comece a travar bons rolls e refinar as demais linhas.</li>
+      </ol>
+      <p>Prioridade de Line 4 destacada pelo autor: <b>Special (Double Chance)</b> → <b>Varian (Front/Back Damage Boost)</b> → <b>Fera (Weapon Damage Boost)</b> → <b>Cogni (Critical Damage Boost)</b>.</p>
+      <div class="callout warn">Os “BIS Genus Lines” completos do documento são referência do servidor Asia. Use como direção, não como tabela definitiva do Global.</div>
+    </div>
+   </details>
+
+   <details class="card bibleChapter" id="bible-ch9">
+    <summary><span><b>Cap. 9 — Wings</b><small>Equip Effect, Owned Effect e upgrades</small></span><span class="badge gold">DISPONIBILIDADE VARIA</span></summary>
+    <div class="bibleBody">
+      <ul>
+       <li>Wings fornecem atributos por <b>equipar</b> e também por simplesmente <b>possuir</b>.</li>
+       <li>Podem ser aprimoradas até +10 na referência da fonte.</li>
+       <li>Ao passar de +0 para +1, uma linha antes escondida pode aparecer.</li>
+       <li>Segundo o autor, no upgrade sobem principalmente a primeira linha e a última linha “hidden” do Owned Effect.</li>
+      </ul>
+      <div class="bibleGrid2">
+       <div class="dayBlock"><h3>Eroded Wings</h3><p>Referência forte para builds que aproveitam Front Attack Damage Boost.</p></div>
+       <div class="dayBlock"><h3>Talisra</h3><p>Pacote geral com Attack/Defense/Accuracy e Cooldown no Equip Effect.</p></div>
+       <div class="dayBlock"><h3>Illusory Echo</h3><p>Combina Max Attack, Crit/Penetration/Perfect e Owned Effect com Double Chance.</p></div>
+       <div class="dayBlock"><h3>Dramata / Nightmare</h3><p>Exemplos de asas voltadas a PvE/Boss, com stats específicos para esse conteúdo.</p></div>
+      </div>
+      <div class="callout red"><b>Ranking por classe do documento = KR em 21/08/2026.</b> Não incorporamos aquela porcentagem como recomendação Global porque disponibilidade e balanceamento podem mudar.</div>
+    </div>
+   </details>
+
+   <details class="card bibleChapter" id="bible-ch10">
+    <summary><span><b>Cap. 10 — Closet / Transmog</b><small>Skins também são progressão horizontal</small></span><span class="badge green">LONGO PRAZO</span></summary>
+    <div class="bibleBody">
+      <p>O Closet não é puramente cosmético: desbloquear skins concede atributos permanentes ligados ao tipo de peça. Mais skins de arma, por exemplo, aumentam uma porcentagem aplicada ao ataque da arma.</p>
+      <p>É um sistema de progressão de longo prazo. Não precisa ser prioridade de lançamento, mas ignorá-lo para sempre significa abrir mão de stats horizontais acumulativos.</p>
+    </div>
+   </details>
+
+   <details class="card bibleChapter" id="bible-ch11">
+    <summary><span><b>Cap. 11 — Como os stats funcionam</b><small>Diminishing returns, buckets e fórmula de dano</small></span><span class="badge gold">KR ENDGAME / THEORYCRAFT</span></summary>
+    <div class="bibleBody">
+      <div class="callout warn"><b>Não transforme estes números em cap Global.</b> Eles refletem endgame KR/Season 1 com buffs e quantidade de stats muito maiores. O valor relativo muda conforme a sua conta e a versão.</div>
+      <h3>Resumo de valor ofensivo apresentado pela fonte</h3>
+      <p><b>Double Chance</b> → <b>Front/Back Damage Boost</b> → <b>Weapon Damage Boost</b> → <b>Critical Damage Boost</b> ≈ <b>Damage Boost</b>.</p>
+      <p>Para Attack flat: <b>Attack</b> → <b>Max Attack</b> → <b>Attack Bonus</b> → outros tipos condicionais de Attack.</p>
+      <div class="statTableWrap"><table class="bibleTable">
+       <thead><tr><th>Stat</th><th>Estimativa do autor no endgame KR</th></tr></thead>
+       <tbody>
+        <tr><td>+1% Damage Boost</td><td>≈ +0,35% DPS naquele cenário</td></tr>
+        <tr><td>+1% Weapon Damage Boost</td><td>≈ +0,50% a +0,55%</td></tr>
+        <tr><td>+1% Critical Damage Boost</td><td>≈ +0,40% a +0,60%</td></tr>
+        <tr><td>+1% Double Chance</td><td>≈ +0,60% a +0,65%</td></tr>
+        <tr><td>+1% Front/Back Damage Boost</td><td>≈ +0,57% a +0,65% com uptime posicional assumido</td></tr>
+        <tr><td>+1% Perfect</td><td>≈ +0,10%</td></tr>
+       </tbody>
+      </table></div>
+      <h3>Outros pontos importantes</h3>
+      <ul>
+       <li><b>Multi-hit:</b> chance de hits extras; a posição exata do stat na fórmula ainda é indicada como não 100% confirmada.</li>
+       <li><b>Accuracy</b> enfrenta Block/Parry; <b>Critical Hit</b> enfrenta Critical Resist.</li>
+       <li><b>Penetration</b> subtrai Defense diretamente; o autor considera Penetration de baixo valor relativo em PvE.</li>
+       <li><b>Damage Tolerance</b> reduz buckets de Damage Boost correspondentes; <b>Endurance</b> pode reduzir o dano final pela metade quando ativa.</li>
+       <li><b>Combat Speed</b> é tratada como stat de altíssimo valor, mas o desempenho real é afetado por ping e FPS.</li>
+      </ul>
+      <h3>Fórmula — leitura simplificada</h3>
+      <p>O modelo da fonte separa o dano em vários “baldes”: começa por <b>Pure Attack</b> e Weapon Damage Boost, incorpora Multi-hit/Power Shard/Attack Bonus e Attack Increase, soma ataques PvE/Boss/condicionais, aplica coeficiente da skill, desconta Defense após Penetration e depois multiplica os buckets de Damage Boost, crítico, Double Chance, dano posicional e Specialty da skill.</p>
+      <p><b>Pure Attack</b> é um nome criado no theorycraft, não um atributo oficial do cliente. Inclui principalmente Attack vindo de arma/guard/acessórios, linhas de Attack, Mana/Soulstones e Closet.</p>
+    </div>
+   </details>
+
+   <details class="card bibleChapter" id="bible-ch12">
+    <summary><span><b>Cap. 12 — Passivas de classe</b><small>Status do documento original</small></span><span class="badge red">EM BREVE</span></summary>
+    <div class="bibleBody">
+      <p>O capítulo 12 da fonte ainda aparece como <b>“COMING SOON”</b>. Não adicionamos builds ou passivas por conta própria para não preencher uma lacuna da fonte com informação inventada.</p>
+    </div>
+   </details>
+  </div>
+ </div>
+</section>
+
 <section class="view hidden" id="tips">
  <div class="grid">
   <div class="card pad c12">
@@ -203,6 +486,10 @@
     <article class="tipCard"><span class="tipIcon">◈</span><div><h3>Mercado antes de gastar</h3><p>Antes de craftar, entregar materiais ou consumir itens valiosos, confira se vender naquele momento não traz mais valor para sua progressão.</p></div></article>
     <article class="tipCard"><span class="tipIcon">☑</span><div><h3>Feche a semana com folga</h3><p>Evite deixar tudo para os minutos finais. Use o timer semanal para revisar contadores, personagens e conteúdo pendente com antecedência.</p></div></article>
     <article class="tipCard"><span class="tipIcon">⚙</span><div><h3>Confie no seu cliente</h3><p>Horários, caps e regras podem variar por região ou atualização. Se o jogo mostrar algo diferente, ajuste o checklist em Configurações e use o cliente como referência final.</p></div></article>
+    <article class="tipCard"><span class="tipIcon">20</span><div><h3>Escolha suas Skills-chave cedo</h3><p>A Bíblia reforça que várias builds só “acordam” quando as Active Skills principais chegam aos marcos 12/16/20. Foque duas essenciais antes de espalhar recursos.</p></div></article>
+    <article class="tipCard"><span class="tipIcon">◇</span><div><h3>Pedra boa em gear bom</h3><p>Manastones/Soulstones não transferem. Guarde rolls e pedras superiores para equipamento que você pretende manter por mais tempo.</p></div></article>
+    <article class="tipCard"><span class="tipIcon">⬡</span><div><h3>Segure Transfer Stones Heroic</h3><p>O material Heroic fica muito mais caro e escasso. Não transfira gear laranja por impulso no começo.</p></div></article>
+    <article class="tipCard"><span class="tipIcon">10</span><div><h3>Genus: nível antes do lock</h3><p>Na referência Asia, a estratégia eficiente é subir o board a 10 antes de travar linhas, aumentando a chance de rolls de grade alta.</p></div></article>
    </div>
   </div>
  </div>
@@ -252,7 +539,7 @@
 </section>
 </main>
 
-<div class="footer">AION 2 Checklist v1.0 · Discord + nuvem · dados separados por usuário · snapshots sem anotações pessoais</div>
+<div class="footer">AION 2 Checklist v1.0 definitiva · Discord + nuvem · dados separados por usuário · snapshots sem anotações pessoais</div>
 </div>
 
 <div class="modalBack" id="settingsModal">
@@ -313,6 +600,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="./config.js?v=20260929-3"></script>
-<script type="module" src="./app.js?v=1.0.0"></script>
+<script type="module" src="./app.js?v=1.0.0-final"></script>
 </body>
 </html>
