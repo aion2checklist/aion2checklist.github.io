@@ -1,5 +1,5 @@
-import {deepClone,createStateNormalizer,readLocal,writeLocal,hasStoredState} from "./storage.js?v=20260929-4";
-import {createAuthController,discordDisplayName,discordAvatar} from "./auth.js?v=20260929-4";
+import {deepClone,createStateNormalizer,readLocal,writeLocal,hasStoredState} from "./storage.js?v=1.0.0";
+import {createAuthController,discordDisplayName,discordAvatar} from "./auth.js?v=1.0.0";
 
 window.__AION2_SHARED_STATE__ = window.__AION2_SHARED_STATE__ || null;
 
@@ -10,7 +10,7 @@ const authController=createAuthController(cloudClient);
 let cloudSession=null,cloudSyncTimer=null,cloudBusy=false,cloudDirty=false,cloudLoadedForUser=null,cloudLoadingForUser=null;
 
 const DEFAULT = {
- version:2,
+ version:3,
  profileName:"Daeva",
  faction:"asmodian",
  membership:true,
@@ -22,6 +22,7 @@ const DEFAULT = {
  strategy:"balanced",
  planView:"routine",
  sharedView:false,
+ notes:"",
  characters:[
   {id:"main",name:"Main",role:"main",level:1,power:0,odyle:0,nightmare:0,ascension:0,battleground:0}
  ],
@@ -396,6 +397,17 @@ function renderResources(){
   ? `<b>Membership ativa.</b><br>O site usa Odyle +15/3h (120/dia), cap base 840 e Shugo 14 chaves/semana.`
   : `<b>Sem membership.</b><br>O site usa Odyle +10/3h (80/dia), cap base 560 e Shugo 7 chaves/semana.`;
 }
+
+function renderNotes(){
+ const area=document.getElementById("personalNotes");
+ const count=document.getElementById("notesCount");
+ const status=document.getElementById("notesStatus");
+ if(!area||!count||!status)return;
+ if(document.activeElement!==area)area.value=state.notes||"";
+ area.disabled=readonly;
+ count.textContent=String((state.notes||"").length);
+ status.textContent=readonly?"Snapshot em modo leitura.":"Salvamento automático ativo.";
+}
 function renderHeader(){
  document.documentElement.dataset.faction=state.faction;
  document.getElementById("profileLine").textContent=`${state.profileName} · ${state.faction==="asmodian"?"Asmodian":"Elyos"} · ${state.serverLabel||"Global"}`;
@@ -428,9 +440,25 @@ function renderProgress(){
  document.getElementById("globalProgressFill").style.width=p+"%";
  document.getElementById("globalProgressText").textContent=p+"%";
 }
-function renderAll(){renderHeader();renderDaily();renderWeekly();renderCharacters();renderWeek1();renderResources();renderProgress();bindDynamic();}
+function renderAll(){renderHeader();renderDaily();renderWeekly();renderCharacters();renderWeek1();renderResources();renderNotes();renderProgress();bindDynamic();}
 
 function bindDynamic(){
+ const notes=document.getElementById("personalNotes");
+ if(notes){
+  notes.oninput=e=>{
+   if(readonly)return;
+   state.notes=e.target.value.slice(0,12000);
+   const count=document.getElementById("notesCount");
+   const status=document.getElementById("notesStatus");
+   if(count)count.textContent=String(state.notes.length);
+   if(status)status.textContent=cloudSession?"Salvando…":"Salvo neste navegador.";
+   save();
+   clearTimeout(notes._savedTimer);
+   notes._savedTimer=setTimeout(()=>{
+    if(status)status.textContent=cloudSession?"Salvamento automático ativo · nuvem conectada.":"Salvamento automático ativo · somente neste navegador.";
+   },1000);
+  };
+ }
  document.querySelectorAll(".chk").forEach(el=>el.onchange=e=>{
   if(readonly)return;state[e.target.dataset.scope][e.target.dataset.id]=e.target.checked;save();renderAll();
  });
@@ -468,6 +496,14 @@ document.getElementById("addCharBtn").onclick=()=>{
 document.getElementById("resetWeeklyBtn").onclick=()=>{
  if(readonly)return;if(!confirm("Limpar progresso semanal?"))return;
  state.weekly={};state.weeklyCounts={dailyDungeon:0,pveCommands:0,pvpCommands:0,shugo:0};state.characters.forEach(c=>{c.ascension=0;c.battleground=0});state.meta.weeklyKey=weeklyKey();save();renderAll();
+};
+
+document.getElementById("clearNotesBtn").onclick=()=>{
+ if(readonly)return;
+ if(!confirm("Apagar todas as suas anotações pessoais?"))return;
+ state.notes="";
+ save();
+ renderNotes();
 };
 
 function openModal(id){document.getElementById(id).classList.add("show")}
@@ -516,7 +552,13 @@ function encodeShare(obj){
 function decodeShare(code){
  const bin=atob(code.trim());const bytes=Uint8Array.from(bin,c=>c.charCodeAt(0));return JSON.parse(new TextDecoder().decode(bytes));
 }
-function shareCode(){return encodeShare(state)}
+function sharePayload(){
+ const out=deepClone(state);
+ out.notes="";
+ out.meta={...(out.meta||{}),cloudUserId:null,lastCloudSync:null};
+ return out;
+}
+function shareCode(){return encodeShare(sharePayload())}
 async function copyText(text){
  try{
   if(navigator.clipboard?.writeText){await navigator.clipboard.writeText(text);return true}
@@ -537,19 +579,24 @@ document.getElementById("copyShareLinkBtn").onclick=async()=>{
  const u=new URL(location.href);u.hash="share="+code;
  alert(await copyText(u.toString())?"Link copiado.":"Não foi possível copiar automaticamente.");
 };
+let privateNotesBeforeShare=null;
 document.getElementById("importCodeBtn").onclick=()=>{
  try{
+  privateNotesBeforeShare=state.notes||"";
   state=normalizeState(decodeShare(document.getElementById("importCodeArea").value));readonly=true;state.sharedView=true;closeModal("shareModal");renderAll();
  }catch(e){alert("Código inválido.");}
 };
 document.getElementById("adoptShare").onclick=()=>{
- readonly=false;state=normalizeState(state);state.sharedView=false;save();
+ readonly=false;state=normalizeState(state);state.sharedView=false;
+ if(privateNotesBeforeShare!==null)state.notes=privateNotesBeforeShare;
+ privateNotesBeforeShare=null;
+ save();
  if(location.hash.startsWith("#share="))history.replaceState(null,"",location.pathname+location.search);
  renderAll();alert("Snapshot copiado para o seu checklist.");
 };
 
 document.getElementById("downloadSnapshotBtn").onclick=async()=>{
- const embedded={...state,sharedView:true};
+ const embedded={...sharePayload(),sharedView:true};
  const button=document.getElementById("downloadSnapshotBtn");
  const originalText=button.textContent;
  button.disabled=true;button.textContent="Preparando…";
@@ -561,10 +608,10 @@ document.getElementById("downloadSnapshotBtn").onclick=async()=>{
    return response.text();
   };
   const [css,storageSource,authSource,appSource]=await Promise.all([
-   assetText("styles.css?v=20260929-4"),
-   assetText("storage.js?v=20260929-4"),
-   assetText("auth.js?v=20260929-4"),
-   assetText("app.js?v=20260929-4")
+   assetText("styles.css?v=1.0.0"),
+   assetText("storage.js?v=1.0.0"),
+   assetText("auth.js?v=1.0.0"),
+   assetText("app.js?v=1.0.0")
   ]);
   const stripModule=source=>source
    .replace(/^import\s+[^;]+;\s*$/gm,"")
@@ -598,7 +645,10 @@ document.getElementById("downloadSnapshotBtn").onclick=async()=>{
 
 function applyHashShare(){
  const h=location.hash||"";if(!h.startsWith("#share="))return;
- try{state=normalizeState(decodeShare(h.slice(7)));readonly=true;state.sharedView=true}catch(e){}
+ try{
+  privateNotesBeforeShare=state.notes||"";
+  state=normalizeState(decodeShare(h.slice(7)));readonly=true;state.sharedView=true;
+ }catch(e){}
 }
 applyHashShare();
 
