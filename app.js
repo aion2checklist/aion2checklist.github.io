@@ -1,5 +1,5 @@
-import {deepClone,createStateNormalizer,readLocal,writeLocal,hasStoredState} from "./storage.js?v=20260929-1";
-import {createAuthController,discordDisplayName,discordAvatar} from "./auth.js?v=20260929-1";
+import {deepClone,createStateNormalizer,readLocal,writeLocal,hasStoredState} from "./storage.js?v=20260929-2";
+import {createAuthController,discordDisplayName,discordAvatar} from "./auth.js?v=20260929-2";
 
 window.__AION2_SHARED_STATE__ = window.__AION2_SHARED_STATE__ || null;
 
@@ -216,6 +216,13 @@ function dailyKey(now=new Date()){
  if(d<resetToday)d.setDate(d.getDate()-1);
  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
 }
+function nextDailyReset(now=new Date()){
+ const {h,m}=parseTime(state.dailyReset);
+ const next=new Date(now);
+ next.setHours(h,m,0,0);
+ if(next<=now)next.setDate(next.getDate()+1);
+ return next;
+}
 function weekStart(now=new Date()){
  const {h,m}=parseTime(state.weeklyReset);
  const d=new Date(now);
@@ -393,6 +400,7 @@ function renderHeader(){
  document.documentElement.dataset.faction=state.faction;
  document.getElementById("profileLine").textContent=`${state.profileName} · ${state.faction==="asmodian"?"Asmodian":"Elyos"} · ${state.serverLabel||"Global"}`;
  const days=["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
+ document.getElementById("dailyResetMeta").textContent=`Todos os dias · ${state.dailyReset} · ${state.serverLabel||"servidor"}`;
  document.getElementById("resetMeta").textContent=`${days[state.weeklyDay]} · ${state.weeklyReset} · ${state.serverLabel||"servidor"}`;
  if(readonly){
   document.getElementById("shareBanner").classList.add("show");
@@ -553,10 +561,10 @@ document.getElementById("downloadSnapshotBtn").onclick=async()=>{
    return response.text();
   };
   const [css,storageSource,authSource,appSource]=await Promise.all([
-   assetText("styles.css?v=20260929-1"),
-   assetText("storage.js?v=20260929-1"),
-   assetText("auth.js?v=20260929-1"),
-   assetText("app.js?v=20260929-1")
+   assetText("styles.css?v=20260929-2"),
+   assetText("storage.js?v=20260929-2"),
+   assetText("auth.js?v=20260929-2"),
+   assetText("app.js?v=20260929-2")
   ]);
   const stripModule=source=>source
    .replace(/^import\s+[^;]+;\s*$/gm,"")
@@ -594,10 +602,21 @@ function applyHashShare(){
 }
 applyHashShare();
 
+function formatCountdown(ms,{showDays=false}={}){
+ const total=Math.max(0,Math.floor(ms/1000));
+ const d=Math.floor(total/86400);
+ const h=Math.floor((total%86400)/3600);
+ const m=Math.floor((total%3600)/60);
+ const s=total%60;
+ return showDays?`${d}d ${pad(h)}:${pad(m)}:${pad(s)}`:`${pad(Math.floor(total/3600))}:${pad(m)}:${pad(s)}`;
+}
 function updateCountdown(){
- const ms=nextWeeklyReset()-new Date();const t=Math.max(0,Math.floor(ms/1000));
- const d=Math.floor(t/86400),h=Math.floor((t%86400)/3600),m=Math.floor((t%3600)/60),s=t%60;
- document.getElementById("weeklyCountdown").textContent=`${d}d ${pad(h)}:${pad(m)}:${pad(s)}`;
+ const now=new Date();
+ document.getElementById("dailyCountdown").textContent=formatCountdown(nextDailyReset(now)-now);
+ document.getElementById("weeklyCountdown").textContent=formatCountdown(nextWeeklyReset(now)-now,{showDays:true});
+
+ // Detecta a virada do ciclo mesmo com a página aberta.
+ if(maybeAutoReset(true))renderAll();
 }
 if(cloudClient){
  authController.onAuthStateChange((event,session)=>{
