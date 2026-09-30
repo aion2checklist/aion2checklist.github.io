@@ -1,5 +1,5 @@
-import {deepClone,createStateNormalizer,readLocal,writeLocal,hasStoredState} from "./storage.js?v=2.0.2";
-import {createAuthController,discordDisplayName,discordAvatar} from "./auth.js?v=2.0.2";
+import {deepClone,createStateNormalizer,readLocal,writeLocal,hasStoredState} from "./storage.js?v=2.0.3";
+import {createAuthController,discordDisplayName,discordAvatar} from "./auth.js?v=2.0.3";
 
 window.__AION2_SHARED_STATE__ = window.__AION2_SHARED_STATE__ || null;
 
@@ -542,7 +542,9 @@ function bindPortalDynamic(scope=document){
  scope.querySelectorAll(".calcTextField").forEach(el=>el.onchange=e=>{if(readonly)return;setNested(state.toolbox.calculator,e.target.dataset.calcText,e.target.value);state=normalizeState(state);save();renderCalculator();bindPortalDynamic(scope)});
  scope.querySelectorAll(".calcBoolField").forEach(el=>el.onchange=e=>{if(readonly)return;setNested(state.toolbox.calculator,e.target.dataset.calcBool,e.target.value==="yes");save();renderCalculator();bindPortalDynamic(scope)});
  const calcFromBuilder=scope.querySelector("#calcFromBuilderBtn");if(calcFromBuilder)calcFromBuilder.onclick=()=>{if(readonly)return;state.toolbox.calculator.main.might=state.toolbox.builder.stats.might;state.toolbox.calculator.main.precision=state.toolbox.builder.stats.precision;state.toolbox.calculator.context.attack=state.toolbox.builder.stats.attack;save();renderCalculator();bindPortalDynamic(scope)};
- const ca=scope.querySelector("#compareA"),cb=scope.querySelector("#compareB");if(ca)ca.onchange=e=>{state.toolbox.compare.a=e.target.value;save();renderCompare();bindPortalDynamic(scope)};if(cb)cb.onchange=e=>{state.toolbox.compare.b=e.target.value;save();renderCompare();bindPortalDynamic(scope)};
+ const ca=scope.querySelector("#compareA"),cb=scope.querySelector("#compareB");
+ if(ca){ca.disabled=readonly;ca.onchange=e=>{if(readonly)return;state.toolbox.compare.a=e.target.value;save();renderCompare();bindPortalDynamic(scope)}}
+ if(cb){cb.disabled=readonly;cb.onchange=e=>{if(readonly)return;state.toolbox.compare.b=e.target.value;save();renderCompare();bindPortalDynamic(scope)}};
  const dbSearch=scope.querySelector("#databaseSearch");if(dbSearch)dbSearch.oninput=e=>{const q=e.target.value.trim().toLocaleLowerCase("pt-BR");let visible=0;scope.querySelectorAll(".dbEntry").forEach(card=>{const ok=!q||(card.dataset.db+" "+card.textContent).toLocaleLowerCase("pt-BR").includes(q);card.classList.toggle("hidden",!ok);if(ok)visible++});const status=scope.querySelector("#databaseSearchStatus");if(status)status.textContent=q?`${visible} referência${visible===1?"":"s"}`:""};
 }
 
@@ -782,6 +784,7 @@ document.getElementById("saveSettingsBtn").onclick=()=>{
  state.weeklyDay=Number(document.getElementById("weeklyDaySelect").value);
  state.weeklyReset=document.getElementById("weeklyResetInput").value||"05:00";
  state.serverLabel=document.getElementById("serverLabelInput").value.trim()||"Global";
+ state=normalizeState(state);
  state.meta.dailyKey=dailyKey();state.meta.weeklyKey=weeklyKey();save();closeModal("settingsModal");renderAll();
 };
 
@@ -853,10 +856,10 @@ document.getElementById("downloadSnapshotBtn").onclick=async()=>{
    return response.text();
   };
   const [css,storageSource,authSource,appSource]=await Promise.all([
-   assetText("styles.css?v=2.0.2"),
-   assetText("storage.js?v=2.0.2"),
-   assetText("auth.js?v=2.0.2"),
-   assetText("app.js?v=2.0.2")
+   assetText("styles.css?v=2.0.3"),
+   assetText("storage.js?v=2.0.3"),
+   assetText("auth.js?v=2.0.3"),
+   assetText("app.js?v=2.0.3")
   ]);
   const stripModule=source=>source
    .replace(/^import\s+[^;]+;\s*$/gm,"")
@@ -932,4 +935,5 @@ if(cloudClient){
   if(cloudSession)setTimeout(()=>loadCloudForSession(cloudSession),0);
  });
 }else updateAuthUI();
+window.addEventListener("pagehide",()=>{if(!readonly)persistLocal(false)});
 setInterval(updateCountdown,1000);updateCountdown();renderAll();
