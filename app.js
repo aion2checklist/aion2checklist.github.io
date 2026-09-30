@@ -1,5 +1,5 @@
-import {deepClone,createStateNormalizer,readLocal,writeLocal,hasStoredState} from "./storage.js?v=2.0.1";
-import {createAuthController,discordDisplayName,discordAvatar} from "./auth.js?v=2.0.1";
+import {deepClone,createStateNormalizer,readLocal,writeLocal,hasStoredState} from "./storage.js?v=2.0.2";
+import {createAuthController,discordDisplayName,discordAvatar} from "./auth.js?v=2.0.2";
 
 window.__AION2_SHARED_STATE__ = window.__AION2_SHARED_STATE__ || null;
 
@@ -69,10 +69,12 @@ if(!localStorage.getItem(GUEST_LOCAL_KEY)){
 
 let state = window.__AION2_SHARED_STATE__ ? normalizeState(window.__AION2_SHARED_STATE__) : loadLocalState(GUEST_LOCAL_KEY);
 let readonly = !!window.__AION2_SHARED_STATE__ || !!state.sharedView;
+let activeView="today";
 
 function persistLocal(touch=true){
  if(readonly)return false;
- state=normalizeState(state);
+ // O estado já é normalizado ao carregar/importar e nos formulários que aceitam números.
+ // Evitar normalizeState aqui impede clonar Builder/Calculadora/builds em TODO salvamento.
  state.sharedView=false;
  state.meta=state.meta||{};
  if(touch)state.meta.localUpdatedAt=new Date().toISOString();
@@ -525,23 +527,23 @@ function renderCompare(){
 }
 
 function setNested(obj,path,value){const keys=path.split(".");let cur=obj;for(let i=0;i<keys.length-1;i++){if(!cur[keys[i]]||typeof cur[keys[i]]!=="object")cur[keys[i]]={};cur=cur[keys[i]]}cur[keys[keys.length-1]]=value}
-function bindPortalDynamic(){
- const classFilter=document.getElementById("classFilter");if(classFilter)classFilter.onchange=e=>{if(readonly)return;state.toolbox.classFilter=e.target.value;save();renderClasses();bindPortalDynamic()};
- document.querySelectorAll("[data-class-build]").forEach(btn=>btn.onclick=()=>{if(readonly)return;state.toolbox.builder.className=btn.dataset.classBuild;save();renderBuilder();bindPortalDynamic();setView("builder")});
- document.querySelectorAll(".builderField").forEach(el=>el.onchange=e=>{if(readonly)return;const path=e.target.dataset.builderPath,value=e.target.type==="number"?Number(e.target.value||0):e.target.value;setNested(state.toolbox.builder,path,value);state=normalizeState(state);save();renderBuilder();bindPortalDynamic()});
- const saveBtn=document.getElementById("saveBuildSnapshotBtn");if(saveBtn)saveBtn.onclick=()=>{if(readonly)return;state.toolbox.savedBuilds.push({id:"b"+Date.now(),savedAt:new Date().toISOString(),build:deepClone(state.toolbox.builder)});state.toolbox.savedBuilds=state.toolbox.savedBuilds.slice(-12);save();renderBuilder();renderCompare();bindPortalDynamic()};
- const clearBtn=document.getElementById("clearBuilderBtn");if(clearBtn)clearBtn.onclick=()=>{if(readonly||!confirm("Limpar a build atual?"))return;state.toolbox.builder=deepClone(DEFAULT.toolbox.builder);save();renderBuilder();bindPortalDynamic()};
- const copyBuild=document.getElementById("copyBuildCodeBtn");if(copyBuild)copyBuild.onclick=async()=>{const code=encodeShare({type:"aion2-build",build:builderState()});alert(await copyText(code)?"Build copiada.":"Não foi possível copiar automaticamente.")};
- const importBuild=document.getElementById("importBuildCodeBtn");if(importBuild)importBuild.onclick=()=>{if(readonly)return;const code=prompt("Cole o código da build:");if(!code)return;try{const data=decodeShare(code);if(!data?.build)throw new Error();state.toolbox.builder=data.build;state=normalizeState(state);save();renderAll();setView("builder")}catch(e){alert("Código de build inválido.")}};
- document.querySelectorAll("[data-open-build]").forEach(btn=>btn.onclick=()=>{const item=state.toolbox.savedBuilds.find(i=>i.id===btn.dataset.openBuild);if(!item||readonly)return;state.toolbox.builder=deepClone(item.build);save();renderAll();setView("builder")});
- document.querySelectorAll("[data-delete-build]").forEach(btn=>btn.onclick=()=>{if(readonly||!confirm("Excluir este snapshot?"))return;state.toolbox.savedBuilds=state.toolbox.savedBuilds.filter(i=>i.id!==btn.dataset.deleteBuild);save();renderBuilder();renderCompare();bindPortalDynamic()});
- document.querySelectorAll("[data-copy-saved-build]").forEach(btn=>btn.onclick=async()=>{const item=state.toolbox.savedBuilds.find(i=>i.id===btn.dataset.copySavedBuild);if(!item)return;const code=encodeShare({type:"aion2-build",build:item.build});alert(await copyText(code)?"Build copiada.":"Não foi possível copiar automaticamente.")});
- document.querySelectorAll(".calcField").forEach(el=>el.onchange=e=>{if(readonly)return;setNested(state.toolbox.calculator,e.target.dataset.calcPath,Number(e.target.value||0));state=normalizeState(state);save();renderCalculator();bindPortalDynamic()});
- document.querySelectorAll(".calcTextField").forEach(el=>el.onchange=e=>{if(readonly)return;setNested(state.toolbox.calculator,e.target.dataset.calcText,e.target.value);state=normalizeState(state);save();renderCalculator();bindPortalDynamic()});
- document.querySelectorAll(".calcBoolField").forEach(el=>el.onchange=e=>{if(readonly)return;setNested(state.toolbox.calculator,e.target.dataset.calcBool,e.target.value==="yes");save();renderCalculator();bindPortalDynamic()});
- const calcFromBuilder=document.getElementById("calcFromBuilderBtn");if(calcFromBuilder)calcFromBuilder.onclick=()=>{if(readonly)return;state.toolbox.calculator.main.might=state.toolbox.builder.stats.might;state.toolbox.calculator.main.precision=state.toolbox.builder.stats.precision;state.toolbox.calculator.context.attack=state.toolbox.builder.stats.attack;save();renderCalculator();bindPortalDynamic()};
- const ca=document.getElementById("compareA"),cb=document.getElementById("compareB");if(ca)ca.onchange=e=>{state.toolbox.compare.a=e.target.value;save();renderCompare();bindPortalDynamic()};if(cb)cb.onchange=e=>{state.toolbox.compare.b=e.target.value;save();renderCompare();bindPortalDynamic()};
- const dbSearch=document.getElementById("databaseSearch");if(dbSearch)dbSearch.oninput=e=>{const q=e.target.value.trim().toLocaleLowerCase("pt-BR");let visible=0;document.querySelectorAll(".dbEntry").forEach(card=>{const ok=!q||(card.dataset.db+" "+card.textContent).toLocaleLowerCase("pt-BR").includes(q);card.classList.toggle("hidden",!ok);if(ok)visible++});const status=document.getElementById("databaseSearchStatus");if(status)status.textContent=q?`${visible} referência${visible===1?"":"s"}`:""};
+function bindPortalDynamic(scope=document){
+ const classFilter=scope.querySelector("#classFilter");if(classFilter)classFilter.onchange=e=>{if(readonly)return;state.toolbox.classFilter=e.target.value;save();renderClasses();bindPortalDynamic(scope)};
+ scope.querySelectorAll("[data-class-build]").forEach(btn=>btn.onclick=()=>{if(readonly)return;state.toolbox.builder.className=btn.dataset.classBuild;save();setView("builder")});
+ scope.querySelectorAll(".builderField").forEach(el=>el.onchange=e=>{if(readonly)return;const path=e.target.dataset.builderPath,value=e.target.type==="number"?Number(e.target.value||0):e.target.value;setNested(state.toolbox.builder,path,value);state=normalizeState(state);save();renderBuilder();bindPortalDynamic(scope)});
+ const saveBtn=scope.querySelector("#saveBuildSnapshotBtn");if(saveBtn)saveBtn.onclick=()=>{if(readonly)return;state.toolbox.savedBuilds.push({id:"b"+Date.now(),savedAt:new Date().toISOString(),build:deepClone(state.toolbox.builder)});state.toolbox.savedBuilds=state.toolbox.savedBuilds.slice(-12);save();renderBuilder();bindPortalDynamic(scope)};
+ const clearBtn=scope.querySelector("#clearBuilderBtn");if(clearBtn)clearBtn.onclick=()=>{if(readonly||!confirm("Limpar a build atual?"))return;state.toolbox.builder=deepClone(DEFAULT.toolbox.builder);save();renderBuilder();bindPortalDynamic(scope)};
+ const copyBuild=scope.querySelector("#copyBuildCodeBtn");if(copyBuild)copyBuild.onclick=async()=>{const code=encodeShare({type:"aion2-build",build:builderState()});alert(await copyText(code)?"Build copiada.":"Não foi possível copiar automaticamente.")};
+ const importBuild=scope.querySelector("#importBuildCodeBtn");if(importBuild)importBuild.onclick=()=>{if(readonly)return;const code=prompt("Cole o código da build:");if(!code)return;try{const data=decodeShare(code);if(!data?.build)throw new Error();state.toolbox.builder=data.build;state=normalizeState(state);save();setView("builder")}catch(e){alert("Código de build inválido.")}};
+ scope.querySelectorAll("[data-open-build]").forEach(btn=>btn.onclick=()=>{const item=state.toolbox.savedBuilds.find(i=>i.id===btn.dataset.openBuild);if(!item||readonly)return;state.toolbox.builder=deepClone(item.build);save();setView("builder")});
+ scope.querySelectorAll("[data-delete-build]").forEach(btn=>btn.onclick=()=>{if(readonly||!confirm("Excluir este snapshot?"))return;state.toolbox.savedBuilds=state.toolbox.savedBuilds.filter(i=>i.id!==btn.dataset.deleteBuild);save();renderBuilder();bindPortalDynamic(scope)});
+ scope.querySelectorAll("[data-copy-saved-build]").forEach(btn=>btn.onclick=async()=>{const item=state.toolbox.savedBuilds.find(i=>i.id===btn.dataset.copySavedBuild);if(!item)return;const code=encodeShare({type:"aion2-build",build:item.build});alert(await copyText(code)?"Build copiada.":"Não foi possível copiar automaticamente.")});
+ scope.querySelectorAll(".calcField").forEach(el=>el.onchange=e=>{if(readonly)return;setNested(state.toolbox.calculator,e.target.dataset.calcPath,Number(e.target.value||0));state=normalizeState(state);save();renderCalculator();bindPortalDynamic(scope)});
+ scope.querySelectorAll(".calcTextField").forEach(el=>el.onchange=e=>{if(readonly)return;setNested(state.toolbox.calculator,e.target.dataset.calcText,e.target.value);state=normalizeState(state);save();renderCalculator();bindPortalDynamic(scope)});
+ scope.querySelectorAll(".calcBoolField").forEach(el=>el.onchange=e=>{if(readonly)return;setNested(state.toolbox.calculator,e.target.dataset.calcBool,e.target.value==="yes");save();renderCalculator();bindPortalDynamic(scope)});
+ const calcFromBuilder=scope.querySelector("#calcFromBuilderBtn");if(calcFromBuilder)calcFromBuilder.onclick=()=>{if(readonly)return;state.toolbox.calculator.main.might=state.toolbox.builder.stats.might;state.toolbox.calculator.main.precision=state.toolbox.builder.stats.precision;state.toolbox.calculator.context.attack=state.toolbox.builder.stats.attack;save();renderCalculator();bindPortalDynamic(scope)};
+ const ca=scope.querySelector("#compareA"),cb=scope.querySelector("#compareB");if(ca)ca.onchange=e=>{state.toolbox.compare.a=e.target.value;save();renderCompare();bindPortalDynamic(scope)};if(cb)cb.onchange=e=>{state.toolbox.compare.b=e.target.value;save();renderCompare();bindPortalDynamic(scope)};
+ const dbSearch=scope.querySelector("#databaseSearch");if(dbSearch)dbSearch.oninput=e=>{const q=e.target.value.trim().toLocaleLowerCase("pt-BR");let visible=0;scope.querySelectorAll(".dbEntry").forEach(card=>{const ok=!q||(card.dataset.db+" "+card.textContent).toLocaleLowerCase("pt-BR").includes(q);card.classList.toggle("hidden",!ok);if(ok)visible++});const status=scope.querySelector("#databaseSearchStatus");if(status)status.textContent=q?`${visible} referência${visible===1?"":"s"}`:""};
 }
 
 function renderNotes(){
@@ -596,60 +598,106 @@ function renderProgress(){
  document.getElementById("weeklyProgressFill").style.width=weekly+"%";
  document.getElementById("weeklyProgressText").textContent=weekly+"%";
 }
-function renderAll(){renderHeader();renderDaily();renderWeekly();renderCharacters();renderWeek1();renderResources();renderClasses();renderBuilder();renderCalculator();renderCompare();renderNotes();renderProgress();bindDynamic();}
+const VIEW_RENDERERS={
+ today:renderDaily,
+ weekly:renderWeekly,
+ characters:renderCharacters,
+ week1:renderWeek1,
+ resources:renderResources,
+ classes:renderClasses,
+ builder:renderBuilder,
+ calculator:renderCalculator,
+ compare:renderCompare,
+ notes:renderNotes
+};
+function renderActiveView(view=activeView){
+ const renderer=VIEW_RENDERERS[view];
+ if(renderer)renderer();
+ bindDynamic(view);
+}
+function renderAll(){
+ renderHeader();
+ renderProgress();
+ renderActiveView(activeView);
+}
 
-function bindDynamic(){
- const bibleSearch=document.getElementById("bibleSearch");
- if(bibleSearch){
-  bibleSearch.oninput=e=>{
-   const q=e.target.value.trim().toLocaleLowerCase("pt-BR");
-   let visible=0;
-   document.querySelectorAll(".bibleChapter").forEach(ch=>{
-    const match=!q||ch.textContent.toLocaleLowerCase("pt-BR").includes(q);
-    ch.classList.toggle("bibleHidden",!match);
-    if(match)visible++;
-   });
-   const status=document.getElementById("bibleSearchStatus");
-   if(status)status.textContent=q?`${visible} capítulo${visible===1?"":"s"} encontrado${visible===1?"":"s"}`:"12 capítulos";
-  };
+function bindDynamic(view=activeView){
+ const scope=document.getElementById(view);
+ if(!scope)return;
+
+ if(view==="bible"){
+  const bibleSearch=scope.querySelector("#bibleSearch");
+  if(bibleSearch){
+   bibleSearch.oninput=e=>{
+    const q=e.target.value.trim().toLocaleLowerCase("pt-BR");
+    let visible=0;
+    scope.querySelectorAll(".bibleChapter").forEach(ch=>{
+     const match=!q||ch.textContent.toLocaleLowerCase("pt-BR").includes(q);
+     ch.classList.toggle("bibleHidden",!match);
+     if(match)visible++;
+    });
+    const status=scope.querySelector("#bibleSearchStatus");
+    if(status)status.textContent=q?`${visible} capítulo${visible===1?"":"s"} encontrado${visible===1?"":"s"}`:"12 capítulos";
+   };
+  }
  }
- const notes=document.getElementById("personalNotes");
- if(notes){
-  notes.oninput=e=>{
-   if(readonly)return;
-   state.notes=e.target.value.slice(0,12000);
-   const count=document.getElementById("notesCount");
-   const status=document.getElementById("notesStatus");
-   if(count)count.textContent=String(state.notes.length);
-   if(status)status.textContent=cloudSession?"Salvando…":"Salvo neste navegador.";
-   save();
-   clearTimeout(notes._savedTimer);
-   notes._savedTimer=setTimeout(()=>{
-    if(status)status.textContent=cloudSession?"Salvamento automático ativo · nuvem conectada.":"Salvamento automático ativo · somente neste navegador.";
-   },1000);
-  };
+
+ if(view==="notes"){
+  const notes=scope.querySelector("#personalNotes");
+  if(notes){
+   notes.oninput=e=>{
+    if(readonly)return;
+    state.notes=e.target.value.slice(0,12000);
+    const count=scope.querySelector("#notesCount");
+    const status=scope.querySelector("#notesStatus");
+    if(count)count.textContent=String(state.notes.length);
+    if(status)status.textContent=cloudSession?"Salvando…":"Aguardando…";
+    clearTimeout(notes._saveTimer);
+    clearTimeout(notes._savedTimer);
+    notes._saveTimer=setTimeout(()=>save(),300);
+    notes._savedTimer=setTimeout(()=>{
+     if(status)status.textContent=cloudSession?"Salvamento automático ativo · nuvem conectada.":"Salvamento automático ativo · somente neste navegador.";
+    },900);
+   };
+   notes.onblur=()=>{
+    if(readonly)return;
+    clearTimeout(notes._saveTimer);
+    save();
+   };
+  }
  }
- document.querySelectorAll(".chk").forEach(el=>el.onchange=e=>{
-  if(readonly)return;state[e.target.dataset.scope][e.target.dataset.id]=e.target.checked;save();renderAll();
+
+ scope.querySelectorAll(".chk").forEach(el=>el.onchange=e=>{
+  if(readonly)return;
+  state[e.target.dataset.scope][e.target.dataset.id]=e.target.checked;
+  save();renderHeader();renderProgress();renderActiveView(view);
  });
- document.querySelectorAll("[data-count]").forEach(btn=>btn.onclick=()=>{
-  if(readonly)return;const k=btn.dataset.count,max=k==="dailyDungeon"?state.dailyDungeonCap:k==="pveCommands"?12:k==="pvpCommands"?20:shugoMax();
-  state.weeklyCounts[k]=Math.max(0,Math.min(max,(state.weeklyCounts[k]||0)+Number(btn.dataset.dir)));save();renderAll();
+ scope.querySelectorAll("[data-count]").forEach(btn=>btn.onclick=()=>{
+  if(readonly)return;
+  const k=btn.dataset.count,max=k==="dailyDungeon"?state.dailyDungeonCap:k==="pveCommands"?12:k==="pvpCommands"?20:shugoMax();
+  state.weeklyCounts[k]=Math.max(0,Math.min(max,(state.weeklyCounts[k]||0)+Number(btn.dataset.dir)));
+  save();renderHeader();renderProgress();renderActiveView(view);
  });
- document.querySelectorAll(".charInput").forEach(inp=>inp.onchange=()=>{
-  if(readonly)return;const c=state.characters.find(c=>c.id===inp.dataset.char);if(!c)return;
+ scope.querySelectorAll(".charInput").forEach(inp=>inp.onchange=()=>{
+  if(readonly)return;
+  const c=state.characters.find(c=>c.id===inp.dataset.char);if(!c)return;
   let value=Number(inp.value);if(!Number.isFinite(value))value=0;
   const min=inp.min!==""?Number(inp.min):0,max=inp.max!==""?Number(inp.max):Infinity;
-  c[inp.dataset.field]=Math.max(min,Math.min(max,value));save();renderAll();
+  c[inp.dataset.field]=Math.max(min,Math.min(max,value));
+  save();renderHeader();renderProgress();renderActiveView(view);
  });
- document.querySelectorAll("[data-char-count]").forEach(btn=>btn.onclick=()=>{
-  if(readonly)return;const c=state.characters.find(c=>c.id===btn.dataset.charCount);if(!c)return;
-  const max=3;c[btn.dataset.field]=Math.max(0,Math.min(max,(c[btn.dataset.field]||0)+Number(btn.dataset.dir)));save();renderAll();
+ scope.querySelectorAll("[data-char-count]").forEach(btn=>btn.onclick=()=>{
+  if(readonly)return;
+  const c=state.characters.find(c=>c.id===btn.dataset.charCount);if(!c)return;
+  c[btn.dataset.field]=Math.max(0,Math.min(3,(c[btn.dataset.field]||0)+Number(btn.dataset.dir)));
+  save();renderHeader();renderProgress();renderActiveView(view);
  });
- document.querySelectorAll("[data-remove-char]").forEach(btn=>btn.onclick=()=>{
-  if(readonly)return;state.characters=state.characters.filter(c=>c.id!==btn.dataset.removeChar);save();renderAll();
+ scope.querySelectorAll("[data-remove-char]").forEach(btn=>btn.onclick=()=>{
+  if(readonly)return;
+  state.characters=state.characters.filter(c=>c.id!==btn.dataset.removeChar);
+  save();renderHeader();renderProgress();renderActiveView(view);
  });
- bindPortalDynamic();
+ bindPortalDynamic(scope);
 }
 
 const VIEW_TITLES={
@@ -660,11 +708,13 @@ const VIEW_TITLES={
 function setView(view){
  const target=document.getElementById(view);
  if(!target)return;
+ activeView=view;
  document.querySelectorAll("#nav button[data-view]").forEach(x=>x.classList.toggle("active",x.dataset.view===view));
  document.querySelectorAll(".view").forEach(x=>x.classList.add("hidden"));
  target.classList.remove("hidden");
  const title=document.getElementById("viewTitle");
  if(title)title.textContent=VIEW_TITLES[view]||"AION 2 Control Center";
+ renderActiveView(view);
  document.body.classList.remove("sidebarOpen");
  if(window.innerWidth<980)window.scrollTo({top:0,behavior:"smooth"});
 }
@@ -683,11 +733,11 @@ document.getElementById("strategySelect").onchange=e=>{if(readonly)return;state.
 document.getElementById("addCharBtn").onclick=()=>{
  if(readonly)return;
  const name=prompt("Nome do personagem:");if(!name)return;
- state.characters.push({id:"c"+Date.now(),name:name.trim().slice(0,28)||"Alt",role:"alt",level:1,power:0,odyle:0,nightmare:0,ascension:0,battleground:0});save();renderAll();
+ state.characters.push({id:"c"+Date.now(),name:name.trim().slice(0,28)||"Alt",role:"alt",level:1,power:0,odyle:0,nightmare:0,ascension:0,battleground:0});save();renderProgress();renderActiveView(activeView);
 };
 document.getElementById("resetWeeklyBtn").onclick=()=>{
  if(readonly)return;if(!confirm("Limpar progresso semanal?"))return;
- state.weekly={};state.weeklyCounts={dailyDungeon:0,pveCommands:0,pvpCommands:0,shugo:0};state.characters.forEach(c=>{c.ascension=0;c.battleground=0});state.meta.weeklyKey=weeklyKey();save();renderAll();
+ state.weekly={};state.weeklyCounts={dailyDungeon:0,pveCommands:0,pvpCommands:0,shugo:0};state.characters.forEach(c=>{c.ascension=0;c.battleground=0});state.meta.weeklyKey=weeklyKey();save();renderProgress();renderActiveView(activeView);
 };
 
 document.getElementById("clearNotesBtn").onclick=()=>{
@@ -803,10 +853,10 @@ document.getElementById("downloadSnapshotBtn").onclick=async()=>{
    return response.text();
   };
   const [css,storageSource,authSource,appSource]=await Promise.all([
-   assetText("styles.css?v=2.0.1"),
-   assetText("storage.js?v=2.0.1"),
-   assetText("auth.js?v=2.0.1"),
-   assetText("app.js?v=2.0.1")
+   assetText("styles.css?v=2.0.2"),
+   assetText("storage.js?v=2.0.2"),
+   assetText("auth.js?v=2.0.2"),
+   assetText("app.js?v=2.0.2")
   ]);
   const stripModule=source=>source
    .replace(/^import\s+[^;]+;\s*$/gm,"")
