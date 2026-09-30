@@ -1,36 +1,34 @@
-# AION 2 Control Center v2.0
+# AION 2 Global Control Center v2.1
 
-Central pessoal de AION 2 com checklist diário e semanal, login via Discord, sincronização por usuário, timers, personagens, recursos, planejamento, Bíblia e anotações pessoais.
+Painel pessoal para AION 2 Global: checklist, Item Level, personagens, Builder, Calculadora, Database, Bíblia Global, timers e sincronização via Discord/Supabase.
 
 Site: https://aion2checklist.github.io
 
-## v2.0
-- Nova arquitetura visual em formato de Control Center
-- Sidebar por módulos: Central, Ciclos, Planejamento, Ferramentas, Conhecimento e Pessoal
-- Dashboard com timers diário, Shugo e semanal
-- Progresso diário e semanal separados
-- Atalhos rápidos para Builder, Calculadora, Classes, Database, Roster, Recursos, Bíblia e Planejamento
-- Checklist diário e semanal com reset automático
+## Regra da v2.1
+O projeto é **Global-only**. O site não usa dados de outras versões para preencher lacunas. Quando um valor depende do servidor Global e ainda não está confirmado, ele fica configurável ou não é publicado.
+
+## Recursos
+- Dashboard Global com inteligência rápida do cliente de lançamento
+- Checklist diário e semanal
+- Timers pessoais/configuráveis
+- Roster por personagem com Item Level, Nightmare e Sanctuary
+- 8 classes do lançamento Global
+- Builder com snapshots privados e sincronizados
+- Calculadora de gates de Item Level e Specializations de skills
+- Comparador de builds
+- Database Global com atalhos para dados extraídos do cliente
+- Bíblia Global com 9 capítulos
+- Membership Global e recursos
+- Anotações privadas
 - Login Discord + Supabase
-- Dados separados por usuário
-- Roster de personagens
-- Explorador de classes (Global + KR/TW)
-- Builder com gear planejado, skills, Arcana, Daevanion e Genus
-- Builds salvas na conta e comparação lado a lado
-- Calculadora de Main Stats e Deity Stats + troca de peça e contexto PvE/PvP
-- Database de referência com acesso ao banco completo do AION2 Hub
-- Hub de guias interno
-- Recursos e estratégia de progressão
-- Bíblia do Aion 2 em português
-- Dicas gerais
-- Anotações pessoais com salvamento automático
-- Snapshots compartilháveis sem incluir anotações pessoais
-- Site marcado como noindex para uso privado entre amigos
+- RLS por usuário
+- Snapshots sem notas nem toolbox privado
+- noindex/robots para reduzir descoberta por busca
 
-## Referências de produto
-A arquitetura funcional da v2.0 usa portais de comunidade de AION 2 como referência de organização — ferramentas, classes, guias e áreas de progressão — mas mantém identidade visual, fluxo e código próprios.
-
-## Fonte da Bíblia
-A aba "Bíblia do Aion 2" é uma adaptação condensada e reescrita em português do Kanon's Aion 2 Bible (fonte atualizada em 20/09/2026). Informações KR/Asia e pontos não confirmados para Global são identificados no próprio site.
+## Fontes principais
+- AION 2 no Steam e comunicados Global da NC
+- Cliente Global de lançamento
+- DBAion2 Global, reconstruído a partir dos arquivos do cliente
+- Relatórios técnicos do cliente Global, sempre separando dado de arquivo de decisão server-side
 
 Hospedado com GitHub Pages.
