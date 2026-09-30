@@ -1,5 +1,5 @@
-import {deepClone,createStateNormalizer,readLocal,writeLocal,hasStoredState} from "./storage.js?v=2.0.0";
-import {createAuthController,discordDisplayName,discordAvatar} from "./auth.js?v=2.0.0";
+import {deepClone,createStateNormalizer,readLocal,writeLocal,hasStoredState} from "./storage.js?v=2.0.1";
+import {createAuthController,discordDisplayName,discordAvatar} from "./auth.js?v=2.0.1";
 
 window.__AION2_SHARED_STATE__ = window.__AION2_SHARED_STATE__ || null;
 
@@ -424,6 +424,126 @@ function renderResources(){
   : `<b>Sem membership.</b><br>O site usa Odyle +10/3h (80/dia), cap base 560 e Shugo 7 chaves/semana.`;
 }
 
+
+const CLASS_DATA=[
+ {name:"Templar",role:"Tank",roleKey:"tank",weapon:"Espada",difficulty:"Média",availability:"global",summary:"Linha de frente com foco em proteção, controle de ameaça e sustentação do grupo."},
+ {name:"Gladiator",role:"DPS corpo a corpo",roleKey:"dps",weapon:"Espada Grande",difficulty:"Fácil",availability:"global",summary:"Dano físico direto, presença constante no melee e boa tolerância para uma classe ofensiva."},
+ {name:"Assassin",role:"DPS corpo a corpo",roleKey:"dps",weapon:"Adaga",difficulty:"Alta",availability:"global",summary:"Mobilidade, burst e pressão posicional; tende a valorizar execução e ataques pelas costas."},
+ {name:"Ranger",role:"DPS à distância",roleKey:"dps",weapon:"Arco",difficulty:"Média",availability:"global",summary:"Dano físico à distância com mobilidade e controle do espaço."},
+ {name:"Sorcerer",role:"DPS à distância",roleKey:"dps",weapon:"Grimório",difficulty:"Média",availability:"global",summary:"Dano mágico à distância e ferramentas de área, com forte peso no uso correto das skills."},
+ {name:"Spiritmaster",role:"Invocador",roleKey:"dps",weapon:"Orbe",difficulty:"Alta",availability:"global",summary:"Combina o próprio kit com um espírito invocado e exige atenção ao posicionamento das duas fontes de dano."},
+ {name:"Cleric",role:"Suporte / Cura",roleKey:"support",weapon:"Maça",difficulty:"Média",availability:"global",summary:"Cura e sustentação do grupo com capacidade de participar do combate além do papel defensivo."},
+ {name:"Chanter",role:"Suporte híbrido",roleKey:"support",weapon:"Cajado",difficulty:"Alta",availability:"global",summary:"Mistura buffs, sustentação e presença corpo a corpo para fortalecer o grupo."},
+ {name:"Brawler",role:"DPS corpo a corpo",roleKey:"dps",weapon:"Manopla",difficulty:"Alta",availability:"kr",summary:"Classe de combos corpo a corpo presente em KR/TW; trate disponibilidade no Global como não confirmada."}
+];
+const MAIN_STAT_DEFS=[
+ ["might","Might","Attack Increase"],["constitution","Constitution","HP Increase"],["dexterity","Dexterity","Evasion + Block + Critical Hit Resist"],
+ ["intelligence","Intelligence","Status Effect Chance"],["precision","Precision","Accuracy Increase + Critical Hit Increase"],["willpower","Willpower","Status Effect Resist"]
+];
+const DEITY_DEFS=[
+ ["justice","Justice / Nezekan","Defense Increase","Perfect Chance",false],["destruction","Destruction / Zikel","Attack Increase","Perfect Resist",false],
+ ["death","Death / Triniel","Critical Hit Increase","Regeneration Penetration",false],["wisdom","Wisdom / Lumiel","MP Cost","Smite / Double Chance",true],
+ ["destiny","Destiny / Marchutan","MP Increase","Endurance",false],["space","Space / Israphel","Move Speed","Block Increase",false],
+ ["time","Time / Siel","Combat Speed","Smite Resist / Double Chance Resist",false],["life","Life / Yustiel","HP Increase","Regeneration",false],
+ ["illusion","Illusion / Kaisinel","Cooldown","Endurance Penetration",true],["freedom","Freedom / Vaizel","Accuracy Increase","Evasion Increase",false]
+];
+const BUILDER_GEAR_SLOTS=[
+ ["weapon","Arma"],["offhand","Guard / Off-hand"],["helmet","Helmet"],["shoulder","Shoulder"],["chest","Chest"],["pants","Pants"],["gloves","Gloves"],["boots","Boots"],["cloak","Cloak"],
+ ["necklace","Necklace"],["earring1","Earring 1"],["earring2","Earring 2"],["ring1","Ring 1"],["ring2","Ring 2"],["bracelet1","Bracelet 1"],["bracelet2","Bracelet 2"],
+ ["amulet","Amulet"],["belt","Belt"],["brooch1","Brooch 1"],["brooch2","Brooch 2"],["rune1","Rune 1"],["rune2","Rune 2"],["wings","Wings"]
+];
+function toolState(){return state.toolbox||DEFAULT.toolbox}
+function builderState(){return toolState().builder}
+function classOptions(selected){return CLASS_DATA.map(c=>`<option value="${c.name}" ${c.name===selected?"selected":""}>${c.name}${c.availability==="kr"?" · KR/TW":""}</option>`).join("")}
+function focusLabel(v){return v==="pvp"?"PvP":v==="hybrid"?"Híbrido":"PvE"}
+
+function renderClasses(){
+ const grid=document.getElementById("classGrid"),filter=document.getElementById("classFilter");
+ if(!grid||!filter)return;
+ const selected=toolState().classFilter||"all";filter.value=selected;
+ const list=CLASS_DATA.filter(c=>selected==="all"||(selected==="global"&&c.availability==="global")||(selected==="kr"&&c.availability==="kr")||selected===c.roleKey);
+ grid.innerHTML=list.map(c=>`
+  <article class="classCard">
+   <div class="classCardTop"><span class="classSigil">${c.name.slice(0,2).toUpperCase()}</span><span class="badge ${c.availability==="global"?"green":"gold"}">${c.availability==="global"?"GLOBAL":"KR/TW"}</span></div>
+   <h3>${c.name}</h3><p>${c.summary}</p>
+   <div class="classMeta"><span><small>Papel</small><b>${c.role}</b></span><span><small>Arma</small><b>${c.weapon}</b></span><span><small>Dificuldade</small><b>${c.difficulty}</b></span></div>
+   <button class="btn ghost classBuildBtn" data-class-build="${c.name}">Usar no Builder →</button>
+  </article>`).join("");
+}
+
+function renderBuilder(){
+ const form=document.getElementById("builderForm"),saved=document.getElementById("savedBuildList");if(!form||!saved)return;
+ const b=builderState();
+ const gear=BUILDER_GEAR_SLOTS.map(([key,label])=>`<div class="field"><label>${label}</label><input class="input builderField" data-builder-path="gear.${key}" value="${escapeHtml(b.gear[key]||"")}" placeholder="Nome / meta do item" ${readonly?"disabled":""}></div>`).join("");
+ const genus=["cogni","fera","natura","varian","special"].map(k=>`<div class="field"><label>${k[0].toUpperCase()+k.slice(1)}</label><input class="input builderField" type="number" min="0" max="10" data-builder-path="progression.${k}" value="${b.progression[k]}" ${readonly?"disabled":""}></div>`).join("");
+ form.innerHTML=`
+  <div class="builderToolbar">
+   <div class="field grow"><label>Nome da build</label><input class="input builderField" data-builder-path="name" value="${escapeHtml(b.name)}" ${readonly?"disabled":""}></div>
+   <div class="field"><label>Classe</label><select class="select builderField" data-builder-path="className" ${readonly?"disabled":""}>${classOptions(b.className)}</select></div>
+   <div class="field"><label>Foco</label><select class="select builderField" data-builder-path="focus" ${readonly?"disabled":""}><option value="pve" ${b.focus==="pve"?"selected":""}>PvE</option><option value="pvp" ${b.focus==="pvp"?"selected":""}>PvP</option><option value="hybrid" ${b.focus==="hybrid"?"selected":""}>Híbrido</option></select></div>
+   <div class="field smallField"><label>Nível</label><input class="input builderField" type="number" min="1" max="99" data-builder-path="level" value="${b.level}" ${readonly?"disabled":""}></div>
+  </div>
+  <div class="builderSummary"><div><span>Classe</span><b>${b.className}</b></div><div><span>Foco</span><b>${focusLabel(b.focus)}</b></div><div><span>Attack</span><b>${b.stats.attack}</b></div><div><span>Accuracy</span><b>${b.stats.accuracy}</b></div><div><span>Crit</span><b>${b.stats.critical}</b></div></div>
+  <details class="builderPanel" open><summary>Stats principais</summary><div class="builderFields">${[["might","Might"],["precision","Precision"],["attack","Attack"],["accuracy","Accuracy"],["critical","Critical Hit"]].map(([k,l])=>`<div class="field"><label>${l}</label><input class="input builderField" type="number" min="0" data-builder-path="stats.${k}" value="${b.stats[k]}" ${readonly?"disabled":""}></div>`).join("")}</div></details>
+  <details class="builderPanel" open><summary>Skills & progressão</summary><div class="builderFields">
+   <div class="field"><label>Active Skill principal</label><input class="input builderField" type="number" min="0" max="40" data-builder-path="skills.primary" value="${b.skills.primary}" ${readonly?"disabled":""}></div>
+   <div class="field"><label>Active Skill secundária</label><input class="input builderField" type="number" min="0" max="40" data-builder-path="skills.secondary" value="${b.skills.secondary}" ${readonly?"disabled":""}></div>
+   <div class="field"><label>Arcanas equipadas</label><input class="input builderField" type="number" min="0" max="10" data-builder-path="progression.arcana" value="${b.progression.arcana}" ${readonly?"disabled":""}></div>
+   <div class="field"><label>Pontos Daevanion</label><input class="input builderField" type="number" min="0" data-builder-path="progression.daevanion" value="${b.progression.daevanion}" ${readonly?"disabled":""}></div>
+   ${genus}
+  </div><div class="mini builderHint">Marcos úteis para Active Skills citados na Bíblia: 8 · 12 · 16 · 20. Genus aqui é planejamento manual.</div></details>
+  <details class="builderPanel"><summary>Equipamento planejado</summary><div class="builderGearGrid">${gear}</div></details>
+  <div class="builderActions"><button class="btn primary" id="saveBuildSnapshotBtn" ${readonly?"disabled":""}>Salvar snapshot</button><button class="btn ghost" id="copyBuildCodeBtn">Copiar build</button><button class="btn ghost" id="importBuildCodeBtn" ${readonly?"disabled":""}>Importar build</button><button class="btn danger" id="clearBuilderBtn" ${readonly?"disabled":""}>Limpar</button></div>`;
+ const builds=toolState().savedBuilds||[];
+ saved.innerHTML=builds.length?builds.slice().reverse().map(item=>`<div class="savedBuildCard"><div><b>${escapeHtml(item.build.name)}</b><span>${item.build.className} · ${focusLabel(item.build.focus)} · Lv ${item.build.level}</span></div><div class="savedBuildActions"><button class="btn ghost" data-open-build="${item.id}">Abrir</button><button class="btn ghost" data-copy-saved-build="${item.id}">Copiar</button><button class="btn danger miniBtn" data-delete-build="${item.id}">×</button></div></div>`).join(""):`<div class="emptyState"><b>Nenhuma build salva.</b><span>Monte algo ao lado e clique em “Salvar snapshot”.</span></div>`;
+}
+
+function renderCalculator(){
+ const root=document.getElementById("calculatorBody");if(!root)return;
+ const calc=toolState().calculator;
+ const mainRows=MAIN_STAT_DEFS.map(([key,label,effect])=>{const val=Number(calc.main[key]||0),yieldPct=val*.1;return `<div class="calcRow"><div><b>${label}</b><small>${effect}</small></div><input class="input calcField" type="number" min="0" data-calc-path="main.${key}" value="${val}" ${readonly?"disabled":""}><strong>${yieldPct.toFixed(1)}%</strong></div>`}).join("");
+ const deityRows=DEITY_DEFS.map(([key,label,e1,e2,reduction])=>{const val=Number(calc.deity[key]||0),pct=val*.2;return `<div class="calcRow deityRow"><div><b>${label}</b><small>${e1} · ${e2}</small></div><input class="input calcField" type="number" min="0" max="200" data-calc-path="deity.${key}" value="${val}" ${readonly?"disabled":""}><strong>${reduction?"−":""}${pct.toFixed(1)}% / +${pct.toFixed(1)}%</strong></div>`}).join("");
+ const p=calc.piece,newTotal=Number(p.total||0)-Number(p.current||0)+Number(p.next||0),diff=Number(p.next||0)-Number(p.current||0),c=calc.context;
+ const pveAttack=Number(c.attack||0)+Number(c.pveAttack||0)+(c.isBoss?Number(c.bossAttack||0):0),pvpAttack=Number(c.attack||0)+Number(c.pvpAttack||0),pveDamage=Number(c.damage||0)+Number(c.pveDamage||0)+(c.isBoss?Number(c.bossDamage||0):0),pvpDamage=Number(c.damage||0)+Number(c.pvpDamage||0);
+ root.innerHTML=`<div class="calcLayout"><section class="calcPanel"><div class="calcPanelHead"><h3>Main Stats</h3><span class="badge green">0,1% / ponto</span></div>${mainRows}<div class="mini calcSource">Relação usada como referência de cálculo do guia consultado.</div></section><section class="calcPanel"><div class="calcPanelHead"><h3>Deity Stats</h3><span class="badge gold">0,2% / ponto</span></div>${deityRows}<div class="mini calcSource">As fontes usam terminologia diferente em Wisdom/Time; mantivemos os dois nomes no rótulo.</div></section></div>
+ <div class="calcLayout calcBottom"><section class="calcPanel"><div class="calcPanelHead"><h3>Comparar uma peça</h3><span class="badge blue">ARITMÉTICA</span></div><div class="builderFields">
+  <div class="field"><label>Status</label><input class="input calcTextField" data-calc-text="piece.label" value="${escapeHtml(p.label)}" ${readonly?"disabled":""}></div><div class="field"><label>Total atual</label><input class="input calcField" type="number" data-calc-path="piece.total" value="${p.total}" ${readonly?"disabled":""}></div><div class="field"><label>Peça atual</label><input class="input calcField" type="number" data-calc-path="piece.current" value="${p.current}" ${readonly?"disabled":""}></div><div class="field"><label>Peça nova</label><input class="input calcField" type="number" data-calc-path="piece.next" value="${p.next}" ${readonly?"disabled":""}></div>
+ </div><div class="calcResult"><span>${escapeHtml(p.label||"Status")} final</span><b>${newTotal}</b><em class="${diff>=0?"positive":"negative"}">${diff>=0?"+":""}${diff}</em></div></section>
+ <section class="calcPanel"><div class="calcPanelHead"><h3>PvE x PvP</h3><span class="badge violet">CONTEXTO</span></div><div class="builderFields contextFields">${[["attack","Attack base"],["pveAttack","Attack PvE"],["pvpAttack","Attack PvP"],["bossAttack","Attack Boss"],["damage","Damage Boost geral"],["pveDamage","Damage Boost PvE"],["pvpDamage","Damage Boost PvP"],["bossDamage","Damage Boost Boss"]].map(([k,l])=>`<div class="field"><label>${l}</label><input class="input calcField" type="number" data-calc-path="context.${k}" value="${c[k]}" ${readonly?"disabled":""}></div>`).join("")}<div class="field"><label>Alvo é boss?</label><select class="select calcBoolField" data-calc-bool="context.isBoss" ${readonly?"disabled":""}><option value="no" ${!c.isBoss?"selected":""}>Não</option><option value="yes" ${c.isBoss?"selected":""}>Sim</option></select></div></div>
+ <div class="contextResults"><div><span>PvE Attack</span><b>${pveAttack}</b></div><div><span>PvE Damage</span><b>${pveDamage}</b></div><div><span>PvP Attack</span><b>${pvpAttack}</b></div><div><span>PvP Damage</span><b>${pvpDamage}</b></div></div><div class="mini calcSource">Somamos apenas os bônus do contexto selecionado; isso não é uma fórmula completa de DPS.</div></section></div>`;
+}
+
+function renderCompare(){
+ const root=document.getElementById("compareBuildsBody");if(!root)return;
+ const builds=toolState().savedBuilds||[],cmp=toolState().compare||{a:"",b:""},opts='<option value="">Escolha uma build</option>'+builds.map(i=>`<option value="${i.id}">${escapeHtml(i.build.name)} · ${i.build.className}</option>`).join("");
+ const a=builds.find(i=>i.id===cmp.a)?.build,b=builds.find(i=>i.id===cmp.b)?.build;
+ const row=(label,av,bv,numeric=true)=>{let dhtml="—";if(numeric&&a&&b){const d=Number(bv||0)-Number(av||0);dhtml=`<em class="${d>=0?"positive":"negative"}">${d>=0?"+":""}${d}</em>`}return `<tr><td>${label}</td><td>${a?av:"—"}</td><td>${b?bv:"—"}</td><td>${dhtml}</td></tr>`};
+ root.innerHTML=`<div class="compareSelectors"><div class="field"><label>Build A</label><select class="select compareSelect" id="compareA">${opts}</select></div><div class="vsMark">VS</div><div class="field"><label>Build B</label><select class="select compareSelect" id="compareB">${opts}</select></div></div>
+ ${builds.length<2?`<div class="callout warn"><b>Salve pelo menos duas builds.</b><br>O comparador usa os snapshots do Builder.</div>`:`<div class="statTableWrap"><table class="bibleTable compareTable"><thead><tr><th>Campo</th><th>Build A</th><th>Build B</th><th>Δ B−A</th></tr></thead><tbody>${row("Classe",a?.className,b?.className,false)}${row("Foco",a?focusLabel(a.focus):"",b?focusLabel(b.focus):"",false)}${row("Nível",a?.level,b?.level)}${row("Might",a?.stats.might,b?.stats.might)}${row("Precision",a?.stats.precision,b?.stats.precision)}${row("Attack",a?.stats.attack,b?.stats.attack)}${row("Accuracy",a?.stats.accuracy,b?.stats.accuracy)}${row("Critical Hit",a?.stats.critical,b?.stats.critical)}${row("Skill principal",a?.skills.primary,b?.skills.primary)}${row("Skill secundária",a?.skills.secondary,b?.skills.secondary)}${row("Arcanas",a?.progression.arcana,b?.progression.arcana)}${row("Daevanion",a?.progression.daevanion,b?.progression.daevanion)}</tbody></table></div>`}
+ <div class="mini compareNote">O comparador mostra diferenças objetivas entre os campos salvos e não escolhe uma build “vencedora”.</div>`;
+ const sa=document.getElementById("compareA"),sb=document.getElementById("compareB");if(sa)sa.value=cmp.a||"";if(sb)sb.value=cmp.b||"";
+}
+
+function setNested(obj,path,value){const keys=path.split(".");let cur=obj;for(let i=0;i<keys.length-1;i++){if(!cur[keys[i]]||typeof cur[keys[i]]!=="object")cur[keys[i]]={};cur=cur[keys[i]]}cur[keys[keys.length-1]]=value}
+function bindPortalDynamic(){
+ const classFilter=document.getElementById("classFilter");if(classFilter)classFilter.onchange=e=>{if(readonly)return;state.toolbox.classFilter=e.target.value;save();renderClasses();bindPortalDynamic()};
+ document.querySelectorAll("[data-class-build]").forEach(btn=>btn.onclick=()=>{if(readonly)return;state.toolbox.builder.className=btn.dataset.classBuild;save();renderBuilder();bindPortalDynamic();setView("builder")});
+ document.querySelectorAll(".builderField").forEach(el=>el.onchange=e=>{if(readonly)return;const path=e.target.dataset.builderPath,value=e.target.type==="number"?Number(e.target.value||0):e.target.value;setNested(state.toolbox.builder,path,value);state=normalizeState(state);save();renderBuilder();bindPortalDynamic()});
+ const saveBtn=document.getElementById("saveBuildSnapshotBtn");if(saveBtn)saveBtn.onclick=()=>{if(readonly)return;state.toolbox.savedBuilds.push({id:"b"+Date.now(),savedAt:new Date().toISOString(),build:deepClone(state.toolbox.builder)});state.toolbox.savedBuilds=state.toolbox.savedBuilds.slice(-12);save();renderBuilder();renderCompare();bindPortalDynamic()};
+ const clearBtn=document.getElementById("clearBuilderBtn");if(clearBtn)clearBtn.onclick=()=>{if(readonly||!confirm("Limpar a build atual?"))return;state.toolbox.builder=deepClone(DEFAULT.toolbox.builder);save();renderBuilder();bindPortalDynamic()};
+ const copyBuild=document.getElementById("copyBuildCodeBtn");if(copyBuild)copyBuild.onclick=async()=>{const code=encodeShare({type:"aion2-build",build:builderState()});alert(await copyText(code)?"Build copiada.":"Não foi possível copiar automaticamente.")};
+ const importBuild=document.getElementById("importBuildCodeBtn");if(importBuild)importBuild.onclick=()=>{if(readonly)return;const code=prompt("Cole o código da build:");if(!code)return;try{const data=decodeShare(code);if(!data?.build)throw new Error();state.toolbox.builder=data.build;state=normalizeState(state);save();renderAll();setView("builder")}catch(e){alert("Código de build inválido.")}};
+ document.querySelectorAll("[data-open-build]").forEach(btn=>btn.onclick=()=>{const item=state.toolbox.savedBuilds.find(i=>i.id===btn.dataset.openBuild);if(!item||readonly)return;state.toolbox.builder=deepClone(item.build);save();renderAll();setView("builder")});
+ document.querySelectorAll("[data-delete-build]").forEach(btn=>btn.onclick=()=>{if(readonly||!confirm("Excluir este snapshot?"))return;state.toolbox.savedBuilds=state.toolbox.savedBuilds.filter(i=>i.id!==btn.dataset.deleteBuild);save();renderBuilder();renderCompare();bindPortalDynamic()});
+ document.querySelectorAll("[data-copy-saved-build]").forEach(btn=>btn.onclick=async()=>{const item=state.toolbox.savedBuilds.find(i=>i.id===btn.dataset.copySavedBuild);if(!item)return;const code=encodeShare({type:"aion2-build",build:item.build});alert(await copyText(code)?"Build copiada.":"Não foi possível copiar automaticamente.")});
+ document.querySelectorAll(".calcField").forEach(el=>el.onchange=e=>{if(readonly)return;setNested(state.toolbox.calculator,e.target.dataset.calcPath,Number(e.target.value||0));state=normalizeState(state);save();renderCalculator();bindPortalDynamic()});
+ document.querySelectorAll(".calcTextField").forEach(el=>el.onchange=e=>{if(readonly)return;setNested(state.toolbox.calculator,e.target.dataset.calcText,e.target.value);state=normalizeState(state);save();renderCalculator();bindPortalDynamic()});
+ document.querySelectorAll(".calcBoolField").forEach(el=>el.onchange=e=>{if(readonly)return;setNested(state.toolbox.calculator,e.target.dataset.calcBool,e.target.value==="yes");save();renderCalculator();bindPortalDynamic()});
+ const calcFromBuilder=document.getElementById("calcFromBuilderBtn");if(calcFromBuilder)calcFromBuilder.onclick=()=>{if(readonly)return;state.toolbox.calculator.main.might=state.toolbox.builder.stats.might;state.toolbox.calculator.main.precision=state.toolbox.builder.stats.precision;state.toolbox.calculator.context.attack=state.toolbox.builder.stats.attack;save();renderCalculator();bindPortalDynamic()};
+ const ca=document.getElementById("compareA"),cb=document.getElementById("compareB");if(ca)ca.onchange=e=>{state.toolbox.compare.a=e.target.value;save();renderCompare();bindPortalDynamic()};if(cb)cb.onchange=e=>{state.toolbox.compare.b=e.target.value;save();renderCompare();bindPortalDynamic()};
+ const dbSearch=document.getElementById("databaseSearch");if(dbSearch)dbSearch.oninput=e=>{const q=e.target.value.trim().toLocaleLowerCase("pt-BR");let visible=0;document.querySelectorAll(".dbEntry").forEach(card=>{const ok=!q||(card.dataset.db+" "+card.textContent).toLocaleLowerCase("pt-BR").includes(q);card.classList.toggle("hidden",!ok);if(ok)visible++});const status=document.getElementById("databaseSearchStatus");if(status)status.textContent=q?`${visible} referência${visible===1?"":"s"}`:""};
+}
+
 function renderNotes(){
  const area=document.getElementById("personalNotes");
  const count=document.getElementById("notesCount");
@@ -476,7 +596,7 @@ function renderProgress(){
  document.getElementById("weeklyProgressFill").style.width=weekly+"%";
  document.getElementById("weeklyProgressText").textContent=weekly+"%";
 }
-function renderAll(){renderHeader();renderDaily();renderWeekly();renderCharacters();renderWeek1();renderResources();renderNotes();renderProgress();bindDynamic();}
+function renderAll(){renderHeader();renderDaily();renderWeekly();renderCharacters();renderWeek1();renderResources();renderClasses();renderBuilder();renderCalculator();renderCompare();renderNotes();renderProgress();bindDynamic();}
 
 function bindDynamic(){
  const bibleSearch=document.getElementById("bibleSearch");
@@ -529,17 +649,13 @@ function bindDynamic(){
  document.querySelectorAll("[data-remove-char]").forEach(btn=>btn.onclick=()=>{
   if(readonly)return;state.characters=state.characters.filter(c=>c.id!==btn.dataset.removeChar);save();renderAll();
  });
+ bindPortalDynamic();
 }
 
 const VIEW_TITLES={
- today:"Painel da conta",
- weekly:"Ciclo semanal",
- characters:"Personagens",
- week1:"Guia da conta",
- resources:"Recursos & entradas",
- bible:"Bíblia do Aion 2",
- tips:"Dicas gerais",
- notes:"Anotações pessoais"
+ today:"Painel da conta",weekly:"Ciclo semanal",characters:"Personagens",week1:"Guia da conta",resources:"Recursos & entradas",
+ classes:"Classes",builder:"Builder",calculator:"Calculadora",compare:"Comparar builds",database:"Database",
+ bible:"Bíblia do Aion 2",guides:"Guias",tips:"Dicas gerais",notes:"Anotações pessoais"
 };
 function setView(view){
  const target=document.getElementById(view);
@@ -631,6 +747,7 @@ function decodeShare(code){
 function sharePayload(){
  const out=deepClone(state);
  out.notes="";
+ out.toolbox=deepClone(DEFAULT.toolbox);
  out.meta={...(out.meta||{}),cloudUserId:null,lastCloudSync:null};
  return out;
 }
@@ -655,17 +772,19 @@ document.getElementById("copyShareLinkBtn").onclick=async()=>{
  const u=new URL(location.href);u.hash="share="+code;
  alert(await copyText(u.toString())?"Link copiado.":"Não foi possível copiar automaticamente.");
 };
-let privateNotesBeforeShare=null;
+let privateNotesBeforeShare=null,privateToolboxBeforeShare=null;
 document.getElementById("importCodeBtn").onclick=()=>{
  try{
   privateNotesBeforeShare=state.notes||"";
+  privateToolboxBeforeShare=deepClone(state.toolbox||DEFAULT.toolbox);
   state=normalizeState(decodeShare(document.getElementById("importCodeArea").value));readonly=true;state.sharedView=true;closeModal("shareModal");renderAll();
  }catch(e){alert("Código inválido.");}
 };
 document.getElementById("adoptShare").onclick=()=>{
  readonly=false;state=normalizeState(state);state.sharedView=false;
  if(privateNotesBeforeShare!==null)state.notes=privateNotesBeforeShare;
- privateNotesBeforeShare=null;
+ if(privateToolboxBeforeShare!==null)state.toolbox=deepClone(privateToolboxBeforeShare);
+ privateNotesBeforeShare=null;privateToolboxBeforeShare=null;
  save();
  if(location.hash.startsWith("#share="))history.replaceState(null,"",location.pathname+location.search);
  renderAll();alert("Snapshot copiado para o seu checklist.");
@@ -684,10 +803,10 @@ document.getElementById("downloadSnapshotBtn").onclick=async()=>{
    return response.text();
   };
   const [css,storageSource,authSource,appSource]=await Promise.all([
-   assetText("styles.css?v=2.0.0"),
-   assetText("storage.js?v=2.0.0"),
-   assetText("auth.js?v=2.0.0"),
-   assetText("app.js?v=2.0.0")
+   assetText("styles.css?v=2.0.1"),
+   assetText("storage.js?v=2.0.1"),
+   assetText("auth.js?v=2.0.1"),
+   assetText("app.js?v=2.0.1")
   ]);
   const stripModule=source=>source
    .replace(/^import\s+[^;]+;\s*$/gm,"")
@@ -723,6 +842,7 @@ function applyHashShare(){
  const h=location.hash||"";if(!h.startsWith("#share="))return;
  try{
   privateNotesBeforeShare=state.notes||"";
+  privateToolboxBeforeShare=deepClone(state.toolbox||DEFAULT.toolbox);
   state=normalizeState(decodeShare(h.slice(7)));readonly=true;state.sharedView=true;
  }catch(e){}
 }
