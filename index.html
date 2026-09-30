@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#080a12">
-<meta name="description" content="Checklist diário e semanal para AION 2: progressão, personagens, Odyle, Nightmare, Ascension, Battleground e planejamento antes do reset.">
+<meta name="description" content="AION 2 Control Center: checklist, progressão, personagens, timers, recursos, guias e Bíblia do AION 2 em um painel pessoal.">
 <meta name="robots" content="noindex,nofollow,noarchive">
 <meta name="color-scheme" content="dark">
 <link rel="canonical" href="https://aion2checklist.github.io/">
@@ -13,9 +13,9 @@
 
 <meta property="og:type" content="website">
 <meta property="og:locale" content="pt_BR">
-<meta property="og:site_name" content="AION 2 Checklist">
-<meta property="og:title" content="AION 2 — Weekly & Daily Checklist">
-<meta property="og:description" content="Acompanhe diárias, semanais, personagens, recursos e resets de AION 2 em um único checklist.">
+<meta property="og:site_name" content="AION 2 Control Center">
+<meta property="og:title" content="AION 2 — Control Center v2.0">
+<meta property="og:description" content="Sua central pessoal de AION 2: progresso diário e semanal, roster, recursos, timers e guias.">
 <meta property="og:url" content="https://aion2checklist.github.io/">
 <meta property="og:image" content="https://blogfiles.ncsoft.net/news/cb7fbf01-da19-4c7b-a2d5-673a9628b57d.jpg">
 <meta property="og:image:width" content="1920">
@@ -23,23 +23,68 @@
 <meta property="og:image:alt" content="AION 2 — Elyos e Asmodian">
 
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="AION 2 — Weekly & Daily Checklist">
-<meta name="twitter:description" content="Checklist de progressão para AION 2 com diárias, semanais, recursos e personagens.">
+<meta name="twitter:title" content="AION 2 — Control Center v2.0">
+<meta name="twitter:description" content="Central pessoal de progressão para AION 2 com checklist, roster, recursos, timers e guias.">
 <meta name="twitter:image" content="https://blogfiles.ncsoft.net/news/cb7fbf01-da19-4c7b-a2d5-673a9628b57d.jpg">
-<title>AION 2 — Weekly & Daily Checklist</title>
-<link rel="stylesheet" href="./styles.css?v=1.0.0-final5">
+<title>AION 2 — Control Center v2.0</title>
+<link rel="stylesheet" href="./styles.css?v=2.0.0">
 </head>
 <body>
-<div class="shell">
-<header class="top">
-  <div class="brand">
-    <div class="emblem" aria-hidden="true">
-      <svg viewBox="0 0 64 64" fill="none">
-        <path d="M32 7c4 9 9 15 18 20-9-1-15 3-18 10-3-7-9-11-18-10 9-5 14-11 18-20Z" stroke="currentColor" stroke-width="2.4"/>
-        <path d="M20 39c5 0 9 2 12 7 3-5 7-7 12-7-5 5-8 10-12 18-4-8-7-13-12-18Z" stroke="currentColor" stroke-width="2.4"/>
-      </svg>
+<div class="appShell">
+<aside class="sidebar" id="sidebar">
+  <div class="sidebarHeader">
+    <div class="sidebarBrand">
+      <div class="emblem" aria-hidden="true">
+        <svg viewBox="0 0 64 64" fill="none">
+          <path d="M32 7c4 9 9 15 18 20-9-1-15 3-18 10-3-7-9-11-18-10 9-5 14-11 18-20Z" stroke="currentColor" stroke-width="2.4"/>
+          <path d="M20 39c5 0 9 2 12 7 3-5 7-7 12-7-5 5-8 10-12 18-4-8-7-13-12-18Z" stroke="currentColor" stroke-width="2.4"/>
+        </svg>
+      </div>
+      <div class="brandText"><b>AION 2</b><small>CONTROL CENTER // v2.0</small></div>
     </div>
-    <div class="brandText"><b>AION 2</b><small>WEEKLY & DAILY CHECKLIST // GLOBAL // v1.0 DEFINITIVA</small></div>
+    <div class="sidebarChip"><span class="sidebarPulse"></span> GLOBAL · CONTA PESSOAL</div>
+  </div>
+
+  <nav class="nav sideNav" id="nav" aria-label="Navegação principal">
+    <div class="navGroup">
+      <div class="navLabel">Central</div>
+      <button class="active" data-view="today"><span class="navIcon">⌂</span><span>Painel</span></button>
+      <button data-view="characters"><span class="navIcon">◎</span><span>Personagens</span></button>
+    </div>
+    <div class="navGroup">
+      <div class="navLabel">Ciclos</div>
+      <button data-view="weekly"><span class="navIcon">✓</span><span>Semana</span></button>
+      <button data-view="resources"><span class="navIcon">◇</span><span>Recursos</span></button>
+    </div>
+    <div class="navGroup">
+      <div class="navLabel">Planejamento</div>
+      <button data-view="week1"><span class="navIcon">✦</span><span>Guia da conta</span></button>
+    </div>
+    <div class="navGroup">
+      <div class="navLabel">Conhecimento</div>
+      <button data-view="bible"><span class="navIcon">☷</span><span>Bíblia do Aion 2</span></button>
+      <button data-view="tips"><span class="navIcon">?</span><span>Dicas gerais</span></button>
+    </div>
+    <div class="navGroup">
+      <div class="navLabel">Pessoal</div>
+      <button data-view="notes"><span class="navIcon">✎</span><span>Anotações</span></button>
+    </div>
+  </nav>
+
+  <div class="sidebarFoot">
+    <span>AION 2 CC</span>
+    <small>v2.0 · Discord + nuvem</small>
+  </div>
+</aside>
+<div class="sidebarBackdrop" id="sidebarBackdrop"></div>
+<div class="workspace">
+<header class="top appTop">
+  <div class="mobileTopStart">
+    <button class="btn ghost mobileMenuBtn" id="menuBtn" aria-label="Abrir menu">☰</button>
+    <div class="pageIdentity">
+      <span>CONTROL CENTER</span>
+      <b id="viewTitle">Painel da conta</b>
+    </div>
   </div>
   <div class="topActions">
     <button class="btn ghost" id="authBtn">☁ <span class="textHide" id="authBtnText">Entrar com Discord</span></button>
@@ -53,60 +98,59 @@
   <button class="btn primary" id="adoptShare">Usar como meu checklist</button>
 </div>
 
-<section class="hero">
- <div class="heroGrid">
-  <div>
-   <div class="kicker" id="profileLine">Perfil de Daeva</div>
-   <h1>Seu checklist em <span>Atreia</span>, sempre em dia.</h1>
-   <p>Checklist diário e semanal com rastreamento por personagem, energia e progresso da conta. Quando quiser, troque para a visão de estratégia de lançamento sem bagunçar sua rotina normal.</p>
-  </div>
-  <div class="resetCard">
-    <div class="resetTimers">
-      <div class="resetSection">
-        <div class="resetLabel">PRÓXIMO RESET DIÁRIO</div>
-        <div class="countdown countdownDaily" id="dailyCountdown">--:--:--</div>
-        <div class="resetMeta" id="dailyResetMeta">Todos os dias · horário configurável</div>
-      </div>
-      <div class="resetDivider"></div>
-      <div class="resetSection shugoTimerSection">
-        <div class="resetLabel">PRÓXIMO SHUGO FESTIVAL</div>
-        <div class="countdown countdownShugo" id="shugoCountdown">--:--:--</div>
-        <div class="resetMeta" id="shugoResetMeta">A cada hora · próxima janela --:00</div>
-      </div>
-      <div class="resetDivider"></div>
-      <div class="resetSection">
-        <div class="resetLabel">PRÓXIMO RESET SEMANAL</div>
-        <div class="countdown" id="weeklyCountdown">--:--:--</div>
-        <div class="resetMeta" id="resetMeta">Quarta-feira · horário configurável</div>
-      </div>
+<section class="hero commandHero">
+  <div class="commandHeroHead">
+    <div class="commandIntro">
+      <div class="kicker" id="profileLine">Perfil de Daeva</div>
+      <h1>Central de <span>Atreia</span></h1>
+      <p>Seu painel pessoal de progressão: ciclos, personagens, recursos, timers e conhecimento reunidos sem transformar o jogo em uma planilha infinita.</p>
     </div>
-    <div class="progressGrid" aria-label="Progresso dos ciclos">
-      <div class="progressWrap">
-        <div class="progressText"><span>Hoje</span><span id="dailyProgressText">0%</span></div>
-        <div class="progressBar"><div class="progressFill dailyProgressFill" id="dailyProgressFill"></div></div>
-      </div>
-      <div class="progressWrap">
-        <div class="progressText"><span>Semana</span><span id="weeklyProgressText">0%</span></div>
-        <div class="progressBar"><div class="progressFill weeklyProgressFill" id="weeklyProgressFill"></div></div>
-      </div>
+    <div class="heroMarks" aria-label="Status do painel">
+      <span>GLOBAL</span>
+      <span>v2.0</span>
     </div>
   </div>
- </div>
+
+  <div class="timerMatrix">
+    <div class="timerTile">
+      <div class="resetLabel">RESET DIÁRIO</div>
+      <div class="countdown countdownDaily" id="dailyCountdown">--:--:--</div>
+      <div class="resetMeta" id="dailyResetMeta">Todos os dias · horário configurável</div>
+    </div>
+    <div class="timerTile shugoTile">
+      <div class="resetLabel">SHUGO FESTIVAL</div>
+      <div class="countdown countdownShugo" id="shugoCountdown">--:--:--</div>
+      <div class="resetMeta" id="shugoResetMeta">A cada hora · próxima janela --:00</div>
+    </div>
+    <div class="timerTile">
+      <div class="resetLabel">RESET SEMANAL</div>
+      <div class="countdown" id="weeklyCountdown">--:--:--</div>
+      <div class="resetMeta" id="resetMeta">Quarta-feira · horário configurável</div>
+    </div>
+  </div>
+
+  <div class="progressGrid commandProgress" aria-label="Progresso dos ciclos">
+    <div class="progressWrap">
+      <div class="progressText"><span>Progresso de hoje</span><span id="dailyProgressText">0%</span></div>
+      <div class="progressBar"><div class="progressFill dailyProgressFill" id="dailyProgressFill"></div></div>
+    </div>
+    <div class="progressWrap">
+      <div class="progressText"><span>Progresso da semana</span><span id="weeklyProgressText">0%</span></div>
+      <div class="progressBar"><div class="progressFill weeklyProgressFill" id="weeklyProgressFill"></div></div>
+    </div>
+  </div>
 </section>
 
-<nav class="nav" id="nav">
- <button class="active" data-view="today">Hoje</button>
- <button data-view="weekly">Semana</button>
- <button data-view="characters">Personagens</button>
- <button data-view="week1">Guia da conta</button>
- <button data-view="bible">Bíblia do Aion 2</button>
- <button data-view="resources">Recursos</button>
- <button data-view="tips">Dicas gerais</button>
- <button data-view="notes">Anotações</button>
-</nav>
+
 
 <main>
 <section class="view" id="today">
+ <div class="moduleStrip" aria-label="Atalhos da central">
+  <button class="moduleLink" data-go-view="characters"><span class="moduleGlyph">◎</span><span><b>Roster</b><small>Personagens e progresso individual</small></span><em>→</em></button>
+  <button class="moduleLink" data-go-view="resources"><span class="moduleGlyph">◇</span><span><b>Recursos</b><small>Caps, entradas e membership</small></span><em>→</em></button>
+  <button class="moduleLink" data-go-view="bible"><span class="moduleGlyph">☷</span><span><b>Bíblia</b><small>12 capítulos de referência</small></span><em>→</em></button>
+  <button class="moduleLink" data-go-view="week1"><span class="moduleGlyph">✦</span><span><b>Planejamento</b><small>Rotina e estratégia da conta</small></span><em>→</em></button>
+ </div>
  <div class="grid">
   <div class="card pad c8">
    <div class="titleRow">
@@ -194,7 +238,7 @@
    <h2>Membership</h2>
    <div class="callout info" id="membershipInfo"></div>
    <hr class="sep">
-   <div class="sub">A v1.0 não assume que todo jogador tem assinatura. Odyle e Shugo mudam conforme o perfil selecionado.</div>
+   <div class="sub">A v2.0 não assume que todo jogador tem assinatura. Odyle e Shugo mudam conforme o perfil selecionado.</div>
   </div>
  </div>
 </section>
@@ -531,7 +575,8 @@
 
 </main>
 
-<div class="footer">AION 2 Checklist v1.0 definitiva · Discord + nuvem · dados separados por usuário · snapshots sem anotações pessoais</div>
+<div class="footer">AION 2 Control Center v2.0 · Discord + nuvem · dados separados por usuário · snapshots sem anotações pessoais</div>
+</div>
 </div>
 
 <div class="modalBack" id="settingsModal">
@@ -591,7 +636,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="./config.js?v=1.0.0-final"></script>
-<script type="module" src="./app.js?v=1.0.0-final5"></script>
+<script src="./config.js?v=2.0.0"></script>
+<script type="module" src="./app.js?v=2.0.0"></script>
 </body>
 </html>
