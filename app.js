@@ -10,11 +10,11 @@ const authController=createAuthController(cloudClient);
 let cloudSession=null,cloudSyncTimer=null,cloudBusy=false,cloudDirty=false,cloudLoadedForUser=null,cloudLoadingForUser=null;
 
 const DEFAULT = {
- version:4,
+ version:5,
  profileName:"Daeva",
  faction:"asmodian",
  membership:true,
- dailyDungeonCap:14,
+ dailyDungeonCap:0,
  dailyReset:"05:00",
  weeklyDay:3,
  weeklyReset:"05:00",
@@ -24,7 +24,7 @@ const DEFAULT = {
  sharedView:false,
  notes:"",
  characters:[
-  {id:"main",name:"Main",role:"main",level:1,power:0,odyle:0,nightmare:0,ascension:0,battleground:0}
+  {id:"main",name:"Main",role:"main",level:1,power:0,odyle:0,nightmare:0,sanctuary:0}
  ],
  daily:{},
  weekly:{},
@@ -33,7 +33,7 @@ const DEFAULT = {
   classFilter:"all",
   builder:{
    name:"Build principal",className:"Cleric",focus:"pve",level:1,
-   stats:{might:0,precision:0,attack:0,accuracy:0,critical:0},
+   stats:{itemLevel:0,might:0,precision:0,attack:0,accuracy:0,critical:0},
    deity:{justice:0,destruction:0,death:0,wisdom:0,destiny:0,space:0,time:0,life:0,illusion:0,freedom:0},
    skills:{primary:0,secondary:0},
    progression:{arcana:0,daevanion:0,cogni:0,fera:0,natura:0,varian:0,special:0},
@@ -42,10 +42,8 @@ const DEFAULT = {
   savedBuilds:[],
   compare:{a:"",b:""},
   calculator:{
-   main:{might:0,constitution:0,dexterity:0,intelligence:0,precision:0,willpower:0},
-   deity:{justice:0,destruction:0,death:0,wisdom:0,destiny:0,space:0,time:0,life:0,illusion:0,freedom:0},
-   piece:{label:"Attack",total:0,current:0,next:0},
-   context:{attack:0,pveAttack:0,pvpAttack:0,bossAttack:0,damage:0,pveDamage:0,pvpDamage:0,bossDamage:0,isBoss:false}
+   global:{level:1,itemLevel:0,skillBase:1,skillBonus:0},
+   piece:{label:"Attack",total:0,current:0,next:0}
   }
  },
  meta:{dailyKey:null,weeklyKey:null,localUpdatedAt:null,cloudUserId:null,lastCloudSync:null}
