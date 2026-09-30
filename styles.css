@@ -256,3 +256,200 @@ hr.sep{border:0;border-top:1px solid var(--line);margin:16px 0}
 /* v1.0 final — timer horário do Shugo Festival */
 .countdownShugo{color:var(--gold)}
 .shugoTimerSection{padding:2px 0}
+
+/* =========================================================
+   AION 2 CONTROL CENTER v2.0
+   Portal pessoal: sidebar + dashboard + módulos
+   ========================================================= */
+body{
+ background:
+  radial-gradient(900px 600px at 76% -180px,var(--factionGlow),transparent 68%),
+  radial-gradient(780px 560px at 18% 38%,rgba(60,82,150,.10),transparent 70%),
+  linear-gradient(155deg,#05070c 0%,#080b13 50%,#05070c 100%);
+}
+body:after{opacity:.16;filter:saturate(.82) contrast(1.08)}
+body:before{opacity:.18;background-size:56px 56px}
+
+.appShell{min-height:100vh}
+.sidebar{
+ position:fixed;inset:0 auto 0 0;width:268px;z-index:60;
+ display:flex;flex-direction:column;padding:18px 14px 14px;
+ border-right:1px solid rgba(180,195,230,.13);
+ background:linear-gradient(180deg,rgba(9,12,20,.97),rgba(6,8,14,.96));
+ box-shadow:18px 0 55px rgba(0,0,0,.22);backdrop-filter:blur(24px)
+}
+.sidebarHeader{padding:4px 5px 14px;border-bottom:1px solid var(--line)}
+.sidebarBrand{display:flex;align-items:center;gap:11px}
+.sidebar .emblem{width:39px;height:39px;flex:0 0 39px}
+.sidebar .brandText b{font-size:1rem}
+.sidebar .brandText small{font-size:.64rem;letter-spacing:.1em}
+.sidebarChip{
+ margin-top:13px;display:flex;align-items:center;gap:7px;color:#8e98b1;
+ font-size:.61rem;font-weight:850;letter-spacing:.12em
+}
+.sidebarPulse{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 12px rgba(111,227,178,.6)}
+
+.sidebar .nav{
+ display:flex!important;grid-template-columns:none!important;flex-direction:column;
+ gap:15px;overflow:auto;margin:16px 0 12px;padding:0 3px;scrollbar-width:none;flex:1
+}
+.navGroup{display:grid;gap:5px}
+.navLabel{
+ padding:0 10px 4px;color:#626c84;font-size:.62rem;font-weight:900;
+ text-transform:uppercase;letter-spacing:.17em
+}
+.sidebar .nav button{
+ width:100%;min-width:0;display:flex;align-items:center;gap:10px;
+ border:1px solid transparent;background:transparent;color:#929bb0;
+ padding:10px 11px;border-radius:12px;text-align:left;font-weight:760
+}
+.sidebar .nav button:hover{
+ transform:none;color:#f0f3fb;background:rgba(255,255,255,.035);
+ border-color:rgba(255,255,255,.06)
+}
+.sidebar .nav button.active{
+ color:#fff;border-color:rgba(255,255,255,.11);
+ background:linear-gradient(90deg,var(--factionGlow),rgba(255,255,255,.025));
+ box-shadow:inset 3px 0 0 var(--faction),0 8px 24px rgba(0,0,0,.12)
+}
+.navIcon{
+ width:27px;height:27px;display:grid;place-items:center;flex:0 0 27px;
+ border-radius:8px;border:1px solid rgba(255,255,255,.07);
+ background:rgba(255,255,255,.025);color:var(--faction);font-size:.8rem
+}
+.sidebar .nav button.active .navIcon{background:var(--factionGlow);border-color:rgba(255,255,255,.12);color:#fff}
+.sidebarFoot{
+ padding:12px 9px 4px;border-top:1px solid var(--line);display:grid;gap:2px;color:#7f889f
+}
+.sidebarFoot span{font-size:.66rem;font-weight:900;letter-spacing:.14em}
+.sidebarFoot small{font-size:.64rem;color:#586176}
+
+.sidebarBackdrop{display:none}
+.workspace{
+ min-width:0;margin-left:268px;padding:18px 24px 64px;
+ width:calc(100% - 268px)
+}
+.workspace>main,.workspace>.hero,.workspace>.shareBanner,.workspace>.footer,.workspace>.top{
+ width:min(1280px,100%);margin-left:auto;margin-right:auto
+}
+
+.appTop{
+ top:12px;margin-bottom:16px;padding:9px 10px 9px 12px;border-radius:15px;
+ background:rgba(7,9,15,.78);border-color:rgba(180,195,230,.12)
+}
+.mobileTopStart{display:flex;align-items:center;gap:10px;min-width:0}
+.mobileMenuBtn{display:none!important;padding:8px 10px}
+.pageIdentity{display:grid;min-width:0}
+.pageIdentity span{color:#626c84;font-size:.58rem;font-weight:900;letter-spacing:.16em}
+.pageIdentity b{font-size:.87rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+.commandHero{
+ padding:24px;border-radius:22px;margin-bottom:18px;
+ background:
+  linear-gradient(125deg,rgba(16,21,35,.91),rgba(9,12,21,.93)),
+  radial-gradient(480px 260px at 80% 0,var(--factionGlow),transparent 70%);
+ box-shadow:0 20px 60px rgba(0,0,0,.32)
+}
+.commandHero:after{
+ width:330px;height:330px;right:-120px;top:-160px;opacity:.24;
+ box-shadow:inset 0 0 90px var(--factionGlow),0 0 90px var(--factionGlow)
+}
+.commandHeroHead{
+ position:relative;z-index:2;display:flex;justify-content:space-between;
+ align-items:flex-start;gap:24px;margin-bottom:20px
+}
+.commandIntro{max-width:780px}
+.commandHero h1{font-size:clamp(2rem,4vw,3.35rem);margin:.35rem 0 .5rem;line-height:1}
+.commandHero p{max-width:720px;font-size:.91rem}
+.heroMarks{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}
+.heroMarks span{
+ padding:6px 9px;border-radius:999px;border:1px solid var(--line);
+ background:rgba(255,255,255,.025);color:#8f98ad;font-size:.61rem;font-weight:900;letter-spacing:.12em
+}
+
+.timerMatrix{
+ position:relative;z-index:2;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px
+}
+.timerTile{
+ min-width:0;padding:14px 15px;border:1px solid rgba(180,195,230,.13);border-radius:15px;
+ background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.018))
+}
+.timerTile .countdown{font-size:1.45rem;margin:.25rem 0 .35rem}
+.timerTile .resetMeta{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.shugoTile{border-color:rgba(231,201,133,.22);background:linear-gradient(180deg,rgba(231,201,133,.055),rgba(255,255,255,.018))}
+.commandProgress{
+ position:relative;z-index:2;margin-top:12px;padding-top:12px;border-top:1px solid rgba(180,195,230,.12)
+}
+.commandProgress .progressText{font-size:.7rem;text-transform:uppercase;letter-spacing:.08em}
+.commandProgress .progressBar{height:7px}
+
+.moduleStrip{
+ display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:14px
+}
+.moduleLink{
+ appearance:none;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;
+ gap:11px;padding:13px;border:1px solid var(--line);border-radius:15px;
+ color:var(--text);background:linear-gradient(180deg,rgba(20,25,40,.73),rgba(12,16,27,.68));
+ text-align:left;transition:.18s
+}
+.moduleLink:hover{transform:translateY(-2px);border-color:rgba(180,200,255,.3);background:rgba(24,30,48,.82)}
+.moduleGlyph{
+ width:35px;height:35px;display:grid;place-items:center;border-radius:10px;
+ background:var(--factionGlow);border:1px solid rgba(255,255,255,.09);color:var(--faction);font-weight:900
+}
+.moduleLink span:nth-child(2){display:grid;gap:2px;min-width:0}
+.moduleLink b{font-size:.83rem}
+.moduleLink small{color:var(--muted);font-size:.67rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.moduleLink em{font-style:normal;color:#667088}
+
+.workspace .card{
+ border-radius:16px;background:linear-gradient(180deg,rgba(18,23,37,.80),rgba(11,15,25,.78));
+ box-shadow:0 12px 38px rgba(0,0,0,.19)
+}
+.workspace .pad{padding:18px}
+.workspace h2{font-family:Inter,ui-sans-serif,system-ui,sans-serif;font-weight:780;font-size:1.13rem;letter-spacing:-.01em}
+.workspace .titleRow{margin-bottom:10px}
+.workspace .task{padding:12px 0}
+.workspace .dayBlock{padding:13px 0}
+.workspace .charCard{background:rgba(8,11,19,.42);border-radius:14px}
+.workspace .tipCard{border-radius:14px;background:rgba(8,11,19,.36)}
+.workspace .bibleChapter{border-radius:14px}
+.workspace .footer{margin-top:28px;padding-top:16px;border-top:1px solid rgba(180,195,230,.08)}
+
+@media(max-width:1180px){
+ .moduleStrip{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .timerTile .resetMeta{white-space:normal}
+}
+@media(max-width:980px){
+ .sidebar{
+  transform:translateX(-102%);transition:transform .22s ease;width:min(290px,86vw);
+  box-shadow:24px 0 70px rgba(0,0,0,.55)
+ }
+ body.sidebarOpen .sidebar{transform:translateX(0)}
+ .sidebarBackdrop{
+  display:block;position:fixed;inset:0;z-index:55;background:rgba(0,0,0,.55);
+  opacity:0;visibility:hidden;transition:.2s;backdrop-filter:blur(3px)
+ }
+ body.sidebarOpen .sidebarBackdrop{opacity:1;visibility:visible}
+ body.sidebarOpen{overflow:hidden}
+ .workspace{margin-left:0;width:100%;padding:12px 14px 48px}
+ .mobileMenuBtn{display:inline-flex!important}
+ .appTop{top:7px}
+}
+@media(max-width:720px){
+ .commandHero{padding:18px}
+ .commandHeroHead{display:grid;gap:12px}
+ .heroMarks{justify-content:flex-start}
+ .timerMatrix{grid-template-columns:1fr}
+ .timerTile{padding:12px 13px}
+ .commandProgress{grid-template-columns:1fr}
+ .moduleStrip{grid-template-columns:1fr}
+ .workspace{padding-left:10px;padding-right:10px}
+}
+@media(max-width:520px){
+ .pageIdentity span{display:none}
+ .topActions{gap:5px}
+ .appTop{padding:8px}
+ .commandHero h1{font-size:2rem}
+ .moduleLink{padding:11px}
+}
