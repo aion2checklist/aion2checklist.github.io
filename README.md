@@ -6,14 +6,20 @@ Site: https://aion2checklist.github.io
 
 ## v2.0
 - Nova arquitetura visual em formato de Control Center
-- Sidebar por módulos: Central, Ciclos, Planejamento, Conhecimento e Pessoal
+- Sidebar por módulos: Central, Ciclos, Planejamento, Ferramentas, Conhecimento e Pessoal
 - Dashboard com timers diário, Shugo e semanal
 - Progresso diário e semanal separados
-- Atalhos rápidos para Roster, Recursos, Bíblia e Planejamento
+- Atalhos rápidos para Builder, Calculadora, Classes, Database, Roster, Recursos, Bíblia e Planejamento
 - Checklist diário e semanal com reset automático
 - Login Discord + Supabase
 - Dados separados por usuário
 - Roster de personagens
+- Explorador de classes (Global + KR/TW)
+- Builder com gear planejado, skills, Arcana, Daevanion e Genus
+- Builds salvas na conta e comparação lado a lado
+- Calculadora de Main Stats e Deity Stats + troca de peça e contexto PvE/PvP
+- Database de referência com acesso ao banco completo do AION2 Hub
+- Hub de guias interno
 - Recursos e estratégia de progressão
 - Bíblia do Aion 2 em português
 - Dicas gerais
