@@ -1,7 +1,7 @@
 {
-  "name": "AION 2 Control Center v2.0",
-  "short_name": "AION 2 CC",
-  "description": "Central pessoal de AION 2 com checklist, timers, personagens, recursos, guias, Bíblia e anotações.",
+  "name": "AION 2 Global Control Center v2.1",
+  "short_name": "AION 2 Global",
+  "description": "Control Center Global de AION 2 com checklist, Item Level, builds, classes, Database e Bíblia Global.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
