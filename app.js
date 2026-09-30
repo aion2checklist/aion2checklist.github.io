@@ -281,19 +281,18 @@ function maybeAutoReset(syncCloud=true){
 maybeAutoReset(false);
 
 const dailyDefs=[
- {id:"duties",name:"Duty Missions — 5",note:"Server-wide. Faça no personagem que você quer usar como referência de progressão.",tags:[["DIÁRIO","blue"],["SERVER","gold"]]},
- {id:"supply",name:"Checar Supply Request",note:"Só entregue se o custo fizer sentido. Se o material disparou no mercado, vender pode valer mais que entregar.",tags:[["ECONOMIA","gold"]]},
- {id:"field",name:"Olhar Field Boss / evento próximo",note:"Oportunista: faça se coincidir com sua sessão. Não precisa transformar isso em alarme obrigatório.",tags:[["OPCIONAL","green"]]},
- {id:"capcheck",name:"Checar recursos perto do cap",note:"Nightmare e Odyle podem acumular. A prioridade é evitar cap, não gastar tudo imediatamente.",tags:[["GESTÃO","blue"]]}
+ {id:"missions",name:"Missões do dia",note:"Abra o Journal e feche as missões disponíveis no cliente Global. O Control Center não presume limites de outra versão.",tags:[["GLOBAL","green"],["DIÁRIO","blue"]]},
+ {id:"odyle",name:"Checar Odyle Energy",note:"Evite chegar ao limite antes de uma sessão longa. Membership aumenta a capacidade máxima e as escolhas de cubo em conteúdos compatíveis.",tags:[["RECURSO","gold"]]},
+ {id:"shugo",name:"Checar Shugo Festival",note:"Use o relógio do topo como lembrete pessoal. O cronograma exibido no cliente Global é a referência.",tags:[["EVENTO","violet"]]},
+ {id:"gear",name:"Revisar próximo gate de Item Level",note:"Priorize o conteúdo que seu Item Level já abre em vez de gastar recursos tentando subir tudo ao mesmo tempo.",tags:[["PROGRESSÃO","blue"]]}
 ];
 
-function shugoMax(){return state.membership?14:7}
-function odyleInfo(){return state.membership?{regen:15,day:120,cap:840}:{regen:10,day:80,cap:560}}
-
 const weeklyDefs=()=>[
- {id:"shops",name:"Compras / craft semanais",note:"Odyle, tickets e itens de progressão que façam sentido para sua conta.",tags:[["SEMANA","gold"]]},
- {id:"abyss",name:"Abyss Corridors / eventos de facção",note:"Faça os corredores disponíveis antes do próximo ciclo/reset relevante.",tags:[["ABYSS","red"]]},
- {id:"review",name:"Revisar caps antes do reset",note:"Daily Dungeon, Commands, Ascension, Battleground e Shugo.",tags:[["FECHAMENTO","blue"]]}
+ {id:"nightmare",name:"Fechar Nightmare",note:"O cliente Global de lançamento contém 14 tentativas semanais. Acompanhe por personagem no Roster.",tags:[["GLOBAL CLIENT","green"]]},
+ {id:"sanctuary",name:"Fechar recompensas de Sanctuary",note:"Abyssal Forge: Ludra aparece com 2 recompensas de chefe final por personagem por semana no cliente Global.",tags:[["GLOBAL CLIENT","green"]]},
+ {id:"shugo",name:"Revisar Shugo Festival & loja",note:"Reward Keys, Centuryroot Token e lojas do Festival aparecem no cliente Global.",tags:[["SHUGO","gold"]]},
+ {id:"daevanion",name:"Planejar Daevanion",note:"Revise cristais e próximos nós antes de gastar. O cliente Global abre cinco boards até o nível 45.",tags:[["BUILD","violet"]]},
+ {id:"review",name:"Revisar limites no cliente Global",note:"Horários e valores controlados pelo servidor devem ser confirmados dentro do jogo antes do reset.",tags:[["FECHAMENTO","blue"]]}
 ];
 
 function tagHtml(tags){return `<div class="pills">${tags.map(t=>`<span class="badge ${t[1]}">${t[0]}</span>`).join("")}</div>`}
@@ -304,52 +303,36 @@ function taskHtml(def,scope){
   <div><div class="taskName">${def.name}</div><div class="taskNote">${def.note}</div></div>${tagHtml(def.tags)}
  </label>`
 }
-function countControl(key,value,max,label){
- return `<div class="task">
-  <div></div><div><div class="taskName">${label}</div><div class="taskNote">${value} de ${max}</div></div>
-  <div class="counter"><button data-count="${key}" data-dir="-1" ${readonly?"disabled":""}>−</button><b>${value}/${max}</b><button data-count="${key}" data-dir="1" ${readonly?"disabled":""}>+</button></div>
- </div>`
-}
-
 function renderDaily(){
  document.getElementById("dailyTasks").innerHTML=dailyDefs.map(d=>taskHtml(d,"daily")).join("");
- const oi=odyleInfo();
  const main=state.characters[0]||DEFAULT.characters[0];
  document.getElementById("pulseStats").innerHTML=`
-   <div class="stat"><span>Odyle / main</span><b>${main.odyle}/${oi.cap}</b></div>
-   <div class="stat"><span>Nightmare / main</span><b>${main.nightmare}/14</b></div>
-   <div class="stat"><span>Shugo / servidor</span><b>${state.weeklyCounts.shugo}/${shugoMax()}</b></div>
-   <div class="stat"><span>Daily Dungeon</span><b>${state.weeklyCounts.dailyDungeon}/${state.dailyDungeonCap}</b></div>`;
- document.getElementById("dailyKeyBadge").textContent=`reset ${state.dailyReset}`;
+   <div class="stat"><span>Item Level / main</span><b>${main.power||0}</b></div>
+   <div class="stat"><span>Nightmare / main</span><b>${main.nightmare||0}/14</b></div>
+   <div class="stat"><span>Sanctuary / main</span><b>${main.sanctuary||0}/2</b></div>
+   <div class="stat"><span>Membership</span><b>${state.membership?"ATIVA":"OFF"}</b></div>`;
+ document.getElementById("dailyKeyBadge").textContent=`timer configurado · ${state.dailyReset}`;
 }
 function renderWeekly(){
- let html=weeklyDefs().map(d=>taskHtml(d,"weekly")).join("");
- html+=countControl("dailyDungeon",state.weeklyCounts.dailyDungeon,state.dailyDungeonCap,"Daily Dungeon — entradas semanais (server-wide)");
- html+=countControl("pveCommands",state.weeklyCounts.pveCommands,12,"Command Missions PvE — 12");
- html+=countControl("pvpCommands",state.weeklyCounts.pvpCommands,20,"Commands PvP — meta da transcrição (ajuste se o Global mostrar diferente)");
- html+=countControl("shugo",state.weeklyCounts.shugo,shugoMax(),`Shugo Reward Keys — ${shugoMax()} por servidor`);
- document.getElementById("weeklyTasks").innerHTML=html;
+ document.getElementById("weeklyTasks").innerHTML=weeklyDefs().map(d=>taskHtml(d,"weekly")).join("");
 }
-
 function charCard(c,idx){
- const oi=odyleInfo();
  return `<div class="charCard">
   <div class="charHead"><div><div class="charName">${escapeHtml(c.name)}</div><div class="charRole">${c.role==="main"?"MAIN":"ALT "+idx}</div></div>
     ${c.role!=="main"&&!readonly?`<button class="btn ghost" data-remove-char="${c.id}">Remover</button>`:""}
   </div>
   <div class="fields">
    <div class="field"><label>Nível</label><input class="input charInput" type="number" min="1" max="99" data-char="${c.id}" data-field="level" value="${c.level}" ${readonly?"disabled":""}></div>
-   <div class="field"><label>CP / Item Level</label><input class="input charInput" type="number" min="0" data-char="${c.id}" data-field="power" value="${c.power}" ${readonly?"disabled":""}></div>
-   <div class="field"><label>Odyle</label><input class="input charInput" type="number" min="0" max="${oi.cap}" data-char="${c.id}" data-field="odyle" value="${c.odyle}" ${readonly?"disabled":""}></div>
-   <div class="field"><label>Nightmare tickets</label><input class="input charInput" type="number" min="0" max="14" data-char="${c.id}" data-field="nightmare" value="${c.nightmare}" ${readonly?"disabled":""}></div>
+   <div class="field"><label>Item Level</label><input class="input charInput" type="number" min="0" data-char="${c.id}" data-field="power" value="${c.power}" ${readonly?"disabled":""}></div>
+   <div class="field"><label>Odyle Energy</label><input class="input charInput" type="number" min="0" data-char="${c.id}" data-field="odyle" value="${c.odyle}" ${readonly?"disabled":""}></div>
+   <div class="field"><label>Nightmare — feitos</label><input class="input charInput" type="number" min="0" max="14" data-char="${c.id}" data-field="nightmare" value="${c.nightmare}" ${readonly?"disabled":""}></div>
   </div>
-  <div class="meterLine"><span>Ascension Trial</span>${smallCounter(c.id,"ascension",c.ascension,3)}</div>
-  <div class="meterLine"><span>Battleground wins</span>${smallCounter(c.id,"battleground",c.battleground,3)}</div>
-  <div class="mini">Odyle estimado: +${oi.regen}/3h · ${oi.day}/dia · cap ${oi.cap}${state.membership?" com membership":""}</div>
+  <div class="meterLine"><span>Sanctuary · recompensas de chefe final</span>${smallCounter(c.id,"sanctuary",c.sanctuary||0,2)}</div>
+  <div class="mini">${state.membership?"Membership ativa: capacidade máxima de Odyle e escolhas de cubo aumentadas.":"Sem Membership: use o limite de Odyle mostrado no cliente Global."}</div>
  </div>`;
 }
 function smallCounter(id,field,value,max){
- return `<div class="counter"><button data-char-count="${id}" data-field="${field}" data-dir="-1" ${readonly?"disabled":""}>−</button><b>${value}/${max}</b><button data-char-count="${id}" data-field="${field}" data-dir="1" ${readonly?"disabled":""}>+</button></div>`
+ return `<div class="counter"><button data-char-count="${id}" data-field="${field}" data-max="${max}" data-dir="-1" ${readonly?"disabled":""}>−</button><b>${value}/${max}</b><button data-char-count="${id}" data-field="${field}" data-max="${max}" data-dir="1" ${readonly?"disabled":""}>+</button></div>`
 }
 function renderCharacters(){
  document.getElementById("characterGrid").innerHTML=state.characters.map(charCard).join("");
@@ -357,44 +340,30 @@ function renderCharacters(){
 }
 
 const launchPlans={
- balanced:{
-  label:"Lançamento · padrão recomendado: protege desbloqueios do main e encaixa alts sem transformar o Dia 1 em trabalho.",
-  blocks:[
-   ["Dia 1 — main primeiro",["Leve o main ao nível 22 para iniciar Odyle.","Continue o main até o nível 45 para abrir os sistemas importantes.","Faça as 5 Duty Missions do dia.","Se ainda tiver tempo/energia, leve seus alts ao 22; não atrase o main só para multiplicar personagens."]],
-   ["Dias 2–3 — destravar a conta",["Alts ao nível 22 e depois 45 conforme seu tempo.","Side quests, Sealed Dungeons e Strongholds/Garrisons que dão poder permanente.","Colecionáveis/Monolith que realmente aumentam progressão."]],
-   ["Dias 4–6 — atender gates",["Priorize o gate real mostrado pelo cliente para seu próximo Expedition/Conquest.","O vídeo cita ~1400 para Bacchron Sky Island; trate isso como referência, não dogma.","Use Odyle onde o loot já é relevante para o endgame, em vez de abrir todo cubo de leveling."]],
-   ["Antes do reset",["Feche Daily Dungeon, Commands, Ascension e Battleground.","Gaste Nightmare antes de 14/14, preferencialmente quando estiver mais forte.","Feche compras/craft semanais e Shugo Reward Keys."]]
-  ]
- },
- hardcore:{
-  label:"Lançamento · rota do vídeo: maximiza recargas cedo e assume que você vai jogar bastante.",
-  blocks:[
-   ["Dia 1 — multiplicar geração",["Levar main + todos os alts ao nível 22.","Depois levar o main ao 45.","Fazer as 5 Duties no main."]],
-   ["Dias 2–6 — roster",["5 Duties primeiro.","Levar alts ao máximo.","Limpar side content, Sealed Dungeons, Strongholds/Garrisons e Monolith.","Mirar o gate de equipamento do primeiro farm relevante; o vídeo usa ~1400 como referência."]],
-   ["Último bloco antes do reset",["Consumir energia/tickets acumulados.","Ascension Trial e conteúdo pontuado quando estiver mais forte.","Daily Dungeons, craft e lojas.","Nightmare antes de capar."]]
-  ]
- },
- casual:{
-  label:"Lançamento · para quem quer progredir bem sem administrar uma fábrica de alts.",
-  blocks:[
-   ["Dia 1",["Main ao 22 e depois 45.","5 Duties.","Desbloqueios essenciais no caminho."]],
-   ["Resto da semana",["Um único personagem bem feito > vários alts pela metade.","Side content que dá poder permanente.","Daily Dungeon, Ascension, Battleground e Commands antes do reset."]],
-   ["Energia",["Não abra cubo de leveling por hábito.","Guarde Odyle para conteúdo cujo loot você realmente quer.","Evite Nightmare em dificuldade baixa se ainda há espaço no cap para ficar mais forte."]]
-  ]
- }
+ balanced:{label:"Global · rota segura: desbloqueie sistemas no ritmo do cliente e use Item Level como bússola.",blocks:[
+  ["1 — História e desbloqueios",["Avance a campanha e trate o nível 45 como o início do núcleo de endgame presente no cliente Global.","Daevanion abre nos níveis 12, 20, 30, 40 e 45.","Não planeje o dia em torno de conteúdo que ainda apareça bloqueado no servidor."]],
+  ["2 — Skills",["O cliente Global usa 4 slots de Stigma e 8 quick slots.","Skills sobem naturalmente até 14; Arcana e Daevanion podem adicionar níveis extras.","Specializations abrem em 8, 12 e 20."]],
+  ["3 — Item Level",["Conquest usa gates 700, 1.400 e 2.100 no cliente Global.","Transcendence visível no lançamento usa 1.600 / 1.900 / 2.200 / 2.500.","Abyssal Forge: Ludra aparece em 2.800."]],
+  ["4 — Semana",["Nightmare: acompanhe 14 tentativas semanais por personagem.","Sanctuary: acompanhe 2 recompensas de chefe final por personagem.","Use o Database Global para conferir sistemas e itens do cliente atual."]]
+ ]},
+ hardcore:{label:"Global · ritmo alto: empurre Item Level sem investir pesado em sistemas que ainda não destravam conteúdo.",blocks:[
+  ["Rush de desbloqueio",["Campanha até o endgame e os cinco boards Daevanion presentes no cliente.","Use o próximo gate como meta concreta.","Ao atingir 45, organize Conquest, Transcendence e Sanctuary pelo Item Level."]],
+  ["Build",["Escolha duas skills-chave.","Distribua Daevanion para a rota que atende sua build.","Use Arcana, gear e progressão para atingir Specializations."]],
+  ["Fechamento",["Complete Nightmare e Sanctuary antes dos resets exibidos no cliente.","Revise Shugo Festival, Abyss e lojas.","Compare snapshots no Builder antes de comprometer recursos raros."]]
+ ]},
+ casual:{label:"Global · simples e eficiente: um main bem cuidado, metas claras e pouca administração.",blocks:[
+  ["Seu main",["Avance história até os sistemas que você usa.","Atualize Item Level no Roster e veja o próximo conteúdo na Calculadora.","Não crie alts só para preencher uma planilha."]],
+  ["Sua build",["Mantenha duas skills prioritárias.","Abra Daevanion nos níveis 12/20/30/40/45.","Salve um snapshot quando a direção da build estiver clara."]],
+  ["Sua semana",["Nightmare e Sanctuary têm contadores úteis para acompanhar.","Membership muda conveniências, mercado e Odyle, sem números inventados.","O cliente Global sempre vence qualquer guia externo."]]
+ ]}
 };
-
-const routinePlan={
- label:"Rotina normal · foque em constância semanal, não em pressa de lançamento.",
- blocks:[
-  ["Quando logar",["Comece pelo que realmente reseta no dia: Duty Missions e checagem rápida das tarefas do dia.","Veja se algum recurso acumulável está perto do cap antes de decidir onde gastar tempo.","Se houver Field Boss, evento ou janela boa de jogo em grupo, encaixe de forma oportunista."]],
-  ["Durante a semana",["Feche primeiro o que é server-wide ou tem limite fixo claro: compras/crafts, Daily Dungeon, Command Missions e Shugo.","Use Odyle e Nightmare de forma inteligente: evitar cap é mais importante que gastar cedo.","Ascension e conteúdo pontuado costumam render melhor quando você já ganhou mais poder na semana."]],
-  ["Prioridades avançadas — Bíblia",["Escolha cedo as 2 Active Skills que mais definem sua build e mire os marcos 12/16/20 antes de espalhar recursos.","Evite gastar Manastones/Soulstones superiores em gear temporário, porque essas linhas não transferem.","Economize Transfer Stones/Fragments Heroic para equipamentos que realmente pretende manter.","No Pet Genus, a referência Asia favorece subir o board antes de começar a travar linhas; confirme o ritmo do Global antes de seguir isso como regra rígida."]],
-  ["Antes do reset",["Passe pela aba Semana e zere tudo que ainda estiver aberto.","Cheque cada personagem: Ascension, Battleground e recursos acumulados.","Faça uma revisão rápida de mercado/supply request para não deixar valor na mesa."]],
-  ["Regra de ouro",["Rotina boa é repetível. Se uma estratégia te faz gastar mais tempo organizando do que jogando, simplifique.","Main consistente + poucos alts bem cuidados costuma render melhor do que um roster enorme largado pela metade."]]
- ]
-};
-
+const routinePlan={label:"Rotina Global · somente dados oficiais ou do cliente Global; o que é controlado pelo servidor fica configurável.",blocks:[
+ ["Ao entrar",["Confira Journal, Odyle e o próximo gate de Item Level.","Use o timer de Shugo apenas como lembrete pessoal.","Atualize Item Level do main quando trocar um conjunto importante."]],
+ ["Build",["4 Stigma slots e 8 quick slots no cliente Global.","Daevanion: Nezekan 12, Zikel 20, Vaizel 30, Triniel 40 e Azphel 45.","Specializations de Mastery abrem em 8, 12 e 20."]],
+ ["Conteúdo",["A partir do nível 45, use a Calculadora para Conquest, Transcendence e Sanctuary.","Nightmare mostra 14 tentativas semanais.","Ludra registra 2 recompensas de chefe final por personagem por semana."]],
+ ["Economia & Membership",["Membership Global libera Market, Personal Trading, Remote Storage, Wind Breeze Merchants e Quna Exchange Shop.","Também aumenta capacidade de Odyle e escolhas de Odyle Energy Cube em conteúdos compatíveis.","O site não presume porcentagens ou caps não publicados."]],
+ ["Regra do Control Center",["Dados do cliente entram como dados; decisões do servidor entram como configuráveis.","Se o jogo mostrar algo diferente após patch, o cliente vence.","Não usamos números de outra versão para preencher lacunas."]]
+]};
 function renderWeek1(){
  const planView=state.planView||"routine";
  const isLaunch=planView==="launch";
@@ -411,19 +380,17 @@ function renderWeek1(){
  }
 }
 function renderResources(){
- const oi=odyleInfo();
  document.getElementById("resourceSummary").innerHTML=`
-  <div class="dayBlock"><h3>Odyle Energy</h3><div class="sub">Estimativa do perfil atual: <b>${oi.regen} a cada 3h</b> · <b>${oi.day}/dia</b> · cap base <b>${oi.cap}</b>. Custo típico do cubo: 40.</div></div>
-  <div class="dayBlock"><h3>Nightmare</h3><div class="sub">+2 cargas/dia por personagem · cap 14. Não precisa gastar diariamente; precisa evitar cap.</div></div>
-  <div class="dayBlock"><h3>Shugo Festival</h3><div class="sub"><b>${shugoMax()} Reward Keys/semana por servidor</b> no perfil atual (${state.membership?"membership ativa":"sem membership"}). Modelo revisado 2026.</div></div>
-  <div class="dayBlock"><h3>Ascension Trial</h3><div class="sub">3 tentativas por semana por personagem.</div></div>
-  <div class="dayBlock"><h3>Battleground</h3><div class="sub">Até 3 recompensas de vitória por semana por personagem.</div></div>
-  <div class="dayBlock"><h3>Daily Dungeon</h3><div class="sub">Seu site está configurado para <b>${state.dailyDungeonCap}/semana</b> server-wide. Ajuste em Configurações quando confirmar o contador no Global.</div></div>`;
+  <div class="dayBlock"><h3>Odyle Energy</h3><div class="sub">Presente no cliente Global. A Membership aumenta a capacidade máxima; o valor numérico fica sob controle do cliente ao vivo.</div></div>
+  <div class="dayBlock"><h3>Nightmare</h3><div class="sub"><b>14 tentativas por semana</b> no cliente Global de lançamento.</div></div>
+  <div class="dayBlock"><h3>Sanctuary · Abyssal Forge: Ludra</h3><div class="sub">Nível 45 · <b>Item Level 2.800</b> · 10 jogadores · <b>2 recompensas de chefe final por personagem/semana</b>.</div></div>
+  <div class="dayBlock"><h3>Shugo Festival</h3><div class="sub">Reward Keys e Centuryroot Token aparecem no cliente Global. O timer do topo é somente um lembrete pessoal.</div></div>
+  <div class="dayBlock"><h3>Daevanion</h3><div class="sub">Cinco boards presentes: Nezekan, Zikel, Vaizel, Triniel e Azphel.</div></div>
+  <div class="dayBlock"><h3>Craft</h3><div class="sub">Profissões do cliente Global: Alchemy, Blacksmithing, Armorsmithing, Handicrafting e Cooking.</div></div>`;
  document.getElementById("membershipInfo").innerHTML=state.membership
-  ? `<b>Membership ativa.</b><br>O site usa Odyle +15/3h (120/dia), cap base 840 e Shugo 14 chaves/semana.`
-  : `<b>Sem membership.</b><br>O site usa Odyle +10/3h (80/dia), cap base 560 e Shugo 7 chaves/semana.`;
+  ? `<b>Special Quai Membership ativa.</b><br>Remote Storage, Personal Trading, Wind Breeze Merchants, Market, Quna Exchange Shop, maior capacidade de Odyle e mais escolhas de Odyle Energy Cube.`
+  : `<b>Sem Membership.</b><br>O jogo continua free-to-play; os recursos acima fazem parte dos benefícios da Membership Global.`;
 }
-
 
 const CLASS_DATA=[
  {name:"Templar",role:"Tank",roleKey:"tank",weapon:"Espada",difficulty:"Média",availability:"global",summary:"Linha de frente com foco em proteção, controle de ameaça e sustentação do grupo."},
