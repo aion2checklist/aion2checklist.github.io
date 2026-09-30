@@ -31,21 +31,21 @@ export function createStateNormalizer(defaultState){
     x.profileName=String(x.profileName||defaultState.profileName).slice(0,60);
     x.faction=x.faction==="elyos"?"elyos":"asmodian";
     x.membership=!!x.membership;
-    x.dailyDungeonCap=[7,14].includes(Number(x.dailyDungeonCap))?Number(x.dailyDungeonCap):defaultState.dailyDungeonCap;
+    x.dailyDungeonCap=clampNum(x.dailyDungeonCap,0,999,0);
     x.weeklyDay=clampNum(x.weeklyDay,0,6,defaultState.weeklyDay);
     x.dailyReset=/^([01]\d|2[0-3]):[0-5]\d$/.test(String(x.dailyReset))?String(x.dailyReset):defaultState.dailyReset;
     x.weeklyReset=/^([01]\d|2[0-3]):[0-5]\d$/.test(String(x.weeklyReset))?String(x.weeklyReset):defaultState.weeklyReset;
     x.daily=isPlainObject(x.daily)?x.daily:{};
     x.weekly=isPlainObject(x.weekly)?x.weekly:{};
     x.weeklyCounts=isPlainObject(x.weeklyCounts)?x.weeklyCounts:{};
-    x.weeklyCounts.dailyDungeon=clampNum(x.weeklyCounts.dailyDungeon,0,x.dailyDungeonCap,0);
-    x.weeklyCounts.pveCommands=clampNum(x.weeklyCounts.pveCommands,0,12,0);
-    x.weeklyCounts.pvpCommands=clampNum(x.weeklyCounts.pvpCommands,0,20,0);
-    x.weeklyCounts.shugo=clampNum(x.weeklyCounts.shugo,0,x.membership?14:7,0);
+    x.weeklyCounts.dailyDungeon=clampNum(x.weeklyCounts.dailyDungeon,0,999,0);
+    x.weeklyCounts.pveCommands=clampNum(x.weeklyCounts.pveCommands,0,999,0);
+    x.weeklyCounts.pvpCommands=clampNum(x.weeklyCounts.pvpCommands,0,999,0);
+    x.weeklyCounts.shugo=clampNum(x.weeklyCounts.shugo,0,999,0);
     x.meta=isPlainObject(x.meta)?x.meta:{};
     x.notes=String(x.notes||"").slice(0,12000);
 
-    const classNames=["Templar","Gladiator","Assassin","Ranger","Sorcerer","Spiritmaster","Cleric","Chanter","Brawler"];
+    const classNames=["Templar","Gladiator","Assassin","Ranger","Sorcerer","Spiritmaster","Cleric","Chanter"];
     const focusNames=["pve","pvp","hybrid"];
     const normalizeBuild=(incomingBuild)=>{
       const base=deepClone(defaultState.toolbox.builder);
@@ -71,7 +71,7 @@ export function createStateNormalizer(defaultState){
     };
 
     x.toolbox=isPlainObject(x.toolbox)?x.toolbox:deepClone(defaultState.toolbox);
-    x.toolbox.classFilter=["all","global","kr","tank","dps","support"].includes(String(x.toolbox.classFilter))?String(x.toolbox.classFilter):"all";
+    x.toolbox.classFilter=["all","tank","dps","support"].includes(String(x.toolbox.classFilter))?String(x.toolbox.classFilter):"all";
     x.toolbox.builder=normalizeBuild(x.toolbox.builder);
     x.toolbox.savedBuilds=(Array.isArray(x.toolbox.savedBuilds)?x.toolbox.savedBuilds:[]).slice(-12).filter(isPlainObject).map((item,index)=>({
       id:String(item.id||("build"+index)).replace(/[^a-zA-Z0-9_-]/g,"").slice(0,60)||("build"+index),
@@ -83,18 +83,17 @@ export function createStateNormalizer(defaultState){
     x.toolbox.compare.b=String(x.toolbox.compare.b||"").slice(0,60);
 
     const calcBase=defaultState.toolbox.calculator;
-    x.toolbox.calculator=mergeState(calcBase,isPlainObject(x.toolbox.calculator)?x.toolbox.calculator:{});
+    const incomingCalc=isPlainObject(x.toolbox.calculator)?x.toolbox.calculator:{};
+    x.toolbox.calculator=deepClone(calcBase);
     const calc=x.toolbox.calculator;
-    calc.main=isPlainObject(calc.main)?calc.main:{};
-    for(const key of Object.keys(calcBase.main)) calc.main[key]=clampNum(calc.main[key],0,99999999,0);
-    calc.deity=isPlainObject(calc.deity)?calc.deity:{};
-    for(const key of Object.keys(calcBase.deity)) calc.deity[key]=clampNum(calc.deity[key],0,200,0);
-    calc.piece=isPlainObject(calc.piece)?calc.piece:{};
-    calc.piece.label=String(calc.piece.label||"Attack").slice(0,40);
-    for(const key of ["total","current","next"]) calc.piece[key]=clampNum(calc.piece[key],-99999999,99999999,0);
-    calc.context=isPlainObject(calc.context)?calc.context:{};
-    for(const key of ["attack","pveAttack","pvpAttack","bossAttack","damage","pveDamage","pvpDamage","bossDamage"]) calc.context[key]=clampNum(calc.context[key],-99999999,99999999,0);
-    calc.context.isBoss=!!calc.context.isBoss;
+    const oldPiece=isPlainObject(incomingCalc.piece)?incomingCalc.piece:{};
+    const oldGlobal=isPlainObject(incomingCalc.global)?incomingCalc.global:{};
+    calc.global.level=clampNum(oldGlobal.level,1,99,1);
+    calc.global.itemLevel=clampNum(oldGlobal.itemLevel,0,99999999,0);
+    calc.global.skillBase=clampNum(oldGlobal.skillBase,0,14,1);
+    calc.global.skillBonus=clampNum(oldGlobal.skillBonus,0,40,0);
+    calc.piece.label=String(oldPiece.label||"Attack").slice(0,40);
+    for(const key of ["total","current","next"]) calc.piece[key]=clampNum(oldPiece[key],-99999999,99999999,0);
 
     const seen=new Set();
     const characters=Array.isArray(x.characters)?x.characters:[];
@@ -110,8 +109,7 @@ export function createStateNormalizer(defaultState){
         power:clampNum(character.power,0,99999999,0),
         odyle:clampNum(character.odyle,0,x.membership?840:560,0),
         nightmare:clampNum(character.nightmare,0,14,0),
-        ascension:clampNum(character.ascension,0,3,0),
-        battleground:clampNum(character.battleground,0,3,0)
+        sanctuary:clampNum(character.sanctuary,0,2,0)
       };
     });
 
