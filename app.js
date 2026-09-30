@@ -10,7 +10,7 @@ const authController=createAuthController(cloudClient);
 let cloudSession=null,cloudSyncTimer=null,cloudBusy=false,cloudDirty=false,cloudLoadedForUser=null,cloudLoadingForUser=null;
 
 const DEFAULT = {
- version:3,
+ version:4,
  profileName:"Daeva",
  faction:"asmodian",
  membership:true,
@@ -29,6 +29,25 @@ const DEFAULT = {
  daily:{},
  weekly:{},
  weeklyCounts:{dailyDungeon:0,pveCommands:0,pvpCommands:0,shugo:0},
+ toolbox:{
+  classFilter:"all",
+  builder:{
+   name:"Build principal",className:"Cleric",focus:"pve",level:1,
+   stats:{might:0,precision:0,attack:0,accuracy:0,critical:0},
+   deity:{justice:0,destruction:0,death:0,wisdom:0,destiny:0,space:0,time:0,life:0,illusion:0,freedom:0},
+   skills:{primary:0,secondary:0},
+   progression:{arcana:0,daevanion:0,cogni:0,fera:0,natura:0,varian:0,special:0},
+   gear:{weapon:"",offhand:"",helmet:"",shoulder:"",chest:"",pants:"",gloves:"",boots:"",cloak:"",necklace:"",earring1:"",earring2:"",ring1:"",ring2:"",bracelet1:"",bracelet2:"",amulet:"",belt:"",brooch1:"",brooch2:"",rune1:"",rune2:"",wings:""}
+  },
+  savedBuilds:[],
+  compare:{a:"",b:""},
+  calculator:{
+   main:{might:0,constitution:0,dexterity:0,intelligence:0,precision:0,willpower:0},
+   deity:{justice:0,destruction:0,death:0,wisdom:0,destiny:0,space:0,time:0,life:0,illusion:0,freedom:0},
+   piece:{label:"Attack",total:0,current:0,next:0},
+   context:{attack:0,pveAttack:0,pvpAttack:0,bossAttack:0,damage:0,pveDamage:0,pvpDamage:0,bossDamage:0,isBoss:false}
+  }
+ },
  meta:{dailyKey:null,weeklyKey:null,localUpdatedAt:null,cloudUserId:null,lastCloudSync:null}
 };
 
