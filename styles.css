@@ -560,3 +560,22 @@ body:before{
 @media(prefers-reduced-motion:reduce){
  *,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}
 }
+
+/* v2.1 — Global intelligence layer */
+.intelDeck{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin-bottom:14px}
+.intelDeck article{min-width:0;padding:13px 14px;border:1px solid rgba(111,227,178,.16);border-radius:14px;background:linear-gradient(145deg,rgba(111,227,178,.045),rgba(9,12,20,.7));contain:layout paint}
+.intelDeck b,.intelDeck small{display:block}.intelDeck b{font-size:.82rem;margin:5px 0 3px}.intelDeck small{color:var(--muted);font-size:.68rem;line-height:1.4}
+.intelTag{font-size:.56rem;color:var(--green);font-weight:950;letter-spacing:.13em}
+.globalBibleHero{background:radial-gradient(650px 240px at 90% -30%,rgba(111,227,178,.11),transparent 70%),linear-gradient(180deg,rgba(18,23,37,.80),rgba(11,15,25,.78))}
+.gateInputs{padding:0;margin-bottom:10px}
+.gateList{display:grid;gap:6px}
+.gateRow{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;padding:9px 10px;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.016)}
+.gateRow>div{min-width:0}.gateRow b,.gateRow small{display:block}.gateRow b{font-size:.74rem}.gateRow small{font-size:.61rem;color:var(--muted);margin-top:2px}
+.gateRow em{font-style:normal;font-size:.63rem;color:var(--muted);font-weight:900}.gateOpen{border-color:rgba(111,227,178,.24);background:rgba(111,227,178,.035)}.gateOpen em,.gateOpen .gateStatus{color:var(--green)}
+.gateStatus{font-weight:950;color:#667088}
+.specialtyMeter{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:12px 0}
+.specialtyMeter div{padding:11px;border:1px solid var(--line);border-radius:11px;background:rgba(255,255,255,.02)}.specialtyMeter span,.specialtyMeter b{display:block}.specialtyMeter span{font-size:.62rem;color:var(--muted)}.specialtyMeter b{font-size:1.2rem;margin-top:3px}
+.specialtySteps{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.specialtySteps span{padding:10px;border:1px solid var(--line);border-radius:11px;text-align:center;color:#67718a}.specialtySteps span.done{color:var(--green);border-color:rgba(111,227,178,.25);background:rgba(111,227,178,.035)}.specialtySteps b,.specialtySteps small{display:block}.specialtySteps small{font-size:.6rem;margin-top:2px}
+.globalFactsPanel .contextResults{margin-top:4px}
+@media(max-width:1180px){.intelDeck{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:650px){.intelDeck{grid-template-columns:1fr}}
