@@ -27,7 +27,7 @@
 <meta name="twitter:description" content="Central pessoal de progressão para AION 2 com checklist, roster, recursos, timers e guias.">
 <meta name="twitter:image" content="https://blogfiles.ncsoft.net/news/cb7fbf01-da19-4c7b-a2d5-673a9628b57d.jpg">
 <title>AION 2 — Control Center v2.0</title>
-<link rel="stylesheet" href="./styles.css?v=2.0.0">
+<link rel="stylesheet" href="./styles.css?v=2.0.1">
 </head>
 <body>
 <div class="appShell">
@@ -61,8 +61,17 @@
       <button data-view="week1"><span class="navIcon">✦</span><span>Guia da conta</span></button>
     </div>
     <div class="navGroup">
+      <div class="navLabel">Ferramentas</div>
+      <button data-view="classes"><span class="navIcon">◫</span><span>Classes</span></button>
+      <button data-view="builder"><span class="navIcon">⚒</span><span>Builder</span></button>
+      <button data-view="calculator"><span class="navIcon">∑</span><span>Calculadora</span></button>
+      <button data-view="compare"><span class="navIcon">⇄</span><span>Comparar builds</span></button>
+      <button data-view="database"><span class="navIcon">▦</span><span>Database</span></button>
+    </div>
+    <div class="navGroup">
       <div class="navLabel">Conhecimento</div>
       <button data-view="bible"><span class="navIcon">☷</span><span>Bíblia do Aion 2</span></button>
+      <button data-view="guides"><span class="navIcon">⌘</span><span>Guias</span></button>
       <button data-view="tips"><span class="navIcon">?</span><span>Dicas gerais</span></button>
     </div>
     <div class="navGroup">
@@ -145,8 +154,12 @@
 
 <main>
 <section class="view" id="today">
- <div class="moduleStrip" aria-label="Atalhos da central">
-  <button class="moduleLink" data-go-view="characters"><span class="moduleGlyph">◎</span><span><b>Roster</b><small>Personagens e progresso individual</small></span><em>→</em></button>
+ <div class="moduleStrip moduleStripV2" aria-label="Atalhos da central">
+  <button class="moduleLink" data-go-view="builder"><span class="moduleGlyph">⚒</span><span><b>Builder</b><small>Monte e salve suas builds</small></span><em>→</em></button>
+  <button class="moduleLink" data-go-view="calculator"><span class="moduleGlyph">∑</span><span><b>Calculadora</b><small>Main Stats, Deity e contexto</small></span><em>→</em></button>
+  <button class="moduleLink" data-go-view="classes"><span class="moduleGlyph">◫</span><span><b>Classes</b><small>9 classes e disponibilidade</small></span><em>→</em></button>
+  <button class="moduleLink" data-go-view="database"><span class="moduleGlyph">▦</span><span><b>Database</b><small>Referências e banco externo</small></span><em>→</em></button>
+  <button class="moduleLink" data-go-view="characters"><span class="moduleGlyph">◎</span><span><b>Roster</b><small>Personagens da sua conta</small></span><em>→</em></button>
   <button class="moduleLink" data-go-view="resources"><span class="moduleGlyph">◇</span><span><b>Recursos</b><small>Caps, entradas e membership</small></span><em>→</em></button>
   <button class="moduleLink" data-go-view="bible"><span class="moduleGlyph">☷</span><span><b>Bíblia</b><small>12 capítulos de referência</small></span><em>→</em></button>
   <button class="moduleLink" data-go-view="week1"><span class="moduleGlyph">✦</span><span><b>Planejamento</b><small>Rotina e estratégia da conta</small></span><em>→</em></button>
@@ -243,6 +256,79 @@
  </div>
 </section>
 
+
+
+<section class="view hidden" id="classes">
+ <div class="grid"><div class="card pad c12">
+  <div class="titleRow"><div><div class="kicker">ARSENAL DE CLASSES</div><h2>Classes</h2><div class="sub">Papéis, armas e disponibilidade para escolher seu próximo personagem ou iniciar uma build.</div></div>
+   <select class="select compactSelect" id="classFilter"><option value="all">Todas</option><option value="global">Global</option><option value="kr">KR/TW</option><option value="tank">Tank</option><option value="dps">DPS</option><option value="support">Suporte</option></select>
+  </div>
+  <div class="classGrid" id="classGrid"></div>
+ </div></div>
+</section>
+
+<section class="view hidden" id="builder">
+ <div class="grid">
+  <div class="card pad c8"><div class="titleRow"><div><div class="kicker">BUILD LAB</div><h2>Builder</h2><div class="sub">Planeje a build sem depender de uma lista fixa de itens. Seus dados acompanham sua conta na nuvem.</div></div><span class="badge violet">SALVO NA CONTA</span></div><div id="builderForm"></div></div>
+  <div class="card pad c4"><div class="titleRow"><div><h2>Minhas builds</h2><div class="sub">Até 12 snapshots para comparar depois.</div></div></div><div id="savedBuildList"></div></div>
+ </div>
+</section>
+
+<section class="view hidden" id="calculator">
+ <div class="grid"><div class="card pad c12">
+  <div class="titleRow"><div><div class="kicker">STAT LAB</div><h2>Calculadora</h2><div class="sub">Main Stats, Deity Stats, troca de peça e contexto PvE/PvP em uma tela.</div></div><button class="btn ghost" id="calcFromBuilderBtn">Puxar do Builder</button></div>
+  <div id="calculatorBody"></div>
+ </div></div>
+</section>
+
+<section class="view hidden" id="compare">
+ <div class="grid"><div class="card pad c12">
+  <div class="titleRow"><div><div class="kicker">BUILD VS BUILD</div><h2>Comparar builds</h2><div class="sub">Compare dois snapshots salvos sem transformar um “score” inventado em verdade.</div></div></div>
+  <div id="compareBuildsBody"></div>
+ </div></div>
+</section>
+
+<section class="view hidden" id="database">
+ <div class="grid"><div class="card pad c12">
+  <div class="titleRow"><div><div class="kicker">CODEX</div><h2>Database</h2><div class="sub">Referência interna rápida + acesso ao banco completo Global/KR-TW do AION2 Hub.</div></div><a class="btn primary" href="https://aion2hub.com/database" target="_blank" rel="noopener noreferrer">Banco completo ↗</a></div>
+  <div class="databaseSearchRow"><input class="input" id="databaseSearch" type="search" placeholder="Buscar: Arcana, Wings, Double Chance, Cleric..."><span class="mini" id="databaseSearchStatus"></span></div>
+  <div class="dbExternalGrid">
+   <a href="https://aion2hub.com/database?cat=Weapons" target="_blank" rel="noopener noreferrer"><b>Armas</b><small>Global + KR/TW</small></a>
+   <a href="https://aion2hub.com/database?cat=Armor" target="_blank" rel="noopener noreferrer"><b>Armaduras</b><small>Slots e raridades</small></a>
+   <a href="https://aion2hub.com/database?cat=Accessories" target="_blank" rel="noopener noreferrer"><b>Acessórios</b><small>Joias e extras</small></a>
+   <a href="https://aion2hub.com/database?cat=Arcana" target="_blank" rel="noopener noreferrer"><b>Arcana</b><small>Cartas e progressão</small></a>
+   <a href="https://aion2hub.com/database?cat=Wings" target="_blank" rel="noopener noreferrer"><b>Wings</b><small>Asas e efeitos</small></a>
+   <a href="https://aion2hub.com/database?cat=Materials" target="_blank" rel="noopener noreferrer"><b>Materiais</b><small>Craft e upgrades</small></a>
+  </div>
+  <div class="dbReferenceGrid" id="dbReferenceGrid">
+   <article class="dbEntry" data-db="double chance dano chance ofensivo"><b>Double Chance</b><p>Bucket ofensivo de alto valor no theorycraft da Bíblia. A importância real depende da versão e da build.</p><span class="badge violet">STAT</span></article>
+   <article class="dbEntry" data-db="combat speed velocidade combate"><b>Combat Speed</b><p>Velocidade de combate; pode ser afetada na prática por ping/FPS e comportamento da classe.</p><span class="badge blue">STAT</span></article>
+   <article class="dbEntry" data-db="soul binding gear roll sync reset bind"><b>Soul Binding</b><p>Sistema de linhas do equipamento: Sync rerrola uma linha, Reset troca todas e Bind melhora eficiência.</p><span class="badge gold">GEAR</span></article>
+   <article class="dbEntry" data-db="arcana card skills deity"><b>Arcana</b><p>Cartas que combinam Deity Stats, atributos e níveis de skills conforme o tipo.</p><span class="badge gold">SISTEMA</span></article>
+   <article class="dbEntry" data-db="daevanion board skill pve pvp"><b>Daevanion</b><p>Boards de progressão com stats e níveis de skills; priorize nós que realmente servem sua build.</p><span class="badge green">SISTEMA</span></article>
+   <article class="dbEntry" data-db="pet genus cogni fera natura varian special"><b>Pet Genus</b><p>Famílias Cogni, Fera, Natura, Varian e Special com progressão de Insight.</p><span class="badge green">SISTEMA</span></article>
+   <article class="dbEntry" data-db="wings asas owned equip effect"><b>Wings</b><p>Asas podem oferecer efeitos por equipar e por possuir, dependendo do item.</p><span class="badge blue">GEAR</span></article>
+   <article class="dbEntry" data-db="closet skin transmog bonus"><b>Closet</b><p>Coleção de skins também participa da progressão horizontal segundo a referência KR.</p><span class="badge violet">SISTEMA</span></article>
+  </div>
+  <div class="callout info databaseSource"><b>Banco de itens:</b> não duplicamos milhares de registros dentro do GitHub Pages. A consulta pesada continua no AION2 Hub, enquanto o Control Center guarda seu planejamento, builds e referências pessoais.</div>
+ </div></div>
+</section>
+
+<section class="view hidden" id="guides">
+ <div class="grid"><div class="card pad c12">
+  <div class="titleRow"><div><div class="kicker">KNOWLEDGE HUB</div><h2>Guias</h2><div class="sub">Um índice único para tudo que já existe dentro do nosso Control Center.</div></div></div>
+  <div class="guidePortalGrid">
+   <button data-go-view="week1"><span>01</span><b>Rotina & lançamento</b><small>Ordem de progressão e fechamento semanal.</small></button>
+   <button data-go-view="bible"><span>02</span><b>Bíblia do Aion 2</b><small>Gear, stats, skills, Arcana, Genus, Wings e theorycraft.</small></button>
+   <button data-go-view="classes"><span>03</span><b>Classes</b><small>Papéis, armas e disponibilidade Global/KR.</small></button>
+   <button data-go-view="calculator"><span>04</span><b>Entender status</b><small>Main Stats e Deity Stats em números.</small></button>
+   <button data-go-view="builder"><span>05</span><b>Montar build</b><small>Salve metas, gear e progressão por build.</small></button>
+   <button data-go-view="resources"><span>06</span><b>Recursos & caps</b><small>Odyle, Nightmare, Shugo e entradas.</small></button>
+   <button data-go-view="tips"><span>07</span><b>Dicas rápidas</b><small>Regras práticas para não desperdiçar progresso.</small></button>
+   <button data-go-view="database"><span>08</span><b>Database</b><small>Referência interna e banco de itens externo.</small></button>
+  </div>
+ </div></div>
+</section>
 
 <section class="view hidden" id="bible">
  <div class="grid">
@@ -636,7 +722,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="./config.js?v=2.0.0"></script>
-<script type="module" src="./app.js?v=2.0.0"></script>
+<script src="./config.js?v=2.0.1"></script>
+<script type="module" src="./app.js?v=2.0.1"></script>
 </body>
 </html>
