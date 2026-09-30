@@ -45,6 +45,57 @@ export function createStateNormalizer(defaultState){
     x.meta=isPlainObject(x.meta)?x.meta:{};
     x.notes=String(x.notes||"").slice(0,12000);
 
+    const classNames=["Templar","Gladiator","Assassin","Ranger","Sorcerer","Spiritmaster","Cleric","Chanter","Brawler"];
+    const focusNames=["pve","pvp","hybrid"];
+    const normalizeBuild=(incomingBuild)=>{
+      const base=deepClone(defaultState.toolbox.builder);
+      const b=mergeState(base,isPlainObject(incomingBuild)?incomingBuild:{});
+      b.name=String(b.name||base.name).slice(0,48);
+      b.className=classNames.includes(String(b.className))?String(b.className):base.className;
+      b.focus=focusNames.includes(String(b.focus))?String(b.focus):base.focus;
+      b.level=clampNum(b.level,1,99,1);
+      b.stats=isPlainObject(b.stats)?b.stats:{};
+      for(const key of Object.keys(base.stats)) b.stats[key]=clampNum(b.stats[key],0,99999999,0);
+      b.deity=isPlainObject(b.deity)?b.deity:{};
+      for(const key of Object.keys(base.deity)) b.deity[key]=clampNum(b.deity[key],0,200,0);
+      b.skills=isPlainObject(b.skills)?b.skills:{};
+      b.skills.primary=clampNum(b.skills.primary,0,40,0);
+      b.skills.secondary=clampNum(b.skills.secondary,0,40,0);
+      b.progression=isPlainObject(b.progression)?b.progression:{};
+      b.progression.arcana=clampNum(b.progression.arcana,0,10,0);
+      b.progression.daevanion=clampNum(b.progression.daevanion,0,9999,0);
+      for(const key of ["cogni","fera","natura","varian","special"]) b.progression[key]=clampNum(b.progression[key],0,10,0);
+      b.gear=isPlainObject(b.gear)?b.gear:{};
+      for(const key of Object.keys(base.gear)) b.gear[key]=String(b.gear[key]||"").slice(0,90);
+      return b;
+    };
+
+    x.toolbox=isPlainObject(x.toolbox)?x.toolbox:deepClone(defaultState.toolbox);
+    x.toolbox.classFilter=["all","global","kr","tank","dps","support"].includes(String(x.toolbox.classFilter))?String(x.toolbox.classFilter):"all";
+    x.toolbox.builder=normalizeBuild(x.toolbox.builder);
+    x.toolbox.savedBuilds=(Array.isArray(x.toolbox.savedBuilds)?x.toolbox.savedBuilds:[]).slice(-12).filter(isPlainObject).map((item,index)=>({
+      id:String(item.id||("build"+index)).replace(/[^a-zA-Z0-9_-]/g,"").slice(0,60)||("build"+index),
+      savedAt:String(item.savedAt||"").slice(0,40),
+      build:normalizeBuild(item.build)
+    }));
+    x.toolbox.compare=isPlainObject(x.toolbox.compare)?x.toolbox.compare:{a:"",b:""};
+    x.toolbox.compare.a=String(x.toolbox.compare.a||"").slice(0,60);
+    x.toolbox.compare.b=String(x.toolbox.compare.b||"").slice(0,60);
+
+    const calcBase=defaultState.toolbox.calculator;
+    x.toolbox.calculator=mergeState(calcBase,isPlainObject(x.toolbox.calculator)?x.toolbox.calculator:{});
+    const calc=x.toolbox.calculator;
+    calc.main=isPlainObject(calc.main)?calc.main:{};
+    for(const key of Object.keys(calcBase.main)) calc.main[key]=clampNum(calc.main[key],0,99999999,0);
+    calc.deity=isPlainObject(calc.deity)?calc.deity:{};
+    for(const key of Object.keys(calcBase.deity)) calc.deity[key]=clampNum(calc.deity[key],0,200,0);
+    calc.piece=isPlainObject(calc.piece)?calc.piece:{};
+    calc.piece.label=String(calc.piece.label||"Attack").slice(0,40);
+    for(const key of ["total","current","next"]) calc.piece[key]=clampNum(calc.piece[key],-99999999,99999999,0);
+    calc.context=isPlainObject(calc.context)?calc.context:{};
+    for(const key of ["attack","pveAttack","pvpAttack","bossAttack","damage","pveDamage","pvpDamage","bossDamage"]) calc.context[key]=clampNum(calc.context[key],-99999999,99999999,0);
+    calc.context.isBoss=!!calc.context.isBoss;
+
     const seen=new Set();
     const characters=Array.isArray(x.characters)?x.characters:[];
     x.characters=characters.filter(isPlainObject).map((character,index)=>{
