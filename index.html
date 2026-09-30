@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#080a12">
-<meta name="description" content="AION 2 Control Center: checklist, progressão, personagens, timers, recursos, guias e Bíblia do AION 2 em um painel pessoal.">
+<meta name="description" content="AION 2 Global Control Center: checklist, Item Level, personagens, builds, timers e Bíblia Global baseada no cliente de lançamento.">
 <meta name="robots" content="noindex,nofollow,noarchive">
 <meta name="color-scheme" content="dark">
 <link rel="canonical" href="https://aion2checklist.github.io/">
@@ -14,7 +14,7 @@
 <meta property="og:type" content="website">
 <meta property="og:locale" content="pt_BR">
 <meta property="og:site_name" content="AION 2 Control Center">
-<meta property="og:title" content="AION 2 — Control Center v2.0">
+<meta property="og:title" content="AION 2 — Global Control Center v2.1">
 <meta property="og:description" content="Sua central pessoal de AION 2: progresso diário e semanal, roster, recursos, timers e guias.">
 <meta property="og:url" content="https://aion2checklist.github.io/">
 <meta property="og:image" content="https://blogfiles.ncsoft.net/news/cb7fbf01-da19-4c7b-a2d5-673a9628b57d.jpg">
@@ -27,7 +27,7 @@
 <meta name="twitter:description" content="Central pessoal de progressão para AION 2 com checklist, roster, recursos, timers e guias.">
 <meta name="twitter:image" content="https://blogfiles.ncsoft.net/news/cb7fbf01-da19-4c7b-a2d5-673a9628b57d.jpg">
 <title>AION 2 — Control Center v2.0</title>
-<link rel="stylesheet" href="./styles.css?v=2.0.2">
+<link rel="stylesheet" href="./styles.css?v=2.1.0-global">
 </head>
 <body>
 <div class="appShell">
@@ -40,7 +40,7 @@
           <path d="M20 39c5 0 9 2 12 7 3-5 7-7 12-7-5 5-8 10-12 18-4-8-7-13-12-18Z" stroke="currentColor" stroke-width="2.4"/>
         </svg>
       </div>
-      <div class="brandText"><b>AION 2</b><small>CONTROL CENTER // v2.0</small></div>
+      <div class="brandText"><b>AION 2</b><small>GLOBAL CONTROL CENTER // v2.1</small></div>
     </div>
     <div class="sidebarChip"><span class="sidebarPulse"></span> GLOBAL · CONTA PESSOAL</div>
   </div>
@@ -70,7 +70,7 @@
     </div>
     <div class="navGroup">
       <div class="navLabel">Conhecimento</div>
-      <button data-view="bible"><span class="navIcon">☷</span><span>Bíblia do Aion 2</span></button>
+      <button data-view="bible"><span class="navIcon">☷</span><span>Bíblia Global</span></button>
       <button data-view="guides"><span class="navIcon">⌘</span><span>Guias</span></button>
       <button data-view="tips"><span class="navIcon">?</span><span>Dicas gerais</span></button>
     </div>
@@ -112,11 +112,11 @@
     <div class="commandIntro">
       <div class="kicker" id="profileLine">Perfil de Daeva</div>
       <h1>Central de <span>Atreia</span></h1>
-      <p>Seu painel pessoal de progressão: ciclos, personagens, recursos, timers e conhecimento reunidos sem transformar o jogo em uma planilha infinita.</p>
+      <p>Seu painel pessoal da versão Global: progresso, Item Level, personagens, conteúdo, builds e conhecimento filtrados para não misturar dados de outras versões.</p>
     </div>
     <div class="heroMarks" aria-label="Status do painel">
       <span>GLOBAL</span>
-      <span>v2.0</span>
+      <span>v2.1 GLOBAL</span>
     </div>
   </div>
 
@@ -124,17 +124,17 @@
     <div class="timerTile">
       <div class="resetLabel">RESET DIÁRIO</div>
       <div class="countdown countdownDaily" id="dailyCountdown">--:--:--</div>
-      <div class="resetMeta" id="dailyResetMeta">Todos os dias · horário configurável</div>
+      <div class="resetMeta" id="dailyResetMeta">Configure pelo cliente Global</div>
     </div>
     <div class="timerTile shugoTile">
       <div class="resetLabel">SHUGO FESTIVAL</div>
       <div class="countdown countdownShugo" id="shugoCountdown">--:--:--</div>
-      <div class="resetMeta" id="shugoResetMeta">A cada hora · próxima janela --:00</div>
+      <div class="resetMeta" id="shugoResetMeta">Marca de hora · --:00</div>
     </div>
     <div class="timerTile">
       <div class="resetLabel">RESET SEMANAL</div>
       <div class="countdown" id="weeklyCountdown">--:--:--</div>
-      <div class="resetMeta" id="resetMeta">Quarta-feira · horário configurável</div>
+      <div class="resetMeta" id="resetMeta">Configure pelo cliente Global</div>
     </div>
   </div>
 
@@ -156,13 +156,19 @@
 <section class="view" id="today">
  <div class="moduleStrip moduleStripV2" aria-label="Atalhos da central">
   <button class="moduleLink" data-go-view="builder"><span class="moduleGlyph">⚒</span><span><b>Builder</b><small>Monte e salve suas builds</small></span><em>→</em></button>
-  <button class="moduleLink" data-go-view="calculator"><span class="moduleGlyph">∑</span><span><b>Calculadora</b><small>Main Stats, Deity e contexto</small></span><em>→</em></button>
-  <button class="moduleLink" data-go-view="classes"><span class="moduleGlyph">◫</span><span><b>Classes</b><small>9 classes e disponibilidade</small></span><em>→</em></button>
-  <button class="moduleLink" data-go-view="database"><span class="moduleGlyph">▦</span><span><b>Database</b><small>Referências e banco externo</small></span><em>→</em></button>
+  <button class="moduleLink" data-go-view="calculator"><span class="moduleGlyph">∑</span><span><b>Calculadora</b><small>Item Level e Skills Global</small></span><em>→</em></button>
+  <button class="moduleLink" data-go-view="classes"><span class="moduleGlyph">◫</span><span><b>Classes</b><small>8 classes do lançamento Global</small></span><em>→</em></button>
+  <button class="moduleLink" data-go-view="database"><span class="moduleGlyph">▦</span><span><b>Database</b><small>Cliente Global e ferramentas</small></span><em>→</em></button>
   <button class="moduleLink" data-go-view="characters"><span class="moduleGlyph">◎</span><span><b>Roster</b><small>Personagens da sua conta</small></span><em>→</em></button>
   <button class="moduleLink" data-go-view="resources"><span class="moduleGlyph">◇</span><span><b>Recursos</b><small>Caps, entradas e membership</small></span><em>→</em></button>
-  <button class="moduleLink" data-go-view="bible"><span class="moduleGlyph">☷</span><span><b>Bíblia</b><small>12 capítulos de referência</small></span><em>→</em></button>
+  <button class="moduleLink" data-go-view="bible"><span class="moduleGlyph">☷</span><span><b>Bíblia Global</b><small>9 capítulos só do Global</small></span><em>→</em></button>
   <button class="moduleLink" data-go-view="week1"><span class="moduleGlyph">✦</span><span><b>Planejamento</b><small>Rotina e estratégia da conta</small></span><em>→</em></button>
+ </div>
+ <div class="intelDeck">
+  <article><span class="intelTag">OFICIAL</span><b>PC · Steam + PURPLE</b><small>Acesso antecipado em 30/09 e lançamento free-to-play em 05/10.</small></article>
+  <article><span class="intelTag">GLOBAL CLIENT</span><b>8 classes no lançamento</b><small>Templar, Gladiator, Assassin, Ranger, Sorcerer, Spiritmaster, Cleric e Chanter.</small></article>
+  <article><span class="intelTag">ENDGAME</span><b>Nível 45 é o grande marco</b><small>Conquest, Transcendence, Sanctuary e o quinto board Daevanion aparecem a partir daqui.</small></article>
+  <article><span class="intelTag">SKILLS</span><b>4 Stigmas · 8 quick slots</b><small>Specializations em 8 / 12 / 20; skill base natural até 14.</small></article>
  </div>
  <div class="grid">
   <div class="card pad c8">
@@ -260,8 +266,8 @@
 
 <section class="view hidden" id="classes">
  <div class="grid"><div class="card pad c12">
-  <div class="titleRow"><div><div class="kicker">ARSENAL DE CLASSES</div><h2>Classes</h2><div class="sub">Papéis, armas e disponibilidade para escolher seu próximo personagem ou iniciar uma build.</div></div>
-   <select class="select compactSelect" id="classFilter"><option value="all">Todas</option><option value="global">Global</option><option value="kr">KR/TW</option><option value="tank">Tank</option><option value="dps">DPS</option><option value="support">Suporte</option></select>
+  <div class="titleRow"><div><div class="kicker">ARSENAL DE CLASSES</div><h2>Classes</h2><div class="sub">As oito classes disponíveis no lançamento Global, organizadas por papel e arma.</div></div>
+   <select class="select compactSelect" id="classFilter"><option value="all">Todas</option><option value="tank">Tank</option><option value="dps">DPS</option><option value="support">Suporte</option></select>
   </div>
   <div class="classGrid" id="classGrid"></div>
  </div></div>
@@ -276,7 +282,7 @@
 
 <section class="view hidden" id="calculator">
  <div class="grid"><div class="card pad c12">
-  <div class="titleRow"><div><div class="kicker">STAT LAB</div><h2>Calculadora</h2><div class="sub">Main Stats, Deity Stats, troca de peça e contexto PvE/PvP em uma tela.</div></div><button class="btn ghost" id="calcFromBuilderBtn">Puxar do Builder</button></div>
+  <div class="titleRow"><div><div class="kicker">STAT LAB</div><h2>Calculadora</h2><div class="sub">Roadmap de Item Level, Specializations de skills e comparação simples de peça usando dados do cliente Global.</div></div><button class="btn ghost" id="calcFromBuilderBtn">Puxar do Builder</button></div>
   <div id="calculatorBody"></div>
  </div></div>
 </section>
@@ -290,27 +296,27 @@
 
 <section class="view hidden" id="database">
  <div class="grid"><div class="card pad c12">
-  <div class="titleRow"><div><div class="kicker">CODEX</div><h2>Database</h2><div class="sub">Referência interna rápida + acesso ao banco completo Global/KR-TW do AION2 Hub.</div></div><a class="btn primary" href="https://aion2hub.com/database" target="_blank" rel="noopener noreferrer">Banco completo ↗</a></div>
-  <div class="databaseSearchRow"><input class="input" id="databaseSearch" type="search" placeholder="Buscar: Arcana, Wings, Double Chance, Cleric..."><span class="mini" id="databaseSearchStatus"></span></div>
+  <div class="titleRow"><div><div class="kicker">GLOBAL CODEX</div><h2>Database Global</h2><div class="sub">Atalhos para uma base construída a partir do cliente Global e uma referência interna só com sistemas presentes no lançamento.</div></div><a class="btn primary" href="https://dbaion2.online/en/" target="_blank" rel="noopener noreferrer">Abrir Database Global ↗</a></div>
+  <div class="databaseSearchRow"><input class="input" id="databaseSearch" type="search" placeholder="Buscar: Daevanion, Stigma, Nightmare, Ludra..."><span class="mini" id="databaseSearchStatus"></span></div>
   <div class="dbExternalGrid">
-   <a href="https://aion2hub.com/database?cat=Weapons" target="_blank" rel="noopener noreferrer"><b>Armas</b><small>Global + KR/TW</small></a>
-   <a href="https://aion2hub.com/database?cat=Armor" target="_blank" rel="noopener noreferrer"><b>Armaduras</b><small>Slots e raridades</small></a>
-   <a href="https://aion2hub.com/database?cat=Accessories" target="_blank" rel="noopener noreferrer"><b>Acessórios</b><small>Joias e extras</small></a>
-   <a href="https://aion2hub.com/database?cat=Arcana" target="_blank" rel="noopener noreferrer"><b>Arcana</b><small>Cartas e progressão</small></a>
-   <a href="https://aion2hub.com/database?cat=Wings" target="_blank" rel="noopener noreferrer"><b>Wings</b><small>Asas e efeitos</small></a>
-   <a href="https://aion2hub.com/database?cat=Materials" target="_blank" rel="noopener noreferrer"><b>Materiais</b><small>Craft e upgrades</small></a>
+   <a href="https://dbaion2.online/en/items/" target="_blank" rel="noopener noreferrer"><b>Itens</b><small>Dados do cliente Global</small></a>
+   <a href="https://dbaion2.online/en/skills/" target="_blank" rel="noopener noreferrer"><b>Skills & Stigmas</b><small>Árvore, níveis e cooldowns</small></a>
+   <a href="https://dbaion2.online/en/builder/" target="_blank" rel="noopener noreferrer"><b>Builder externo</b><small>Gear + skills + Daevanion</small></a>
+   <a href="https://dbaion2.online/en/daevanion/" target="_blank" rel="noopener noreferrer"><b>Daevanion</b><small>Boards e nós do cliente</small></a>
+   <a href="https://dbaion2.online/en/map/" target="_blank" rel="noopener noreferrer"><b>Mapa Global</b><small>NPCs, recursos e teleports</small></a>
+   <a href="https://dbaion2.online/en/" target="_blank" rel="noopener noreferrer"><b>Busca completa</b><small>Quests, crafting e dungeons</small></a>
   </div>
   <div class="dbReferenceGrid" id="dbReferenceGrid">
-   <article class="dbEntry" data-db="double chance dano chance ofensivo"><b>Double Chance</b><p>Bucket ofensivo de alto valor no theorycraft da Bíblia. A importância real depende da versão e da build.</p><span class="badge violet">STAT</span></article>
-   <article class="dbEntry" data-db="combat speed velocidade combate"><b>Combat Speed</b><p>Velocidade de combate; pode ser afetada na prática por ping/FPS e comportamento da classe.</p><span class="badge blue">STAT</span></article>
-   <article class="dbEntry" data-db="soul binding gear roll sync reset bind"><b>Soul Binding</b><p>Sistema de linhas do equipamento: Sync rerrola uma linha, Reset troca todas e Bind melhora eficiência.</p><span class="badge gold">GEAR</span></article>
-   <article class="dbEntry" data-db="arcana card skills deity"><b>Arcana</b><p>Cartas que combinam Deity Stats, atributos e níveis de skills conforme o tipo.</p><span class="badge gold">SISTEMA</span></article>
-   <article class="dbEntry" data-db="daevanion board skill pve pvp"><b>Daevanion</b><p>Boards de progressão com stats e níveis de skills; priorize nós que realmente servem sua build.</p><span class="badge green">SISTEMA</span></article>
-   <article class="dbEntry" data-db="pet genus cogni fera natura varian special"><b>Pet Genus</b><p>Famílias Cogni, Fera, Natura, Varian e Special com progressão de Insight.</p><span class="badge green">SISTEMA</span></article>
-   <article class="dbEntry" data-db="wings asas owned equip effect"><b>Wings</b><p>Asas podem oferecer efeitos por equipar e por possuir, dependendo do item.</p><span class="badge blue">GEAR</span></article>
-   <article class="dbEntry" data-db="closet skin transmog bonus"><b>Closet</b><p>Coleção de skins também participa da progressão horizontal segundo a referência KR.</p><span class="badge violet">SISTEMA</span></article>
+   <article class="dbEntry" data-db="daevanion nezekan zikel vaizel triniel azphel"><b>Daevanion</b><p>Cinco boards com nós no cliente Global, liberados nos níveis 12, 20, 30, 40 e 45.</p><span class="badge green">GLOBAL</span></article>
+   <article class="dbEntry" data-db="stigma skills specialization 8 12 20"><b>Skills & Stigma</b><p>4 slots de Stigma, 8 quick slots e Specializations de Mastery nos níveis 8, 12 e 20.</p><span class="badge green">GLOBAL</span></article>
+   <article class="dbEntry" data-db="conquest krao draupnir urugugu vakron fire temple ferocious horn"><b>Conquest</b><p>Gates visíveis no cliente: Item Level 700, 1.400 e 2.100 a partir do nível 45.</p><span class="badge blue">ENDGAME</span></article>
+   <article class="dbEntry" data-db="transcendence shattered arkanis deus research base"><b>Transcendence</b><p>Stages visíveis usam gates de Item Level 1.600, 1.900, 2.200 e 2.500.</p><span class="badge blue">ENDGAME</span></article>
+   <article class="dbEntry" data-db="sanctuary abyssal forge ludra 2800"><b>Abyssal Forge: Ludra</b><p>Sanctuary de 10 jogadores, nível 45 e Item Level 2.800; 2 recompensas de chefe final por personagem/semana.</p><span class="badge gold">SANCTUARY</span></article>
+   <article class="dbEntry" data-db="nightmare 14 weekly attempts"><b>Nightmare</b><p>O cliente Global registra 14 tentativas semanais.</p><span class="badge violet">WEEKLY</span></article>
+   <article class="dbEntry" data-db="membership special quai market trade odyle"><b>Special Quai Membership</b><p>Market, Personal Trading, Remote Storage, Wind Breeze Merchants, Quna Exchange e benefícios de Odyle.</p><span class="badge gold">OFICIAL</span></article>
+   <article class="dbEntry" data-db="crafting alchemy blacksmithing armorsmithing handicrafting cooking"><b>Crafting</b><p>Alchemy, Blacksmithing, Armorsmithing, Handicrafting e Cooking estão presentes no cliente Global.</p><span class="badge green">GLOBAL CLIENT</span></article>
   </div>
-  <div class="callout info databaseSource"><b>Banco de itens:</b> não duplicamos milhares de registros dentro do GitHub Pages. A consulta pesada continua no AION2 Hub, enquanto o Control Center guarda seu planejamento, builds e referências pessoais.</div>
+  <div class="callout info databaseSource"><b>Regra da base:</b> o Control Center não completa lacunas com números de outra versão. Quando o valor depende do servidor, mostramos como configurável ou aguardamos confirmação no Global.</div>
  </div></div>
 </section>
 
@@ -319,9 +325,9 @@
   <div class="titleRow"><div><div class="kicker">KNOWLEDGE HUB</div><h2>Guias</h2><div class="sub">Um índice único para tudo que já existe dentro do nosso Control Center.</div></div></div>
   <div class="guidePortalGrid">
    <button data-go-view="week1"><span>01</span><b>Rotina & lançamento</b><small>Ordem de progressão e fechamento semanal.</small></button>
-   <button data-go-view="bible"><span>02</span><b>Bíblia do Aion 2</b><small>Gear, stats, skills, Arcana, Genus, Wings e theorycraft.</small></button>
-   <button data-go-view="classes"><span>03</span><b>Classes</b><small>Papéis, armas e disponibilidade Global/KR.</small></button>
-   <button data-go-view="calculator"><span>04</span><b>Entender status</b><small>Main Stats e Deity Stats em números.</small></button>
+   <button data-go-view="bible"><span>02</span><b>Bíblia Global</b><small>Cliente de lançamento, skills, Daevanion, gates, membership e conteúdo.</small></button>
+   <button data-go-view="classes"><span>03</span><b>Classes Global</b><small>As oito classes disponíveis no lançamento.</small></button>
+   <button data-go-view="calculator"><span>04</span><b>Roadmap de Item Level</b><small>Veja quais gates do cliente Global você já atende.</small></button>
    <button data-go-view="builder"><span>05</span><b>Montar build</b><small>Salve metas, gear e progressão por build.</small></button>
    <button data-go-view="resources"><span>06</span><b>Recursos & caps</b><small>Odyle, Nightmare, Shugo e entradas.</small></button>
    <button data-go-view="tips"><span>07</span><b>Dicas rápidas</b><small>Regras práticas para não desperdiçar progresso.</small></button>
@@ -332,281 +338,67 @@
 
 <section class="view hidden" id="bible">
  <div class="grid">
-  <div class="card pad c12 bibleHero">
-   <div class="titleRow">
-    <div>
-      <div class="kicker">GUIA AVANÇADO · PT-BR</div>
-      <h2>Bíblia do Aion 2</h2>
-      <div class="sub">Adaptação brasileira revisada do <b>Kanon's Aion 2 Bible</b>, reorganizada para consulta rápida.</div>
-    </div>
-    <span class="badge gold">FONTE 20/09/2026</span>
-   </div>
-   <div class="callout warn">
-    <b>Importante:</b> a própria fonte avisa que o Global possui mudanças grandes e que nem tudo pode ser confirmado antes do lançamento. Aqui usamos três rótulos: <b>Global</b>, <b>KR/Asia</b> e <b>não confirmado</b>. Quando houver conflito, o cliente Global é a referência final.
-   </div>
+  <div class="card pad c12 bibleHero globalBibleHero">
+   <div class="titleRow"><div><div class="kicker">GLOBAL ONLY · ATUALIZADO 30/09/2026</div><h2>Bíblia Global do AION 2</h2><div class="sub">Referência reconstruída para usar somente anúncios Global, cliente Global de lançamento e bases extraídas desse cliente.</div></div><span class="badge green">GLOBAL CORE</span></div>
+   <div class="callout info"><b>Política desta Bíblia:</b> informação do servidor que ainda não está confirmada fica fora. Dados extraídos do cliente aparecem como <b>GLOBAL CLIENT</b>; anúncios da NC/Steam aparecem como <b>OFICIAL</b>.</div>
    <div class="bibleSourceRow">
-    <a class="btn ghost" href="https://docs.google.com/document/d/11u4wLCG1WfL-xSka2Aze0rI9vYRa7mq3N3Gp1bt0AWY/mobilebasic" target="_blank" rel="noopener noreferrer">Abrir fonte original ↗</a>
-    <span class="mini">Versão condensada e reescrita em português; não é uma reprodução literal do documento.</span>
+    <a class="btn ghost" href="https://store.steampowered.com/app/3393110/AION_2/" target="_blank" rel="noopener noreferrer">Steam oficial ↗</a>
+    <a class="btn ghost" href="https://dbaion2.online/en/" target="_blank" rel="noopener noreferrer">Database Global ↗</a>
+    <a class="btn ghost" href="https://metaroad.gg/aion2/news/aion-2-global-client-datamine-what-the-launch-build-contains" target="_blank" rel="noopener noreferrer">Relatório do cliente ↗</a>
    </div>
-   <div class="bibleLegend">
-    <span class="badge green">GLOBAL / CONSISTENTE</span>
-    <span class="badge gold">KR / ASIA</span>
-    <span class="badge red">NÃO CONFIRMADO</span>
-   </div>
-   <div class="bibleSearchWrap">
-    <input class="input" id="bibleSearch" type="search" placeholder="Buscar na Bíblia: Arcana, Double Chance, Manastone, Wings...">
-    <span class="mini" id="bibleSearchStatus">12 capítulos</span>
-   </div>
+   <div class="bibleLegend"><span class="badge green">OFICIAL GLOBAL</span><span class="badge blue">GLOBAL CLIENT</span><span class="badge violet">SERVER-SIDE = NÃO PRESUMIDO</span></div>
+   <div class="bibleSearchWrap"><input class="input" id="bibleSearch" type="search" placeholder="Buscar: Ludra, Stigma, Daevanion, Membership, Conquest..."><span class="mini" id="bibleSearchStatus">9 capítulos</span></div>
   </div>
-
-  <div class="card pad c12 bibleIndex">
-    <h2>Índice rápido</h2>
-    <div class="bibleIndexGrid">
-      <a href="#bible-ch1">1 · Gear & fundamentos</a>
-      <a href="#bible-ch2">2 · Tipos de equipamento</a>
-      <a href="#bible-ch3">3 · Stat Lines ideais</a>
-      <a href="#bible-ch4">4 · Skills</a>
-      <a href="#bible-ch5">5 · Enhancement</a>
-      <a href="#bible-ch6">6 · Arcana</a>
-      <a href="#bible-ch7">7 · Daevanion Boards</a>
-      <a href="#bible-ch8">8 · Pet Genus</a>
-      <a href="#bible-ch9">9 · Wings</a>
-      <a href="#bible-ch10">10 · Closet / Transmog</a>
-      <a href="#bible-ch11">11 · Stats & dano</a>
-      <a href="#bible-ch12">12 · Passivas de classe</a>
-    </div>
-  </div>
-
+  <div class="card pad c12 bibleIndex"><h2>Índice Global</h2><div class="bibleIndexGrid">
+   <a href="#bible-ch1">1 · Lançamento & plataforma</a><a href="#bible-ch2">2 · 8 classes</a><a href="#bible-ch3">3 · Skills & Stigma</a>
+   <a href="#bible-ch4">4 · Daevanion</a><a href="#bible-ch5">5 · Roadmap de Item Level</a><a href="#bible-ch6">6 · Nightmare & Sanctuary</a>
+   <a href="#bible-ch7">7 · Membership</a><a href="#bible-ch8">8 · Database do cliente</a><a href="#bible-ch9">9 · O que o cliente não decide</a>
+  </div></div>
   <div class="c12 bibleChapters">
-   <details class="card bibleChapter" id="bible-ch1" open>
-    <summary><span><b>Cap. 1 — Gear & fundamentos</b><small>Enhancement, Amp, Soul Binding, Manastones e Pantheon</small></span><span class="badge green">BASE</span></summary>
-    <div class="bibleBody">
-      <p><b>Dica de iniciante:</b> ao selecionar um item no jogo, use <b>Source</b> para ver onde ele é obtido.</p>
-      <div class="bibleGrid2">
-       <div class="dayBlock"><h3>Enhancement e Amp</h3><ul>
-        <li><b>Unique (amarelo):</b> até +15, depois 5 níveis de Amp.</li>
-        <li><b>Heroic (laranja):</b> até +20, depois 5 níveis de Amp.</li>
-        <li>Amp libera atributos extras do equipamento.</li>
-        <li>Segundo a fonte, Unique +15/Amp 5 transferido para Heroic vira +20/Amp 0.</li>
-       </ul></div>
-       <div class="dayBlock"><h3>O que se perde na transferência</h3><ul>
-        <li>Linha extra do <b>Philosopher's Stone</b>.</li>
-        <li>Linhas de <b>Manastone/Soulstone</b>.</li>
-        <li><b>Theostone</b>.</li>
-        <li>Linha de <b>Potential</b>.</li>
-       </ul></div>
-      </div>
-      <p><b>Soul Binding:</b> Stat Lines vêm de pools por slot; <b>Sync</b> rerrola uma linha, <b>Reset</b> embaralha todas e <b>Bind</b> aumenta a eficiência das linhas. Ao chegar a 100% de Soul Binding, Philosopher's Stones podem liberar uma linha extra — que não transfere.</p>
-      <p><b>Manastones</b> são para arma/armadura; <b>Soulstones</b> para acessórios. Grades maiores aumentam a chance de atributos melhores. Evite investir pesado em gear que será trocado logo.</p>
-      <p><b>Theostones:</b> efeitos de proc na arma. Na experiência do autor, representam uma parcela muito pequena do DPS PvE.</p>
-      <div class="callout warn"><b>Potential:</b> a relação entre gear craftado e gear de dungeon é diferente entre Asia e Global. Os valores superiores do craft asiático não devem ser tratados como confirmados no Global.</div>
-      <h3>Pantheon — tradução dos grupos de atributos</h3>
-      <div class="statPills">
-       <span>Destruction / Zikel — Attack Increase + Perfect Resist</span>
-       <span>Death / Triniel — Critical Hit + Regeneration Penetration</span>
-       <span>Wisdom / Lumiel — menor MP + Double Chance</span>
-       <span>Destiny / Marchutan — MP + Endurance Chance</span>
-       <span>Space / Israphel — Move Speed + Block</span>
-       <span>Justice / Nezekan — Defense + Perfect Chance</span>
-       <span>Freedom / Vaizel — Accuracy + Evasion</span>
-       <span>Illusion / Kaisinel — Cooldown + Endurance Penetration</span>
-       <span>Life / Yustiel — HP + Regeneration Chance</span>
-       <span>Time / Siel — Combat Speed + Double Chance Resist</span>
-      </div>
-    </div>
-   </details>
+   <details class="card bibleChapter" id="bible-ch1" open><summary><span><b>Cap. 1 — Lançamento & plataforma</b><small>O que é oficial para o serviço Global</small></span><span class="badge green">OFICIAL</span></summary><div class="bibleBody">
+    <div class="bibleGrid2"><div class="dayBlock"><h3>Datas</h3><ul><li>Acesso antecipado: <b>30 de setembro de 2026</b>.</li><li>Lançamento free-to-play: <b>5 de outubro de 2026</b>.</li></ul></div><div class="dayBlock"><h3>Plataforma</h3><ul><li>Global é <b>PC</b>.</li><li>Distribuição por <b>Steam</b> e PURPLE.</li><li>Português do Brasil está entre os idiomas do Steam.</li></ul></div></div>
+   </div></details>
 
-   <details class="card bibleChapter" id="bible-ch2">
-    <summary><span><b>Cap. 2 — Tipos de equipamento</b><small>O papel de cada slot na progressão</small></span><span class="badge green">BASE</span></summary>
-    <div class="bibleBody">
-      <div class="bibleGrid2">
-       <div class="dayBlock"><h3>Weapon & Guard</h3><p>Maior foco ofensivo. Podem trazer linhas de <b>Active Skills</b>. Amp máximo da fonte: Attack + Attack Increase.</p></div>
-       <div class="dayBlock"><h3>Armor</h3><p>Helmet, Shoulder, Chest, Pants, Gloves, Cloak e Boots. Foco defensivo, mas também traz Attack e linhas de <b>Passive Skills</b>.</p></div>
-       <div class="dayBlock"><h3>Accessories</h3><p>Necklace/Earring puxam passivas; <b>Rings</b> podem trazer Active Skills; Bracelet fornece Pantheon Stats; Brooch concentra stats básicos.</p></div>
-       <div class="dayBlock"><h3>Belt & Amulet</h3><p>Na referência KR, vêm da linha principal por volta do nível 45 e usam materiais próprios de upgrade. Belt puxa defesa; Amulet, ataque.</p></div>
-       <div class="dayBlock"><h3>Runes</h3><p>Sistema de fusão com risco de destruir a runa em falha. É o slot de gear destacado pelo autor como destrutível ao falhar.</p></div>
-       <div class="dayBlock"><h3>Pendant</h3><p>Associado à expansão de nível 50/Chapter 1 na referência KR. Trate disponibilidade e custos como conteúdo posterior ao lançamento Global.</p></div>
-      </div>
-    </div>
-   </details>
+   <details class="card bibleChapter" id="bible-ch2"><summary><span><b>Cap. 2 — As 8 classes do lançamento</b><small>Roster disponível no Global</small></span><span class="badge green">GLOBAL</span></summary><div class="bibleBody">
+    <div class="statPills"><span>Templar · Tank · Sword/Guard</span><span>Gladiator · Melee DPS · Greatsword</span><span>Assassin · Melee DPS · Daggers</span><span>Ranger · Ranged DPS · Bow</span><span>Sorcerer · Magic DPS · Spellbook</span><span>Spiritmaster · Magic DPS/Summoner · Orb</span><span>Cleric · Healer · Mace/Guard</span><span>Chanter · Support · Staff</span></div>
+    <div class="callout info" style="margin-top:12px"><b>Sem tier list como fato.</b> Desempenho depende de patch, conteúdo, gear e testes do serviço Global.</div>
+   </div></details>
 
-   <details class="card bibleChapter" id="bible-ch3">
-    <summary><span><b>Cap. 3 — Stat Lines ideais</b><small>Prioridade de raridade/roll para o Global</small></span><span class="badge green">GLOBAL</span></summary>
-    <div class="bibleBody">
-      <div class="callout info"><b>Como ler:</b> a ordem abaixo segue principalmente a dificuldade/raridade de obter a linha, não necessariamente o ganho bruto de dano. Uma classe específica pode trocar prioridades.</div>
-      <div class="statTableWrap"><table class="bibleTable">
-       <thead><tr><th>Slot</th><th>Linhas procuradas</th></tr></thead>
-       <tbody>
-        <tr><td>Weapon / Guard</td><td>Damage Boost → Combat Speed → Weapon Damage Boost → Might → Multi-hit → Precision → Attack</td></tr>
-        <tr><td>Helmet</td><td>Double Chance → Attack Increase → Attack → Passivas</td></tr>
-        <tr><td>Cloak</td><td>Double Chance → Attack Increase → Perfect Chance → Attack → Passivas</td></tr>
-        <tr><td>Shoulder</td><td>Double Chance → Critical Damage Boost → Attack → Passivas</td></tr>
-        <tr><td>Chest</td><td>Perfect Chance → Damage Boost → Attack → Passivas</td></tr>
-        <tr><td>Pants</td><td>Attack Increase → Perfect Chance → Damage Tolerance → Attack → Passivas</td></tr>
-        <tr><td>Gloves</td><td>Perfect Chance → Combat Speed → Attack → Passivas</td></tr>
-        <tr><td>Shoes</td><td>Perfect Chance → Movement Speed → Attack → Passivas</td></tr>
-        <tr><td>Necklace</td><td>Combat Speed → Might → Attack → Passivas → Accuracy se necessário</td></tr>
-        <tr><td>Earring</td><td>Move Speed → Might → Precision → Attack → Passivas → Accuracy se necessário</td></tr>
-        <tr><td>Rings</td><td>Might → Precision → Attack → Active Skills</td></tr>
-        <tr><td>Bracelet</td><td>Illusion / Wisdom / Destruction / Time / Justice / Space, dependendo da classe</td></tr>
-        <tr><td>Brooch</td><td>Might → Precision → Accuracy → Constitution → Critical ou Block</td></tr>
-       </tbody>
-      </table></div>
-      <div class="callout red"><b>Accuracy/Crit de raids:</b> os números de Ludra, Corroded e Muspel apresentados na fonte são explicitamente marcados como <b>não confirmados para Global</b>. Por isso não viraram “cap obrigatório” aqui.</div>
-    </div>
-   </details>
+   <details class="card bibleChapter" id="bible-ch3"><summary><span><b>Cap. 3 — Skills, Stigma & Specializations</b><small>Estrutura do cliente Global</small></span><span class="badge blue">GLOBAL CLIENT</span></summary><div class="bibleBody">
+    <ul><li>Skills sobem naturalmente do nível 1 ao <b>14</b>.</li><li>Arcana e Daevanion podem adicionar níveis extras.</li><li><b>4 slots de Stigma</b> e <b>8 quick slots</b>.</li><li>Mastery Specializations nos níveis totais <b>8, 12 e 20</b>.</li></ul>
+    <div class="callout"><b>Consequência:</b> chegar ao terceiro slot no 20 exige níveis extras além do limite base natural.</div>
+   </div></details>
 
-   <details class="card bibleChapter" id="bible-ch4">
-    <summary><span><b>Cap. 4 — Skills</b><small>Active, Passive e Stigma</small></span><span class="badge green">PRIORIDADE</span></summary>
-    <div class="bibleBody">
-      <div class="dayBlock"><h3>Active Skills</h3><ul>
-       <li>Wisdom Stones levam a skill base até nível 10; gear, Daevanion e Arcana elevam além disso.</li>
-       <li>Marcos de Specialty: <b>8</b>, <b>12</b>, <b>16</b> e <b>20</b>; no 20 abre o terceiro slot de Specialty.</li>
-       <li>O autor recomenda identificar cedo as skills que “ligam” a build e focar <b>duas principais</b> primeiro.</li>
-       <li>Rings e Arcana são fontes especialmente importantes para níveis de Active Skill.</li>
-      </ul></div>
-      <div class="dayBlock"><h3>Passive Skills</h3><p>Depois de estabilizar as principais Active Skills, passe para as passivas-chave da classe. No endgame KR, algumas são levadas muito além de 20.</p></div>
-      <div class="dayBlock"><h3>Stigma</h3><p>Skills especiais com perks próprios. A fonte descreve progressão até 20 e, após conteúdo posterior, até 25 com Superior Stigma Shards. Disponibilidade e limite no Global podem ser menores no lançamento.</p></div>
-      <div class="callout warn"><b>Consequência prática para nosso guia:</b> não espalhe recursos em muitas skills cedo. Defina as duas Active Skills mais importantes da sua build e trate nível 20 como um grande objetivo de progressão.</div>
-    </div>
-   </details>
+   <details class="card bibleChapter" id="bible-ch4"><summary><span><b>Cap. 4 — Daevanion</b><small>Cinco boards presentes com nós</small></span><span class="badge blue">GLOBAL CLIENT</span></summary><div class="bibleBody">
+    <div class="statTableWrap"><table class="bibleTable"><thead><tr><th>Board</th><th>Libera</th></tr></thead><tbody><tr><td>Nezekan</td><td>Lv 12</td></tr><tr><td>Zikel</td><td>Lv 20</td></tr><tr><td>Vaizel</td><td>Lv 30</td></tr><tr><td>Triniel</td><td>Lv 40</td></tr><tr><td>Azphel</td><td>Lv 45</td></tr></tbody></table></div>
+    <p>Planeje os nós conforme sua build e as skills que precisam de níveis extras. O Builder guarda a meta; a Database externa mostra os dados do cliente.</p>
+   </div></details>
 
-   <details class="card bibleChapter" id="bible-ch5">
-    <summary><span><b>Cap. 5 — Enhancement</b><small>Growth, Potential, stones, Soul Binding e Transfer</small></span><span class="badge green">ECONOMIA</span></summary>
-    <div class="bibleBody">
-      <div class="bibleGrid2">
-       <div class="dayBlock"><h3>Growth</h3><p>Enhance Stones levam o equipamento aos níveis normais; Amplify Stones entram na fase Amp. O custo e a raridade crescem bastante no Heroic.</p></div>
-       <div class="dayBlock"><h3>Potential</h3><p>Gear excedente pode virar Potential Stones, usados para elevar uma linha dedicada de dano/tolerância PvE. Diferenças de craft entre Asia e Global seguem parcialmente incertas.</p></div>
-      </div>
-      <h3>Manastone / Soulstone — prioridade ofensiva da fonte</h3>
-      <p><b>Front/Back Damage Boost</b> → <b>Weapon Damage Boost ≈ Critical Damage Boost</b> → <b>Damage Boost</b> → <b>Attack</b>.</p>
-      <p>Não desperdice pedras superiores em equipamento provisório: essas linhas <b>não transferem</b>.</p>
-      <div class="dayBlock"><h3>Soul Binding</h3><p>Bind melhora as linhas; Sync rerrola individualmente; Reset troca todas. A linha extra criada por Philosopher's Stone é descartada ao transferir o item.</p></div>
-      <div class="callout warn"><b>Transfer Stones Heroic:</b> a fonte insiste em economizar fragments/stones Heroic no começo, pois ficam caros e escassos no gear posterior. Pense antes de transferir para o primeiro conjunto laranja.</div>
-    </div>
-   </details>
+   <details class="card bibleChapter" id="bible-ch5"><summary><span><b>Cap. 5 — Roadmap de Item Level</b><small>Gates visíveis no cliente de lançamento</small></span><span class="badge blue">GLOBAL CLIENT</span></summary><div class="bibleBody">
+    <div class="statTableWrap"><table class="bibleTable"><thead><tr><th>Conteúdo</th><th>Nível</th><th>Item Level</th></tr></thead><tbody>
+     <tr><td>Conquest T1 · Krao Cave / Draupnir</td><td>45</td><td>700</td></tr><tr><td>Conquest T2 · Urugugu Canyon / Vakron Sky Island</td><td>45</td><td>1.400</td></tr><tr><td>Transcendence · Stage 1</td><td>45</td><td>1.600</td></tr><tr><td>Transcendence · Stage 3</td><td>45</td><td>1.900</td></tr><tr><td>Conquest T3 · Fire Temple / Ferocious Horn Den</td><td>45</td><td>2.100</td></tr><tr><td>Transcendence · Stage 6</td><td>45</td><td>2.200</td></tr><tr><td>Transcendence · Stage 9</td><td>45</td><td>2.500</td></tr><tr><td>Sanctuary · Abyssal Forge: Ludra</td><td>45</td><td>2.800</td></tr>
+    </tbody></table></div>
+    <p>Arquivos adicionais não viram “conteúdo disponível” até o servidor Global realmente liberá-los.</p>
+   </div></details>
 
-   <details class="card bibleChapter" id="bible-ch6">
-    <summary><span><b>Cap. 6 — Arcana</b><small>Cards, Skill Levels e Set Effects</small></span><span class="badge gold">GLOBAL PODE TER MENOS</span></summary>
-    <div class="bibleBody">
-      <p>Arcana funciona como um conjunto paralelo de “equipamentos em forma de carta”: fornece Pantheon Stats, atributos e níveis de skills. A referência KR possui mais cartas/sets do que o lançamento Global deve oferecer.</p>
-      <div class="statTableWrap"><table class="bibleTable">
-       <thead><tr><th>Carta</th><th>Foco</th></tr></thead>
-       <tbody>
-        <tr><td>Chalice / Scale</td><td>Pantheon + pool amplo de Skills/Passives</td></tr>
-        <tr><td>Parchment / Compass</td><td>Pantheon + metades diferentes das Active Skills</td></tr>
-        <tr><td>Bell / Mirror</td><td>Pantheon + metades diferentes das Passive Skills</td></tr>
-        <tr><td>Key / Dice</td><td>Atributos ofensivos</td></tr>
-        <tr><td>Hourglass / Lantern</td><td>Atributos defensivos</td></tr>
-       </tbody>
-      </table></div>
-      <ul>
-       <li>Arcana pode chegar ao <b>nível 5</b>; níveis adicionam progresso a linhas da carta.</li>
-       <li>Alimentar uma carta antiga numa nova recupera parte da experiência, não 100%.</li>
-       <li>Craft de Arcana permite escolher linhas e é apontado como investimento de alto valor.</li>
-       <li>Priorize cartas capazes de levar suas Active Skills essenciais aos marcos 12/16/20.</li>
-      </ul>
-    </div>
-   </details>
+   <details class="card bibleChapter" id="bible-ch6"><summary><span><b>Cap. 6 — Nightmare & Sanctuary</b><small>Contadores úteis para sua semana</small></span><span class="badge blue">GLOBAL CLIENT</span></summary><div class="bibleBody">
+    <div class="bibleGrid2"><div class="dayBlock"><h3>Nightmare</h3><p>O cliente registra <b>14 tentativas por semana</b>.</p></div><div class="dayBlock"><h3>Abyssal Forge: Ludra</h3><p>10 jogadores, nível 45, Item Level <b>2.800</b> e <b>2 recompensas de chefe final por personagem/semana</b>.</p></div></div>
+   </div></details>
 
-   <details class="card bibleChapter" id="bible-ch7">
-    <summary><span><b>Cap. 7 — Daevanion Boards</b><small>Boards compartilhados e progressão horizontal</small></span><span class="badge green">PVE</span></summary>
-    <div class="bibleBody">
-      <p>São 8 boards. Os quatro principais — Nezekan, Zikel, Vaizel e Triniel — compartilham a mesma quantidade de pontos e trazem stats/níveis de skill.</p>
-      <ul>
-       <li>Primeiro: pegue <b>Active Skills importantes</b> para alcançar 12, 16 e principalmente 20.</li>
-       <li>Depois: procure os tiles laranja realmente úteis para a build.</li>
-       <li>O respec é descrito como barato, então não trate cada ponto como decisão irreversível.</li>
-      </ul>
-      <div class="bibleGrid2">
-       <div class="dayBlock"><h3>Ariel</h3><p>Board PvE; tiles laranja com PvE Damage Boost/Tolerance.</p></div>
-       <div class="dayBlock"><h3>Azphel</h3><p>Board PvP; não é prioridade para PvE.</p></div>
-       <div class="dayBlock"><h3>Marchutan</h3><p>Stats gerais/mid-game; Weapon Damage Boost/Tolerance.</p></div>
-       <div class="dayBlock"><h3>Yustiel</h3><p>Stats gerais/endgame; Attack/Defense Increase.</p></div>
-      </div>
-      <div class="callout info">Para PvE, a fonte considera algumas resistências/tolerâncias específicas contra efeitos que bosses não utilizam como baixo valor. Não escolha tile apenas pela cor: leia o efeito.</div>
-    </div>
-   </details>
+   <details class="card bibleChapter" id="bible-ch7"><summary><span><b>Cap. 7 — Special Quai Membership</b><small>Benefícios publicados para o Global</small></span><span class="badge green">OFICIAL</span></summary><div class="bibleBody">
+    <ul><li>Remote Storage.</li><li>Personal Trading.</li><li>Wind Breeze Merchants.</li><li>Maior capacidade máxima de Odyle Energy.</li><li>Market.</li><li>Quna Exchange Shop.</li><li>Mais escolhas de Odyle Energy Cube em Expedition, Transcendence e Sanctuary.</li></ul>
+    <p>Os Founder's Packs incluem <b>30 dias</b> de Membership. O Control Center não inventa porcentagens ou caps além do que foi publicado.</p>
+   </div></details>
 
-   <details class="card bibleChapter" id="bible-ch8">
-    <summary><span><b>Cap. 8 — Pet Genus</b><small>Cogni, Fera, Natura, Varian e Special</small></span><span class="badge gold">KR/ASIA REFERÊNCIA</span></summary>
-    <div class="bibleBody">
-      <p>Cada um dos 5 boards possui 9 linhas. Aumentar <b>Insight/Genus Level</b> libera slots e melhora a possibilidade de grades maiores.</p>
-      <ol>
-       <li>Suba o board para <b>nível 10</b> sem travar linhas, salvo se o Global tornar isso impraticável ou você acertar uma linha excepcional.</li>
-       <li>No nível 10, rerrole sem locks até buscar primeiro a linha 4 de alto valor.</li>
-       <li>Só então comece a travar bons rolls e refinar as demais linhas.</li>
-      </ol>
-      <p>Prioridade de Line 4 destacada pelo autor: <b>Special (Double Chance)</b> → <b>Varian (Front/Back Damage Boost)</b> → <b>Fera (Weapon Damage Boost)</b> → <b>Cogni (Critical Damage Boost)</b>.</p>
-      <div class="callout warn">Os “BIS Genus Lines” completos do documento são referência do servidor Asia. Use como direção, não como tabela definitiva do Global.</div>
-    </div>
-   </details>
+   <details class="card bibleChapter" id="bible-ch8"><summary><span><b>Cap. 8 — Database do cliente</b><small>O que dá para consultar com segurança</small></span><span class="badge blue">GLOBAL CLIENT</span></summary><div class="bibleBody">
+    <p>A Database Global lê diretamente os arquivos do cliente e é atualizada por patch. Ela cobre itens, NPCs/monstros, quests, skills/Stigmas, crafting, dungeons, mapa, Daevanion e builders.</p>
+    <div class="callout info"><b>Limite importante:</b> arquivos do cliente podem listar drops e conteúdo sem informar probabilidades ou garantir que tudo já esteja liberado no servidor.</div>
+   </div></details>
 
-   <details class="card bibleChapter" id="bible-ch9">
-    <summary><span><b>Cap. 9 — Wings</b><small>Equip Effect, Owned Effect e upgrades</small></span><span class="badge gold">DISPONIBILIDADE VARIA</span></summary>
-    <div class="bibleBody">
-      <ul>
-       <li>Wings fornecem atributos por <b>equipar</b> e também por simplesmente <b>possuir</b>.</li>
-       <li>Podem ser aprimoradas até +10 na referência da fonte.</li>
-       <li>Ao passar de +0 para +1, uma linha antes escondida pode aparecer.</li>
-       <li>Segundo o autor, no upgrade sobem principalmente a primeira linha e a última linha “hidden” do Owned Effect.</li>
-      </ul>
-      <div class="bibleGrid2">
-       <div class="dayBlock"><h3>Eroded Wings</h3><p>Referência forte para builds que aproveitam Front Attack Damage Boost.</p></div>
-       <div class="dayBlock"><h3>Talisra</h3><p>Pacote geral com Attack/Defense/Accuracy e Cooldown no Equip Effect.</p></div>
-       <div class="dayBlock"><h3>Illusory Echo</h3><p>Combina Max Attack, Crit/Penetration/Perfect e Owned Effect com Double Chance.</p></div>
-       <div class="dayBlock"><h3>Dramata / Nightmare</h3><p>Exemplos de asas voltadas a PvE/Boss, com stats específicos para esse conteúdo.</p></div>
-      </div>
-      <div class="callout red"><b>Ranking por classe do documento = KR em 21/08/2026.</b> Não incorporamos aquela porcentagem como recomendação Global porque disponibilidade e balanceamento podem mudar.</div>
-    </div>
-   </details>
-
-   <details class="card bibleChapter" id="bible-ch10">
-    <summary><span><b>Cap. 10 — Closet / Transmog</b><small>Skins também são progressão horizontal</small></span><span class="badge green">LONGO PRAZO</span></summary>
-    <div class="bibleBody">
-      <p>O Closet não é puramente cosmético: desbloquear skins concede atributos permanentes ligados ao tipo de peça. Mais skins de arma, por exemplo, aumentam uma porcentagem aplicada ao ataque da arma.</p>
-      <p>É um sistema de progressão de longo prazo. Não precisa ser prioridade de lançamento, mas ignorá-lo para sempre significa abrir mão de stats horizontais acumulativos.</p>
-    </div>
-   </details>
-
-   <details class="card bibleChapter" id="bible-ch11">
-    <summary><span><b>Cap. 11 — Como os stats funcionam</b><small>Diminishing returns, buckets e fórmula de dano</small></span><span class="badge gold">KR ENDGAME / THEORYCRAFT</span></summary>
-    <div class="bibleBody">
-      <div class="callout warn"><b>Não transforme estes números em cap Global.</b> Eles refletem endgame KR/Season 1 com buffs e quantidade de stats muito maiores. O valor relativo muda conforme a sua conta e a versão.</div>
-      <h3>Resumo de valor ofensivo apresentado pela fonte</h3>
-      <p><b>Double Chance</b> → <b>Front/Back Damage Boost</b> → <b>Weapon Damage Boost</b> → <b>Critical Damage Boost</b> ≈ <b>Damage Boost</b>.</p>
-      <p>Para Attack flat: <b>Attack</b> → <b>Max Attack</b> → <b>Attack Bonus</b> → outros tipos condicionais de Attack.</p>
-      <div class="statTableWrap"><table class="bibleTable">
-       <thead><tr><th>Stat</th><th>Estimativa do autor no endgame KR</th></tr></thead>
-       <tbody>
-        <tr><td>+1% Damage Boost</td><td>≈ +0,35% DPS naquele cenário</td></tr>
-        <tr><td>+1% Weapon Damage Boost</td><td>≈ +0,50% a +0,55%</td></tr>
-        <tr><td>+1% Critical Damage Boost</td><td>≈ +0,40% a +0,60%</td></tr>
-        <tr><td>+1% Double Chance</td><td>≈ +0,60% a +0,65%</td></tr>
-        <tr><td>+1% Front/Back Damage Boost</td><td>≈ +0,57% a +0,65% com uptime posicional assumido</td></tr>
-        <tr><td>+1% Perfect</td><td>≈ +0,10%</td></tr>
-       </tbody>
-      </table></div>
-      <h3>Outros pontos importantes</h3>
-      <ul>
-       <li><b>Multi-hit:</b> chance de hits extras; a posição exata do stat na fórmula ainda é indicada como não 100% confirmada.</li>
-       <li><b>Accuracy</b> enfrenta Block/Parry; <b>Critical Hit</b> enfrenta Critical Resist.</li>
-       <li><b>Penetration</b> subtrai Defense diretamente; o autor considera Penetration de baixo valor relativo em PvE.</li>
-       <li><b>Damage Tolerance</b> reduz buckets de Damage Boost correspondentes; <b>Endurance</b> pode reduzir o dano final pela metade quando ativa.</li>
-       <li><b>Combat Speed</b> é tratada como stat de altíssimo valor, mas o desempenho real é afetado por ping e FPS.</li>
-      </ul>
-      <h3>Fórmula — leitura simplificada</h3>
-      <p>O modelo da fonte separa o dano em vários “baldes”: começa por <b>Pure Attack</b> e Weapon Damage Boost, incorpora Multi-hit/Power Shard/Attack Bonus e Attack Increase, soma ataques PvE/Boss/condicionais, aplica coeficiente da skill, desconta Defense após Penetration e depois multiplica os buckets de Damage Boost, crítico, Double Chance, dano posicional e Specialty da skill.</p>
-      <p><b>Pure Attack</b> é um nome criado no theorycraft, não um atributo oficial do cliente. Inclui principalmente Attack vindo de arma/guard/acessórios, linhas de Attack, Mana/Soulstones e Closet.</p>
-    </div>
-   </details>
-
-   <details class="card bibleChapter" id="bible-ch12">
-    <summary><span><b>Cap. 12 — Passivas de classe</b><small>Status do documento original</small></span><span class="badge red">EM BREVE</span></summary>
-    <div class="bibleBody">
-      <p>O capítulo 12 da fonte ainda está marcado como <b>“em breve”</b>. Não adicionamos builds ou passivas por conta própria para não preencher uma lacuna da fonte com informação inventada.</p>
-    </div>
-   </details>
+   <details class="card bibleChapter" id="bible-ch9"><summary><span><b>Cap. 9 — O que o cliente não decide</b><small>Onde o site se recusa a inventar</small></span><span class="badge violet">SERVER-SIDE</span></summary><div class="bibleBody">
+    <ul><li><b>Cap liberado no dia 1:</b> a presença nos arquivos não confirma a abertura do servidor.</li><li><b>Drop rates:</b> listas de drops não equivalem a probabilidades.</li><li><b>Datas de conteúdo bloqueado:</b> arquivo presente não é calendário oficial.</li><li><b>Horários de reset/eventos:</b> confirme no cliente Global; os timers do site são pessoais/configuráveis.</li></ul>
+    <div class="callout warn"><b>Regra permanente:</b> “está nos arquivos” não significa “está liberado”.</div>
+   </div></details>
   </div>
  </div>
 </section>
@@ -627,10 +419,10 @@
     <article class="tipCard"><span class="tipIcon">◈</span><div><h3>Mercado antes de gastar</h3><p>Antes de craftar, entregar materiais ou consumir itens valiosos, confira se vender naquele momento não traz mais valor para sua progressão.</p></div></article>
     <article class="tipCard"><span class="tipIcon">☑</span><div><h3>Feche a semana com folga</h3><p>Evite deixar tudo para os minutos finais. Use o timer semanal para revisar contadores, personagens e conteúdo pendente com antecedência.</p></div></article>
     <article class="tipCard"><span class="tipIcon">⚙</span><div><h3>Confie no seu cliente</h3><p>Horários, caps e regras podem variar por região ou atualização. Se o jogo mostrar algo diferente, ajuste o checklist em Configurações e use o cliente como referência final.</p></div></article>
-    <article class="tipCard"><span class="tipIcon">20</span><div><h3>Escolha suas Skills-chave cedo</h3><p>A Bíblia reforça que várias builds só “acordam” quando as Active Skills principais chegam aos marcos 12/16/20. Foque duas essenciais antes de espalhar recursos.</p></div></article>
+    <article class="tipCard"><span class="tipIcon">20</span><div><h3>Specialization no 20 exige bônus</h3><p>No cliente Global, a skill base vai naturalmente até 14. Planeje Arcana e Daevanion se sua build depende do terceiro slot no nível total 20.</p></div></article>
     <article class="tipCard"><span class="tipIcon">◇</span><div><h3>Pedra boa em gear bom</h3><p>Manastones/Soulstones não transferem. Guarde rolls e pedras superiores para equipamento que você pretende manter por mais tempo.</p></div></article>
-    <article class="tipCard"><span class="tipIcon">⬡</span><div><h3>Segure Transfer Stones Heroic</h3><p>O material Heroic fica muito mais caro e escasso. Não transfira gear laranja por impulso no começo.</p></div></article>
-    <article class="tipCard"><span class="tipIcon">10</span><div><h3>Genus: nível antes do lock</h3><p>Na referência Asia, a estratégia eficiente é subir o board a 10 antes de travar linhas, aumentando a chance de rolls de grade alta.</p></div></article>
+    <article class="tipCard"><span class="tipIcon">IL</span><div><h3>Suba pelo próximo gate</h3><p>Em vez de perseguir um número abstrato, olhe o próximo requisito de Item Level. A Calculadora Global mostra quanto falta.</p></div></article>
+    <article class="tipCard"><span class="tipIcon">45</span><div><h3>Nível 45 é o grande marco</h3><p>No cliente Global, é quando abre o quinto board Daevanion e começam os principais gates de endgame presentes no lançamento.</p></div></article>
    </div>
   </div>
  </div>
@@ -661,7 +453,7 @@
 
 </main>
 
-<div class="footer">AION 2 Control Center v2.0 · Discord + nuvem · dados separados por usuário · snapshots sem anotações pessoais</div>
+<div class="footer">AION 2 Global Control Center v2.1 · Discord + nuvem · dados separados por usuário · snapshots sem anotações pessoais</div>
 </div>
 </div>
 
@@ -673,13 +465,13 @@
     <div class="field"><label>Seu nome / nick</label><input class="input" id="profileNameInput" maxlength="32"></div>
     <div class="field"><label>Facção</label><select class="select" id="factionSelect"><option value="asmodian">Asmodian</option><option value="elyos">Elyos</option></select></div>
     <div class="field"><label>Membership</label><select class="select" id="membershipSelect"><option value="yes">Ativa</option><option value="no">Sem membership</option></select></div>
-    <div class="field"><label>Daily Dungeon / semana</label><select class="select" id="dailyDungeonCapSelect"><option value="7">7 (guias Global pré-launch)</option><option value="14">14 (transcrição/testes)</option></select></div>
-    <div class="field"><label>Reset diário (hora local configurada)</label><input class="input" type="time" id="dailyResetInput"></div>
-    <div class="field"><label>Reset semanal</label><select class="select" id="weeklyDaySelect"><option value="0">Domingo</option><option value="1">Segunda</option><option value="2">Terça</option><option value="3">Quarta</option><option value="4">Quinta</option><option value="5">Sexta</option><option value="6">Sábado</option></select></div>
-    <div class="field"><label>Hora do reset semanal</label><input class="input" type="time" id="weeklyResetInput"></div>
+    
+    <div class="field"><label>Timer diário (configure conforme o cliente Global)</label><input class="input" type="time" id="dailyResetInput"></div>
+    <div class="field"><label>Timer semanal · dia</label><select class="select" id="weeklyDaySelect"><option value="0">Domingo</option><option value="1">Segunda</option><option value="2">Terça</option><option value="3">Quarta</option><option value="4">Quinta</option><option value="5">Sexta</option><option value="6">Sábado</option></select></div>
+    <div class="field"><label>Timer semanal · hora</label><input class="input" type="time" id="weeklyResetInput"></div>
     <div class="field"><label>Região / servidor (rótulo)</label><input class="input" id="serverLabelInput" placeholder="Ex.: South America"></div>
    </div>
-   <div class="callout warn" style="margin-top:14px"><b>Daily Dungeon:</b> esse é o número que eu deixei deliberadamente configurável. Assim que você confirmar o contador no cliente Global, escolhe 7 ou 14 e acabou a dúvida.</div>
+   <div class="callout info" style="margin-top:14px"><b>Timers:</b> horários de reset e eventos podem ser controlados pelo servidor. Configure estes relógios pelo que o cliente Global mostrar para sua região.</div>
    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:16px"><button class="btn ghost" data-close="settingsModal">Cancelar</button><button class="btn primary" id="saveSettingsBtn">Salvar</button></div>
   </div>
  </div>
@@ -722,7 +514,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="./config.js?v=2.0.3"></script>
-<script type="module" src="./app.js?v=2.0.3"></script>
+<script src="./config.js?v=2.1.0-global"></script>
+<script type="module" src="./app.js?v=2.1.0-global"></script>
 </body>
 </html>
