@@ -1,5 +1,5 @@
-import {deepClone,createStateNormalizer,readLocal,writeLocal,hasStoredState} from "./storage.js?v=1.0.0-final5";
-import {createAuthController,discordDisplayName,discordAvatar} from "./auth.js?v=1.0.0-final5";
+import {deepClone,createStateNormalizer,readLocal,writeLocal,hasStoredState} from "./storage.js?v=2.0.0";
+import {createAuthController,discordDisplayName,discordAvatar} from "./auth.js?v=2.0.0";
 
 window.__AION2_SHARED_STATE__ = window.__AION2_SHARED_STATE__ || null;
 
@@ -512,11 +512,37 @@ function bindDynamic(){
  });
 }
 
+const VIEW_TITLES={
+ today:"Painel da conta",
+ weekly:"Ciclo semanal",
+ characters:"Personagens",
+ week1:"Guia da conta",
+ resources:"Recursos & entradas",
+ bible:"Bíblia do Aion 2",
+ tips:"Dicas gerais",
+ notes:"Anotações pessoais"
+};
+function setView(view){
+ const target=document.getElementById(view);
+ if(!target)return;
+ document.querySelectorAll("#nav button[data-view]").forEach(x=>x.classList.toggle("active",x.dataset.view===view));
+ document.querySelectorAll(".view").forEach(x=>x.classList.add("hidden"));
+ target.classList.remove("hidden");
+ const title=document.getElementById("viewTitle");
+ if(title)title.textContent=VIEW_TITLES[view]||"AION 2 Control Center";
+ document.body.classList.remove("sidebarOpen");
+ if(window.innerWidth<980)window.scrollTo({top:0,behavior:"smooth"});
+}
 document.getElementById("nav").addEventListener("click",e=>{
  const b=e.target.closest("button[data-view]");if(!b)return;
- document.querySelectorAll(".nav button").forEach(x=>x.classList.remove("active"));b.classList.add("active");
- document.querySelectorAll(".view").forEach(x=>x.classList.add("hidden"));document.getElementById(b.dataset.view).classList.remove("hidden");
+ setView(b.dataset.view);
 });
+document.querySelectorAll("[data-go-view]").forEach(el=>el.addEventListener("click",()=>setView(el.dataset.goView)));
+const menuBtn=document.getElementById("menuBtn");
+const sidebarBackdrop=document.getElementById("sidebarBackdrop");
+if(menuBtn)menuBtn.addEventListener("click",()=>document.body.classList.toggle("sidebarOpen"));
+if(sidebarBackdrop)sidebarBackdrop.addEventListener("click",()=>document.body.classList.remove("sidebarOpen"));
+document.addEventListener("keydown",e=>{if(e.key==="Escape")document.body.classList.remove("sidebarOpen")});
 document.getElementById("planModeSelect").onchange=e=>{if(readonly)return;state.planView=e.target.value;save();renderWeek1()};
 document.getElementById("strategySelect").onchange=e=>{if(readonly)return;state.strategy=e.target.value;save();renderWeek1()};
 document.getElementById("addCharBtn").onclick=()=>{
@@ -639,10 +665,10 @@ document.getElementById("downloadSnapshotBtn").onclick=async()=>{
    return response.text();
   };
   const [css,storageSource,authSource,appSource]=await Promise.all([
-   assetText("styles.css?v=1.0.0-final5"),
-   assetText("storage.js?v=1.0.0-final5"),
-   assetText("auth.js?v=1.0.0-final5"),
-   assetText("app.js?v=1.0.0-final5")
+   assetText("styles.css?v=2.0.0"),
+   assetText("storage.js?v=2.0.0"),
+   assetText("auth.js?v=2.0.0"),
+   assetText("app.js?v=2.0.0")
   ]);
   const stripModule=source=>source
    .replace(/^import\s+[^;]+;\s*$/gm,"")
