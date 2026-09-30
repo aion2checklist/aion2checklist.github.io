@@ -1,5 +1,5 @@
-import {deepClone,createStateNormalizer,readLocal,writeLocal,hasStoredState} from "./storage.js?v=2.1.0-global";
-import {createAuthController,discordDisplayName,discordAvatar} from "./auth.js?v=2.1.0-global";
+import {deepClone,createStateNormalizer,readLocal,writeLocal,hasStoredState} from "./storage.js?v=2.1.1-global";
+import {createAuthController,discordDisplayName,discordAvatar} from "./auth.js?v=2.1.1-global";
 
 window.__AION2_SHARED_STATE__ = window.__AION2_SHARED_STATE__ || null;
 
@@ -823,10 +823,10 @@ document.getElementById("downloadSnapshotBtn").onclick=async()=>{
    return response.text();
   };
   const [css,storageSource,authSource,appSource]=await Promise.all([
-   assetText("styles.css?v=2.1.0-global"),
-   assetText("storage.js?v=2.1.0-global"),
-   assetText("auth.js?v=2.1.0-global"),
-   assetText("app.js?v=2.1.0-global")
+   assetText("styles.css?v=2.1.1-global"),
+   assetText("storage.js?v=2.1.1-global"),
+   assetText("auth.js?v=2.1.1-global"),
+   assetText("app.js?v=2.1.1-global")
   ]);
   const stripModule=source=>source
    .replace(/^import\s+[^;]+;\s*$/gm,"")
