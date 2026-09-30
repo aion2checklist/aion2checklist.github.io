@@ -1,5 +1,5 @@
-import {deepClone,createStateNormalizer,readLocal,writeLocal,hasStoredState} from "./storage.js?v=2.0.3";
-import {createAuthController,discordDisplayName,discordAvatar} from "./auth.js?v=2.0.3";
+import {deepClone,createStateNormalizer,readLocal,writeLocal,hasStoredState} from "./storage.js?v=2.1.0-global";
+import {createAuthController,discordDisplayName,discordAvatar} from "./auth.js?v=2.1.0-global";
 
 window.__AION2_SHARED_STATE__ = window.__AION2_SHARED_STATE__ || null;
 
@@ -267,7 +267,7 @@ function maybeAutoReset(syncCloud=true){
  if(state.meta.dailyKey&&state.meta.dailyKey!==dk){state.daily={};changed=true}
  if(state.meta.weeklyKey&&state.meta.weeklyKey!==wk){
   state.weekly={};state.weeklyCounts={dailyDungeon:0,pveCommands:0,pvpCommands:0,shugo:0};
-  state.characters.forEach(c=>{c.ascension=0;c.battleground=0});
+  state.characters.forEach(c=>{c.sanctuary=0});
   changed=true;
  }
  if(state.meta.dailyKey!==dk||state.meta.weeklyKey!==wk)changed=true;
@@ -393,26 +393,24 @@ function renderResources(){
 }
 
 const CLASS_DATA=[
- {name:"Templar",role:"Tank",roleKey:"tank",weapon:"Espada",difficulty:"Média",availability:"global",summary:"Linha de frente com foco em proteção, controle de ameaça e sustentação do grupo."},
- {name:"Gladiator",role:"DPS corpo a corpo",roleKey:"dps",weapon:"Espada Grande",difficulty:"Fácil",availability:"global",summary:"Dano físico direto, presença constante no melee e boa tolerância para uma classe ofensiva."},
- {name:"Assassin",role:"DPS corpo a corpo",roleKey:"dps",weapon:"Adaga",difficulty:"Alta",availability:"global",summary:"Mobilidade, burst e pressão posicional; tende a valorizar execução e ataques pelas costas."},
- {name:"Ranger",role:"DPS à distância",roleKey:"dps",weapon:"Arco",difficulty:"Média",availability:"global",summary:"Dano físico à distância com mobilidade e controle do espaço."},
- {name:"Sorcerer",role:"DPS à distância",roleKey:"dps",weapon:"Grimório",difficulty:"Média",availability:"global",summary:"Dano mágico à distância e ferramentas de área, com forte peso no uso correto das skills."},
- {name:"Spiritmaster",role:"Invocador",roleKey:"dps",weapon:"Orbe",difficulty:"Alta",availability:"global",summary:"Combina o próprio kit com um espírito invocado e exige atenção ao posicionamento das duas fontes de dano."},
- {name:"Cleric",role:"Suporte / Cura",roleKey:"support",weapon:"Maça",difficulty:"Média",availability:"global",summary:"Cura e sustentação do grupo com capacidade de participar do combate além do papel defensivo."},
- {name:"Chanter",role:"Suporte híbrido",roleKey:"support",weapon:"Cajado",difficulty:"Alta",availability:"global",summary:"Mistura buffs, sustentação e presença corpo a corpo para fortalecer o grupo."},
- {name:"Brawler",role:"DPS corpo a corpo",roleKey:"dps",weapon:"Manopla",difficulty:"Alta",availability:"kr",summary:"Classe de combos corpo a corpo presente em KR/TW; trate disponibilidade no Global como não confirmada."}
+ {name:"Templar",role:"Tank",roleKey:"tank",weapon:"Sword / Guard",summary:"Linha de frente focada em proteção, controle e sobrevivência do grupo."},
+ {name:"Gladiator",role:"Melee DPS",roleKey:"dps",weapon:"Greatsword",summary:"Dano físico corpo a corpo com presença constante e boa resistência."},
+ {name:"Assassin",role:"Melee DPS",roleKey:"dps",weapon:"Daggers",summary:"Burst físico, mobilidade e forte recompensa por posicionamento."},
+ {name:"Ranger",role:"Ranged DPS",roleKey:"dps",weapon:"Bow",summary:"Pressão física à distância com mobilidade e controle de espaço."},
+ {name:"Sorcerer",role:"Magic DPS",roleKey:"dps",weapon:"Spellbook",summary:"Dano mágico explosivo e controle de área, exigindo bom posicionamento."},
+ {name:"Spiritmaster",role:"Magic DPS / Summoner",roleKey:"dps",weapon:"Orb",summary:"Combate mágico com espírito invocado e ferramentas de controle."},
+ {name:"Cleric",role:"Healer",roleKey:"support",weapon:"Mace / Guard",summary:"Cura principal do grupo, suporte defensivo e contribuição ofensiva."},
+ {name:"Chanter",role:"Support",roleKey:"support",weapon:"Staff",summary:"Suporte híbrido com buffs, sustentação e combate corpo a corpo."}
 ];
-const MAIN_STAT_DEFS=[
- ["might","Might","Attack Increase"],["constitution","Constitution","HP Increase"],["dexterity","Dexterity","Evasion + Block + Critical Hit Resist"],
- ["intelligence","Intelligence","Status Effect Chance"],["precision","Precision","Accuracy Increase + Critical Hit Increase"],["willpower","Willpower","Status Effect Resist"]
-];
-const DEITY_DEFS=[
- ["justice","Justice / Nezekan","Defense Increase","Perfect Chance",false],["destruction","Destruction / Zikel","Attack Increase","Perfect Resist",false],
- ["death","Death / Triniel","Critical Hit Increase","Regeneration Penetration",false],["wisdom","Wisdom / Lumiel","MP Cost","Smite / Double Chance",true],
- ["destiny","Destiny / Marchutan","MP Increase","Endurance",false],["space","Space / Israphel","Move Speed","Block Increase",false],
- ["time","Time / Siel","Combat Speed","Smite Resist / Double Chance Resist",false],["life","Life / Yustiel","HP Increase","Regeneration",false],
- ["illusion","Illusion / Kaisinel","Cooldown","Endurance Penetration",true],["freedom","Freedom / Vaizel","Accuracy Increase","Evasion Increase",false]
+const GLOBAL_GATES=[
+ {group:"Conquest",name:"Tier 1 · Krao Cave / Draupnir",level:45,itemLevel:700},
+ {group:"Conquest",name:"Tier 2 · Urugugu Canyon / Vakron Sky Island",level:45,itemLevel:1400},
+ {group:"Transcendence",name:"Stage 1",level:45,itemLevel:1600},
+ {group:"Transcendence",name:"Stage 3",level:45,itemLevel:1900},
+ {group:"Conquest",name:"Tier 3 · Fire Temple / Ferocious Horn Den",level:45,itemLevel:2100},
+ {group:"Transcendence",name:"Stage 6",level:45,itemLevel:2200},
+ {group:"Transcendence",name:"Stage 9",level:45,itemLevel:2500},
+ {group:"Sanctuary",name:"Abyssal Forge: Ludra",level:45,itemLevel:2800}
 ];
 const BUILDER_GEAR_SLOTS=[
  ["weapon","Arma"],["offhand","Guard / Off-hand"],["helmet","Helmet"],["shoulder","Shoulder"],["chest","Chest"],["pants","Pants"],["gloves","Gloves"],["boots","Boots"],["cloak","Cloak"],
@@ -421,19 +419,19 @@ const BUILDER_GEAR_SLOTS=[
 ];
 function toolState(){return state.toolbox||DEFAULT.toolbox}
 function builderState(){return toolState().builder}
-function classOptions(selected){return CLASS_DATA.map(c=>`<option value="${c.name}" ${c.name===selected?"selected":""}>${c.name}${c.availability==="kr"?" · KR/TW":""}</option>`).join("")}
+function classOptions(selected){return CLASS_DATA.map(c=>`<option value="${c.name}" ${c.name===selected?"selected":""}>${c.name}</option>`).join("")}
 function focusLabel(v){return v==="pvp"?"PvP":v==="hybrid"?"Híbrido":"PvE"}
 
 function renderClasses(){
  const grid=document.getElementById("classGrid"),filter=document.getElementById("classFilter");
  if(!grid||!filter)return;
  const selected=toolState().classFilter||"all";filter.value=selected;
- const list=CLASS_DATA.filter(c=>selected==="all"||(selected==="global"&&c.availability==="global")||(selected==="kr"&&c.availability==="kr")||selected===c.roleKey);
+ const list=CLASS_DATA.filter(c=>selected==="all"||selected===c.roleKey);
  grid.innerHTML=list.map(c=>`
   <article class="classCard">
-   <div class="classCardTop"><span class="classSigil">${c.name.slice(0,2).toUpperCase()}</span><span class="badge ${c.availability==="global"?"green":"gold"}">${c.availability==="global"?"GLOBAL":"KR/TW"}</span></div>
+   <div class="classCardTop"><span class="classSigil">${c.name.slice(0,2).toUpperCase()}</span><span class="badge green">GLOBAL LAUNCH</span></div>
    <h3>${c.name}</h3><p>${c.summary}</p>
-   <div class="classMeta"><span><small>Papel</small><b>${c.role}</b></span><span><small>Arma</small><b>${c.weapon}</b></span><span><small>Dificuldade</small><b>${c.difficulty}</b></span></div>
+   <div class="classMeta"><span><small>Papel</small><b>${c.role}</b></span><span><small>Arma</small><b>${c.weapon}</b></span><span><small>Status</small><b>Disponível</b></span></div>
    <button class="btn ghost classBuildBtn" data-class-build="${c.name}">Usar no Builder →</button>
   </article>`).join("");
 }
@@ -450,34 +448,53 @@ function renderBuilder(){
    <div class="field"><label>Foco</label><select class="select builderField" data-builder-path="focus" ${readonly?"disabled":""}><option value="pve" ${b.focus==="pve"?"selected":""}>PvE</option><option value="pvp" ${b.focus==="pvp"?"selected":""}>PvP</option><option value="hybrid" ${b.focus==="hybrid"?"selected":""}>Híbrido</option></select></div>
    <div class="field smallField"><label>Nível</label><input class="input builderField" type="number" min="1" max="99" data-builder-path="level" value="${b.level}" ${readonly?"disabled":""}></div>
   </div>
-  <div class="builderSummary"><div><span>Classe</span><b>${b.className}</b></div><div><span>Foco</span><b>${focusLabel(b.focus)}</b></div><div><span>Attack</span><b>${b.stats.attack}</b></div><div><span>Accuracy</span><b>${b.stats.accuracy}</b></div><div><span>Crit</span><b>${b.stats.critical}</b></div></div>
-  <details class="builderPanel" open><summary>Stats principais</summary><div class="builderFields">${[["might","Might"],["precision","Precision"],["attack","Attack"],["accuracy","Accuracy"],["critical","Critical Hit"]].map(([k,l])=>`<div class="field"><label>${l}</label><input class="input builderField" type="number" min="0" data-builder-path="stats.${k}" value="${b.stats[k]}" ${readonly?"disabled":""}></div>`).join("")}</div></details>
+  <div class="builderSummary"><div><span>Classe</span><b>${b.className}</b></div><div><span>Item Level</span><b>${b.stats.itemLevel||0}</b></div><div><span>Attack</span><b>${b.stats.attack}</b></div><div><span>Accuracy</span><b>${b.stats.accuracy}</b></div><div><span>Crit</span><b>${b.stats.critical}</b></div></div>
+  <details class="builderPanel" open><summary>Stats da build</summary><div class="builderFields">${[["itemLevel","Item Level"],["might","Might"],["precision","Precision"],["attack","Attack"],["accuracy","Accuracy"],["critical","Critical Hit"]].map(([k,l])=>`<div class="field"><label>${l}</label><input class="input builderField" type="number" min="0" data-builder-path="stats.${k}" value="${b.stats[k]||0}" ${readonly?"disabled":""}></div>`).join("")}</div></details>
   <details class="builderPanel" open><summary>Skills & progressão</summary><div class="builderFields">
-   <div class="field"><label>Active Skill principal</label><input class="input builderField" type="number" min="0" max="40" data-builder-path="skills.primary" value="${b.skills.primary}" ${readonly?"disabled":""}></div>
-   <div class="field"><label>Active Skill secundária</label><input class="input builderField" type="number" min="0" max="40" data-builder-path="skills.secondary" value="${b.skills.secondary}" ${readonly?"disabled":""}></div>
+   <div class="field"><label>Skill principal · nível total</label><input class="input builderField" type="number" min="0" max="40" data-builder-path="skills.primary" value="${b.skills.primary}" ${readonly?"disabled":""}></div>
+   <div class="field"><label>Skill secundária · nível total</label><input class="input builderField" type="number" min="0" max="40" data-builder-path="skills.secondary" value="${b.skills.secondary}" ${readonly?"disabled":""}></div>
    <div class="field"><label>Arcanas equipadas</label><input class="input builderField" type="number" min="0" max="10" data-builder-path="progression.arcana" value="${b.progression.arcana}" ${readonly?"disabled":""}></div>
    <div class="field"><label>Pontos Daevanion</label><input class="input builderField" type="number" min="0" data-builder-path="progression.daevanion" value="${b.progression.daevanion}" ${readonly?"disabled":""}></div>
    ${genus}
-  </div><div class="mini builderHint">Marcos úteis para Active Skills citados na Bíblia: 8 · 12 · 16 · 20. Genus aqui é planejamento manual.</div></details>
+  </div><div class="mini builderHint">Cliente Global: skills base vão até 14; Specializations abrem nos níveis totais 8, 12 e 20. Arcana e Daevanion podem adicionar níveis.</div></details>
   <details class="builderPanel"><summary>Equipamento planejado</summary><div class="builderGearGrid">${gear}</div></details>
   <div class="builderActions"><button class="btn primary" id="saveBuildSnapshotBtn" ${readonly?"disabled":""}>Salvar snapshot</button><button class="btn ghost" id="copyBuildCodeBtn">Copiar build</button><button class="btn ghost" id="importBuildCodeBtn" ${readonly?"disabled":""}>Importar build</button><button class="btn danger" id="clearBuilderBtn" ${readonly?"disabled":""}>Limpar</button></div>`;
  const builds=toolState().savedBuilds||[];
- saved.innerHTML=builds.length?builds.slice().reverse().map(item=>`<div class="savedBuildCard"><div><b>${escapeHtml(item.build.name)}</b><span>${item.build.className} · ${focusLabel(item.build.focus)} · Lv ${item.build.level}</span></div><div class="savedBuildActions"><button class="btn ghost" data-open-build="${item.id}">Abrir</button><button class="btn ghost" data-copy-saved-build="${item.id}">Copiar</button><button class="btn danger miniBtn" data-delete-build="${item.id}">×</button></div></div>`).join(""):`<div class="emptyState"><b>Nenhuma build salva.</b><span>Monte algo ao lado e clique em “Salvar snapshot”.</span></div>`;
+ saved.innerHTML=builds.length?builds.slice().reverse().map(item=>`<div class="savedBuildCard"><div><b>${escapeHtml(item.build.name)}</b><span>${item.build.className} · ${focusLabel(item.build.focus)} · IL ${item.build.stats.itemLevel||0}</span></div><div class="savedBuildActions"><button class="btn ghost" data-open-build="${item.id}">Abrir</button><button class="btn ghost" data-copy-saved-build="${item.id}">Copiar</button><button class="btn danger miniBtn" data-delete-build="${item.id}">×</button></div></div>`).join(""):`<div class="emptyState"><b>Nenhuma build salva.</b><span>Monte algo ao lado e clique em “Salvar snapshot”.</span></div>`;
 }
 
 function renderCalculator(){
  const root=document.getElementById("calculatorBody");if(!root)return;
  const calc=toolState().calculator;
- const mainRows=MAIN_STAT_DEFS.map(([key,label,effect])=>{const val=Number(calc.main[key]||0),yieldPct=val*.1;return `<div class="calcRow"><div><b>${label}</b><small>${effect}</small></div><input class="input calcField" type="number" min="0" data-calc-path="main.${key}" value="${val}" ${readonly?"disabled":""}><strong>${yieldPct.toFixed(1)}%</strong></div>`}).join("");
- const deityRows=DEITY_DEFS.map(([key,label,e1,e2,reduction])=>{const val=Number(calc.deity[key]||0),pct=val*.2;return `<div class="calcRow deityRow"><div><b>${label}</b><small>${e1} · ${e2}</small></div><input class="input calcField" type="number" min="0" max="200" data-calc-path="deity.${key}" value="${val}" ${readonly?"disabled":""}><strong>${reduction?"−":""}${pct.toFixed(1)}% / +${pct.toFixed(1)}%</strong></div>`}).join("");
- const p=calc.piece,newTotal=Number(p.total||0)-Number(p.current||0)+Number(p.next||0),diff=Number(p.next||0)-Number(p.current||0),c=calc.context;
- const pveAttack=Number(c.attack||0)+Number(c.pveAttack||0)+(c.isBoss?Number(c.bossAttack||0):0),pvpAttack=Number(c.attack||0)+Number(c.pvpAttack||0),pveDamage=Number(c.damage||0)+Number(c.pveDamage||0)+(c.isBoss?Number(c.bossDamage||0):0),pvpDamage=Number(c.damage||0)+Number(c.pvpDamage||0);
- root.innerHTML=`<div class="calcLayout"><section class="calcPanel"><div class="calcPanelHead"><h3>Main Stats</h3><span class="badge green">0,1% / ponto</span></div>${mainRows}<div class="mini calcSource">Relação usada como referência de cálculo do guia consultado.</div></section><section class="calcPanel"><div class="calcPanelHead"><h3>Deity Stats</h3><span class="badge gold">0,2% / ponto</span></div>${deityRows}<div class="mini calcSource">As fontes usam terminologia diferente em Wisdom/Time; mantivemos os dois nomes no rótulo.</div></section></div>
- <div class="calcLayout calcBottom"><section class="calcPanel"><div class="calcPanelHead"><h3>Comparar uma peça</h3><span class="badge blue">ARITMÉTICA</span></div><div class="builderFields">
-  <div class="field"><label>Status</label><input class="input calcTextField" data-calc-text="piece.label" value="${escapeHtml(p.label)}" ${readonly?"disabled":""}></div><div class="field"><label>Total atual</label><input class="input calcField" type="number" data-calc-path="piece.total" value="${p.total}" ${readonly?"disabled":""}></div><div class="field"><label>Peça atual</label><input class="input calcField" type="number" data-calc-path="piece.current" value="${p.current}" ${readonly?"disabled":""}></div><div class="field"><label>Peça nova</label><input class="input calcField" type="number" data-calc-path="piece.next" value="${p.next}" ${readonly?"disabled":""}></div>
- </div><div class="calcResult"><span>${escapeHtml(p.label||"Status")} final</span><b>${newTotal}</b><em class="${diff>=0?"positive":"negative"}">${diff>=0?"+":""}${diff}</em></div></section>
- <section class="calcPanel"><div class="calcPanelHead"><h3>PvE x PvP</h3><span class="badge violet">CONTEXTO</span></div><div class="builderFields contextFields">${[["attack","Attack base"],["pveAttack","Attack PvE"],["pvpAttack","Attack PvP"],["bossAttack","Attack Boss"],["damage","Damage Boost geral"],["pveDamage","Damage Boost PvE"],["pvpDamage","Damage Boost PvP"],["bossDamage","Damage Boost Boss"]].map(([k,l])=>`<div class="field"><label>${l}</label><input class="input calcField" type="number" data-calc-path="context.${k}" value="${c[k]}" ${readonly?"disabled":""}></div>`).join("")}<div class="field"><label>Alvo é boss?</label><select class="select calcBoolField" data-calc-bool="context.isBoss" ${readonly?"disabled":""}><option value="no" ${!c.isBoss?"selected":""}>Não</option><option value="yes" ${c.isBoss?"selected":""}>Sim</option></select></div></div>
- <div class="contextResults"><div><span>PvE Attack</span><b>${pveAttack}</b></div><div><span>PvE Damage</span><b>${pveDamage}</b></div><div><span>PvP Attack</span><b>${pvpAttack}</b></div><div><span>PvP Damage</span><b>${pvpDamage}</b></div></div><div class="mini calcSource">Somamos apenas os bônus do contexto selecionado; isso não é uma fórmula completa de DPS.</div></section></div>`;
+ const g=calc.global||DEFAULT.toolbox.calculator.global;
+ const totalSkill=Math.max(0,Number(g.skillBase||0)+Number(g.skillBonus||0));
+ const specCount=[8,12,20].filter(v=>totalSkill>=v).length;
+ const gates=GLOBAL_GATES.map(gate=>{
+  const levelOk=Number(g.level||0)>=gate.level;
+  const ilOk=Number(g.itemLevel||0)>=gate.itemLevel;
+  const open=levelOk&&ilOk;
+  const missing=Math.max(0,gate.itemLevel-Number(g.itemLevel||0));
+  return `<div class="gateRow ${open?"gateOpen":""}"><span class="gateStatus">${open?"✓":"○"}</span><div><b>${gate.name}</b><small>${gate.group} · Lv ${gate.level} · IL ${gate.itemLevel.toLocaleString("pt-BR")}</small></div><em>${open?"PRONTO":levelOk?`+${missing.toLocaleString("pt-BR")} IL`:`Lv ${gate.level}`}</em></div>`;
+ }).join("");
+ const p=calc.piece,newTotal=Number(p.total||0)-Number(p.current||0)+Number(p.next||0),diff=Number(p.next||0)-Number(p.current||0);
+ root.innerHTML=`
+ <div class="calcLayout">
+  <section class="calcPanel globalGatePanel"><div class="calcPanelHead"><h3>Roadmap de Item Level</h3><span class="badge green">GLOBAL CLIENT</span></div>
+   <div class="builderFields gateInputs"><div class="field"><label>Nível do personagem</label><input class="input calcField" type="number" min="1" max="99" data-calc-path="global.level" value="${g.level}" ${readonly?"disabled":""}></div><div class="field"><label>Item Level</label><input class="input calcField" type="number" min="0" data-calc-path="global.itemLevel" value="${g.itemLevel}" ${readonly?"disabled":""}></div></div>
+   <div class="gateList">${gates}</div><div class="mini calcSource">Gates do cliente Global de lançamento. Conteúdo bloqueado pelo servidor pode abrir em outra data.</div>
+  </section>
+  <section class="calcPanel"><div class="calcPanelHead"><h3>Mastery Specializations</h3><span class="badge violet">8 · 12 · 20</span></div>
+   <div class="builderFields gateInputs"><div class="field"><label>Nível base da skill</label><input class="input calcField" type="number" min="0" max="14" data-calc-path="global.skillBase" value="${g.skillBase}" ${readonly?"disabled":""}></div><div class="field"><label>Bônus Arcana / Daevanion</label><input class="input calcField" type="number" min="0" max="40" data-calc-path="global.skillBonus" value="${g.skillBonus}" ${readonly?"disabled":""}></div></div>
+   <div class="specialtyMeter"><div><span>Nível total</span><b>${totalSkill}</b></div><div><span>Slots abertos</span><b>${specCount}/3</b></div></div>
+   <div class="specialtySteps">${[8,12,20].map((v,i)=>`<span class="${totalSkill>=v?"done":""}"><b>${v}</b><small>Slot ${i+1}</small></span>`).join("")}</div>
+   <div class="mini calcSource">Base natural até 14; o slot de nível 20 depende de bônus de progressão.</div>
+  </section>
+ </div>
+ <div class="calcLayout calcBottom">
+  <section class="calcPanel"><div class="calcPanelHead"><h3>Troca de peça</h3><span class="badge blue">ARITMÉTICA</span></div><div class="builderFields"><div class="field"><label>Status</label><input class="input calcTextField" data-calc-text="piece.label" value="${escapeHtml(p.label)}" ${readonly?"disabled":""}></div><div class="field"><label>Total atual</label><input class="input calcField" type="number" data-calc-path="piece.total" value="${p.total}" ${readonly?"disabled":""}></div><div class="field"><label>Peça atual</label><input class="input calcField" type="number" data-calc-path="piece.current" value="${p.current}" ${readonly?"disabled":""}></div><div class="field"><label>Peça nova</label><input class="input calcField" type="number" data-calc-path="piece.next" value="${p.next}" ${readonly?"disabled":""}></div></div><div class="calcResult"><span>${escapeHtml(p.label||"Status")} final</span><b>${newTotal}</b><em class="${diff>=0?"positive":"negative"}">${diff>=0?"+":""}${diff}</em></div>
+  </section>
+  <section class="calcPanel globalFactsPanel"><div class="calcPanelHead"><h3>Cliente Global</h3><span class="badge gold">LAUNCH</span></div><div class="contextResults"><div><span>Classes</span><b>8</b></div><div><span>Stigma slots</span><b>4</b></div><div><span>Quick slots</span><b>8</b></div><div><span>Boards Daevanion</span><b>5</b></div></div><div class="mini calcSource">Arquivos do cliente não garantem disponibilidade server-side.</div></section>
+ </div>`;
 }
 
 function renderCompare(){
@@ -486,7 +503,7 @@ function renderCompare(){
  const a=builds.find(i=>i.id===cmp.a)?.build,b=builds.find(i=>i.id===cmp.b)?.build;
  const row=(label,av,bv,numeric=true)=>{let dhtml="—";if(numeric&&a&&b){const d=Number(bv||0)-Number(av||0);dhtml=`<em class="${d>=0?"positive":"negative"}">${d>=0?"+":""}${d}</em>`}return `<tr><td>${label}</td><td>${a?av:"—"}</td><td>${b?bv:"—"}</td><td>${dhtml}</td></tr>`};
  root.innerHTML=`<div class="compareSelectors"><div class="field"><label>Build A</label><select class="select compareSelect" id="compareA">${opts}</select></div><div class="vsMark">VS</div><div class="field"><label>Build B</label><select class="select compareSelect" id="compareB">${opts}</select></div></div>
- ${builds.length<2?`<div class="callout warn"><b>Salve pelo menos duas builds.</b><br>O comparador usa os snapshots do Builder.</div>`:`<div class="statTableWrap"><table class="bibleTable compareTable"><thead><tr><th>Campo</th><th>Build A</th><th>Build B</th><th>Δ B−A</th></tr></thead><tbody>${row("Classe",a?.className,b?.className,false)}${row("Foco",a?focusLabel(a.focus):"",b?focusLabel(b.focus):"",false)}${row("Nível",a?.level,b?.level)}${row("Might",a?.stats.might,b?.stats.might)}${row("Precision",a?.stats.precision,b?.stats.precision)}${row("Attack",a?.stats.attack,b?.stats.attack)}${row("Accuracy",a?.stats.accuracy,b?.stats.accuracy)}${row("Critical Hit",a?.stats.critical,b?.stats.critical)}${row("Skill principal",a?.skills.primary,b?.skills.primary)}${row("Skill secundária",a?.skills.secondary,b?.skills.secondary)}${row("Arcanas",a?.progression.arcana,b?.progression.arcana)}${row("Daevanion",a?.progression.daevanion,b?.progression.daevanion)}</tbody></table></div>`}
+ ${builds.length<2?`<div class="callout warn"><b>Salve pelo menos duas builds.</b><br>O comparador usa os snapshots do Builder.</div>`:`<div class="statTableWrap"><table class="bibleTable compareTable"><thead><tr><th>Campo</th><th>Build A</th><th>Build B</th><th>Δ B−A</th></tr></thead><tbody>${row("Classe",a?.className,b?.className,false)}${row("Foco",a?focusLabel(a.focus):"",b?focusLabel(b.focus):"",false)}${row("Nível",a?.level,b?.level)}${row("Item Level",a?.stats.itemLevel,b?.stats.itemLevel)}${row("Might",a?.stats.might,b?.stats.might)}${row("Precision",a?.stats.precision,b?.stats.precision)}${row("Attack",a?.stats.attack,b?.stats.attack)}${row("Accuracy",a?.stats.accuracy,b?.stats.accuracy)}${row("Critical Hit",a?.stats.critical,b?.stats.critical)}${row("Skill principal",a?.skills.primary,b?.skills.primary)}${row("Skill secundária",a?.skills.secondary,b?.skills.secondary)}${row("Arcanas",a?.progression.arcana,b?.progression.arcana)}${row("Daevanion",a?.progression.daevanion,b?.progression.daevanion)}</tbody></table></div>`}
  <div class="mini compareNote">O comparador mostra diferenças objetivas entre os campos salvos e não escolhe uma build “vencedora”.</div>`;
  const sa=document.getElementById("compareA"),sb=document.getElementById("compareB");if(sa)sa.value=cmp.a||"";if(sb)sb.value=cmp.b||"";
 }
@@ -506,7 +523,7 @@ function bindPortalDynamic(scope=document){
  scope.querySelectorAll(".calcField").forEach(el=>el.onchange=e=>{if(readonly)return;setNested(state.toolbox.calculator,e.target.dataset.calcPath,Number(e.target.value||0));state=normalizeState(state);save();renderCalculator();bindPortalDynamic(scope)});
  scope.querySelectorAll(".calcTextField").forEach(el=>el.onchange=e=>{if(readonly)return;setNested(state.toolbox.calculator,e.target.dataset.calcText,e.target.value);state=normalizeState(state);save();renderCalculator();bindPortalDynamic(scope)});
  scope.querySelectorAll(".calcBoolField").forEach(el=>el.onchange=e=>{if(readonly)return;setNested(state.toolbox.calculator,e.target.dataset.calcBool,e.target.value==="yes");save();renderCalculator();bindPortalDynamic(scope)});
- const calcFromBuilder=scope.querySelector("#calcFromBuilderBtn");if(calcFromBuilder)calcFromBuilder.onclick=()=>{if(readonly)return;state.toolbox.calculator.main.might=state.toolbox.builder.stats.might;state.toolbox.calculator.main.precision=state.toolbox.builder.stats.precision;state.toolbox.calculator.context.attack=state.toolbox.builder.stats.attack;save();renderCalculator();bindPortalDynamic(scope)};
+ const calcFromBuilder=scope.querySelector("#calcFromBuilderBtn");if(calcFromBuilder)calcFromBuilder.onclick=()=>{if(readonly)return;state.toolbox.calculator.global.level=state.toolbox.builder.level;state.toolbox.calculator.global.itemLevel=state.toolbox.builder.stats.itemLevel||0;save();renderCalculator();bindPortalDynamic(scope)};
  const ca=scope.querySelector("#compareA"),cb=scope.querySelector("#compareB");
  if(ca){ca.disabled=readonly;ca.onchange=e=>{if(readonly)return;state.toolbox.compare.a=e.target.value;save();renderCompare();bindPortalDynamic(scope)}}
  if(cb){cb.disabled=readonly;cb.onchange=e=>{if(readonly)return;state.toolbox.compare.b=e.target.value;save();renderCompare();bindPortalDynamic(scope)}};
@@ -527,8 +544,8 @@ function renderHeader(){
  document.documentElement.dataset.faction=state.faction;
  document.getElementById("profileLine").textContent=`${state.profileName} · ${state.faction==="asmodian"?"Asmodian":"Elyos"} · ${state.serverLabel||"Global"}`;
  const days=["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
- document.getElementById("dailyResetMeta").textContent=`Todos os dias · ${state.dailyReset} · ${state.serverLabel||"servidor"}`;
- document.getElementById("resetMeta").textContent=`${days[state.weeklyDay]} · ${state.weeklyReset} · ${state.serverLabel||"servidor"}`;
+ document.getElementById("dailyResetMeta").textContent=`Timer configurado · ${state.dailyReset} · confirme no cliente Global`;
+ document.getElementById("resetMeta").textContent=`Timer configurado · ${days[state.weeklyDay]} ${state.weeklyReset} · confirme no cliente Global`;
  if(readonly){
   document.getElementById("shareBanner").classList.add("show");
   document.getElementById("shareOwner").textContent=`Snapshot de ${state.profileName}. Alterações estão bloqueadas.`;
@@ -542,20 +559,13 @@ function getDailyProgress(){
 }
 function getWeeklyProgress(){
  const defs=weeklyDefs();
- const checkProgress=defs.length?defs.filter(def=>!!state.weekly[def.id]).length/defs.length:0;
- const countParts=[
-  state.weeklyCounts.dailyDungeon/Math.max(1,state.dailyDungeonCap),
-  state.weeklyCounts.pveCommands/12,
-  state.weeklyCounts.pvpCommands/20,
-  state.weeklyCounts.shugo/Math.max(1,shugoMax()),
-  ...state.characters.map(c=>c.ascension/3),
-  ...state.characters.map(c=>c.battleground/3)
- ];
- const countProgress=countParts.length?countParts.reduce((sum,value)=>sum+Math.min(1,Math.max(0,value)),0)/countParts.length:0;
- if(!defs.length&&!countParts.length)return 0;
- if(!defs.length)return Math.round(countProgress*100);
- if(!countParts.length)return Math.round(checkProgress*100);
- return Math.round((checkProgress*.45+countProgress*.55)*100);
+ const checks=defs.length?defs.filter(def=>!!state.weekly[def.id]).length/defs.length:0;
+ const perChar=state.characters.flatMap(c=>[
+  Math.min(1,Math.max(0,Number(c.nightmare||0)/14)),
+  Math.min(1,Math.max(0,Number(c.sanctuary||0)/2))
+ ]);
+ const chars=perChar.length?perChar.reduce((a,b)=>a+b,0)/perChar.length:0;
+ return Math.round((checks*.6+chars*.4)*100);
 }
 function renderProgress(){
  const daily=getDailyProgress();
@@ -604,7 +614,7 @@ function bindDynamic(view=activeView){
      if(match)visible++;
     });
     const status=scope.querySelector("#bibleSearchStatus");
-    if(status)status.textContent=q?`${visible} capítulo${visible===1?"":"s"} encontrado${visible===1?"":"s"}`:"12 capítulos";
+    if(status)status.textContent=q?`${visible} capítulo${visible===1?"":"s"} encontrado${visible===1?"":"s"}`:"9 capítulos";
    };
   }
  }
@@ -639,12 +649,6 @@ function bindDynamic(view=activeView){
   state[e.target.dataset.scope][e.target.dataset.id]=e.target.checked;
   save();renderHeader();renderProgress();renderActiveView(view);
  });
- scope.querySelectorAll("[data-count]").forEach(btn=>btn.onclick=()=>{
-  if(readonly)return;
-  const k=btn.dataset.count,max=k==="dailyDungeon"?state.dailyDungeonCap:k==="pveCommands"?12:k==="pvpCommands"?20:shugoMax();
-  state.weeklyCounts[k]=Math.max(0,Math.min(max,(state.weeklyCounts[k]||0)+Number(btn.dataset.dir)));
-  save();renderHeader();renderProgress();renderActiveView(view);
- });
  scope.querySelectorAll(".charInput").forEach(inp=>inp.onchange=()=>{
   if(readonly)return;
   const c=state.characters.find(c=>c.id===inp.dataset.char);if(!c)return;
@@ -656,7 +660,7 @@ function bindDynamic(view=activeView){
  scope.querySelectorAll("[data-char-count]").forEach(btn=>btn.onclick=()=>{
   if(readonly)return;
   const c=state.characters.find(c=>c.id===btn.dataset.charCount);if(!c)return;
-  c[btn.dataset.field]=Math.max(0,Math.min(3,(c[btn.dataset.field]||0)+Number(btn.dataset.dir)));
+  const max=Number(btn.dataset.max||0)||99;c[btn.dataset.field]=Math.max(0,Math.min(max,(c[btn.dataset.field]||0)+Number(btn.dataset.dir)));
   save();renderHeader();renderProgress();renderActiveView(view);
  });
  scope.querySelectorAll("[data-remove-char]").forEach(btn=>btn.onclick=()=>{
@@ -670,7 +674,7 @@ function bindDynamic(view=activeView){
 const VIEW_TITLES={
  today:"Painel da conta",weekly:"Ciclo semanal",characters:"Personagens",week1:"Guia da conta",resources:"Recursos & entradas",
  classes:"Classes",builder:"Builder",calculator:"Calculadora",compare:"Comparar builds",database:"Database",
- bible:"Bíblia do Aion 2",guides:"Guias",tips:"Dicas gerais",notes:"Anotações pessoais"
+ bible:"Bíblia Global",guides:"Guias",tips:"Dicas gerais",notes:"Anotações pessoais"
 };
 function setView(view){
  const target=document.getElementById(view);
@@ -700,11 +704,11 @@ document.getElementById("strategySelect").onchange=e=>{if(readonly)return;state.
 document.getElementById("addCharBtn").onclick=()=>{
  if(readonly)return;
  const name=prompt("Nome do personagem:");if(!name)return;
- state.characters.push({id:"c"+Date.now(),name:name.trim().slice(0,28)||"Alt",role:"alt",level:1,power:0,odyle:0,nightmare:0,ascension:0,battleground:0});save();renderProgress();renderActiveView(activeView);
+ state.characters.push({id:"c"+Date.now(),name:name.trim().slice(0,28)||"Alt",role:"alt",level:1,power:0,odyle:0,nightmare:0,sanctuary:0});save();renderProgress();renderActiveView(activeView);
 };
 document.getElementById("resetWeeklyBtn").onclick=()=>{
  if(readonly)return;if(!confirm("Limpar progresso semanal?"))return;
- state.weekly={};state.weeklyCounts={dailyDungeon:0,pveCommands:0,pvpCommands:0,shugo:0};state.characters.forEach(c=>{c.ascension=0;c.battleground=0});state.meta.weeklyKey=weeklyKey();save();renderProgress();renderActiveView(activeView);
+ state.weekly={};state.weeklyCounts={dailyDungeon:0,pveCommands:0,pvpCommands:0,shugo:0};state.characters.forEach(c=>{c.sanctuary=0});state.meta.weeklyKey=weeklyKey();save();renderProgress();renderActiveView(activeView);
 };
 
 document.getElementById("clearNotesBtn").onclick=()=>{
@@ -733,7 +737,6 @@ document.getElementById("settingsBtn").onclick=()=>{
  document.getElementById("profileNameInput").value=state.profileName;
  document.getElementById("factionSelect").value=state.faction;
  document.getElementById("membershipSelect").value=state.membership?"yes":"no";
- document.getElementById("dailyDungeonCapSelect").value=String(state.dailyDungeonCap);
  document.getElementById("dailyResetInput").value=state.dailyReset;
  document.getElementById("weeklyDaySelect").value=String(state.weeklyDay);
  document.getElementById("weeklyResetInput").value=state.weeklyReset;
@@ -744,7 +747,6 @@ document.getElementById("saveSettingsBtn").onclick=()=>{
  state.profileName=document.getElementById("profileNameInput").value.trim()||"Daeva";
  state.faction=document.getElementById("factionSelect").value;
  state.membership=document.getElementById("membershipSelect").value==="yes";
- state.dailyDungeonCap=Number(document.getElementById("dailyDungeonCapSelect").value);
  state.dailyReset=document.getElementById("dailyResetInput").value||"05:00";
  state.weeklyDay=Number(document.getElementById("weeklyDaySelect").value);
  state.weeklyReset=document.getElementById("weeklyResetInput").value||"05:00";
@@ -821,10 +823,10 @@ document.getElementById("downloadSnapshotBtn").onclick=async()=>{
    return response.text();
   };
   const [css,storageSource,authSource,appSource]=await Promise.all([
-   assetText("styles.css?v=2.0.3"),
-   assetText("storage.js?v=2.0.3"),
-   assetText("auth.js?v=2.0.3"),
-   assetText("app.js?v=2.0.3")
+   assetText("styles.css?v=2.1.0-global"),
+   assetText("storage.js?v=2.1.0-global"),
+   assetText("auth.js?v=2.1.0-global"),
+   assetText("app.js?v=2.1.0-global")
   ]);
   const stripModule=source=>source
    .replace(/^import\s+[^;]+;\s*$/gm,"")
@@ -879,7 +881,7 @@ function updateCountdown(){
  const nextShugo=nextShugoFestival(now);
  document.getElementById("dailyCountdown").textContent=formatCountdown(nextDailyReset(now)-now);
  document.getElementById("shugoCountdown").textContent=formatCountdown(nextShugo-now);
- document.getElementById("shugoResetMeta").textContent=`A cada hora · próxima janela ${pad(nextShugo.getHours())}:00`;
+ document.getElementById("shugoResetMeta").textContent=`Timer pessoal · próxima marca ${pad(nextShugo.getHours())}:00`;
  document.getElementById("weeklyCountdown").textContent=formatCountdown(nextWeeklyReset(now)-now,{showDays:true});
 
  // Detecta a virada do ciclo mesmo com a página aberta.
