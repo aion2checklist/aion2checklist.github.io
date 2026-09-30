@@ -517,3 +517,46 @@ body:before{opacity:.18;background-size:56px 56px}
  .builderToolbar,.builderFields,.builderGearGrid,.dbExternalGrid,.dbReferenceGrid,.guidePortalGrid{grid-template-columns:1fr}
  .classMeta{grid-template-columns:1fr 1fr}.calcRow{grid-template-columns:1fr 82px}.calcRow strong{grid-column:1/-1;text-align:left}.contextResults{grid-template-columns:1fr 1fr}
 }
+
+/* v2.0.2 — performance pass */
+.workspace .card{
+ backdrop-filter:none;
+ -webkit-backdrop-filter:none;
+ box-shadow:0 8px 24px rgba(0,0,0,.16);
+}
+.top{backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.sidebar{backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.commandHero{box-shadow:0 12px 38px rgba(0,0,0,.24)}
+.commandHero:after{box-shadow:inset 0 0 42px var(--factionGlow)}
+body:after{
+ position:absolute;
+ inset:0 0 auto 0;
+ height:760px;
+ opacity:.10;
+ filter:none;
+ -webkit-filter:none;
+ mask-image:linear-gradient(to bottom,black 0%,rgba(0,0,0,.75) 50%,transparent 100%);
+ -webkit-mask-image:linear-gradient(to bottom,black 0%,rgba(0,0,0,.75) 50%,transparent 100%);
+}
+body:before{
+ position:absolute;
+ inset:0 0 auto 0;
+ height:980px;
+ opacity:.13;
+}
+.bibleChapter,.tipCard,.classCard,.dbEntry{
+ content-visibility:auto;
+ contain-intrinsic-size:1px 220px;
+}
+.moduleLink,.timerTile,.calcPanel,.builderPanel,.charCard{
+ contain:layout paint;
+}
+@media(max-width:980px){
+ body:after{display:none}
+ body:before{height:620px;opacity:.08}
+ .sidebar{backdrop-filter:none;-webkit-backdrop-filter:none}
+ .sidebarBackdrop{backdrop-filter:none;-webkit-backdrop-filter:none}
+}
+@media(prefers-reduced-motion:reduce){
+ *,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}
+}
