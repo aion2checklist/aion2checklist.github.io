@@ -107,7 +107,7 @@ export function createStateNormalizer(defaultState){
         role:character.role==="main"?"main":"alt",
         level:clampNum(character.level,1,99,1),
         power:clampNum(character.power,0,99999999,0),
-        odyle:clampNum(character.odyle,0,x.membership?840:560,0),
+        odyle:clampNum(character.odyle,0,99999999,0),
         nightmare:clampNum(character.nightmare,0,14,0),
         sanctuary:clampNum(character.sanctuary,0,2,0)
       };
